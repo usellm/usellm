@@ -1,0 +1,22 @@
+{
+  "name": "usellm",
+  "version": "0.0.1",
+  "description": "There's nothing to see here",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aakashns/usellm.git"
+  },
+  "keywords": [
+    "llm"
+  ],
+  "author": "Jovian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aakashns/usellm/issues"
+  },
+  "homepage": "https://github.com/aakashns/usellm#readme"
+}
