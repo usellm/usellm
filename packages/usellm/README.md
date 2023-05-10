@@ -144,7 +144,7 @@ OPENAI_API_KEY=xxxxxxxx
 
 export default async function handler(req, res) {
   
-  // verify user authentication etc.
+  // verify user authentication, rate limit etc.
 
   const result = await llmService.handle(req.body);
   
@@ -154,6 +154,8 @@ export default async function handler(req, res) {
 ```
 
 Note: The above example uses [NextJS API Routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes). You may need to add additional logic to your API route (e.g. checking whether the user is logged in, rate limiting, etc.) before invoking `llmService.handle` to restrict access as per your application's needs.
+
+**TIP**: Use Upstash for rate limiting: https://upstash.com/blog/upstash-ratelimit
 
 
 4. Provide the API URL/path in the `useLLM` hook in your React component:
