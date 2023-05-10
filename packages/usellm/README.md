@@ -20,7 +20,6 @@ The libary offers the following functionality:
 
 **NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
 
-
 ### Step 1 - `useLLM` hook
 
 1. Initialize the hook with a Service URL inside a react component:
@@ -100,7 +99,8 @@ interface UseLLMChatOptions {
   stream?: boolean; // do you want to stream the response token by token?
   template?: string; // use a preconfigured template (see the `registerTemplate` section)
   inputs?: object; // inputs to be provided to the preconfigured template (see the `registerTemplate` section)
-  onStream?: (     // called every time a new token is received (only if stream is true)
+  onStream?: (
+    // called every time a new token is received (only if stream is true)
     message: OpenAIMessage,
     isFirst: boolean,
     isLast: boolean
@@ -114,9 +114,9 @@ interface UseLLMChatOptions {
 
 ```javascript
 interface OpenAIMessage {
-  content: string;  // contains the actual text of the message
-  role: string;    // can be "system", "user", or "assistant"
-  user?: string;   // an optional user name/ID used by OpenAI for spam prevention
+  content: string; // contains the actual text of the message
+  role: string; // can be "system", "user", or "assistant"
+  user?: string; // an optional user name/ID used by OpenAI for spam prevention
 }
 ```
 
@@ -128,7 +128,7 @@ const llm = useLLM(serviceUrl, fetcher);
 
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/usellm.ts) for more details.
 
-### Step 2 - Service URL with `createLLMService` 
+### Step 2 - Service URL with `createLLMService`
 
 Create your own service URL using the `createLLMService` function.
 
@@ -174,7 +174,9 @@ const llm = useLLM("/api/llmservice");
 
 **NOTE**: To stream messages in a NextJS application, you'll need to use the `edge` runtime.
 
-If your using the `pages` folder for routing, here's an example [edge API route](https://nextjs.org/docs/pages/building-your-application/routing/api-routes#edge-api-routes) you can use as a starting point:
+#### Example - `createLLMService`
+
+If you're using the `pages` folder for routing, here's an example [edge API route](https://nextjs.org/docs/pages/building-your-application/routing/api-routes#edge-api-routes) you can use as a starting point:
 
 ```javascript
 /* pages/api/llmservice.ts */
@@ -227,11 +229,13 @@ export async function POST(request: Request) {
 
 ```
 
+#### Options - `createLLMService`
+
 Here are the full set of options you can provide to `createLLMService`:
 
 ```javascript
 interface CreateLLMServiceArgs {
-  openaiApiKey?: string;  // your OpenAI API Key (prefer passing this via an environment variable)
+  openaiApiKey?: string; // your OpenAI API Key (prefer passing this via an environment variable)
   fetcher?: typeof fetch; // provide a custom fetcher
   templates?: { [id: string]: LLMServiceTemplate }; // see next section
   debug?: boolean; // logs the JSON body sent to OpenAI
@@ -293,7 +297,7 @@ Here are all the options supported for templates:
 
 ```javascript
 interface LLMServiceTemplate {
-  id: string;  // unique identifier used while invoking the model from `llm.chat`
+  id: string; // unique identifier used while invoking the model from `llm.chat`
   systemPrompt?: string;
   userPrompt?: string;
   model?: string;
