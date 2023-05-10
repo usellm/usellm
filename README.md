@@ -60,6 +60,7 @@ Here's a complete working example that you can use as a starting point:
 
 ```javascript
 import useLLM from 'usellm';
+import { useState } from "react";
 
 export default function MyComponent() {
   const llm = useLLM("https://usellm.org/api/llmservice");
@@ -298,6 +299,84 @@ interface LLMServiceTemplate {
 Check the [OpenAI API docs](https://platform.openai.com/docs/api-reference/chat/create) for information about each option and view the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details.
 
 Check out this course on prompt engineering to craft effective prompts: https://learnprompting.org/docs/intro
+
+### Example - Template
+
+Here's a complete example of a NextJS application that uses prompt templates:
+
+```javascript
+/* app/api/llmservice.tsx */
+
+import { createLLMService } from "usellm";
+
+export const runtime = "edge";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+});
+
+llmService.registerTemplate({
+  id: "tutorial-generator",
+  systemPrompt:
+    "You job is to create a short tutorial on a given topic. Use simple words, avoid jargon. Start with an introduction, then provide a few points of explanation, and end with a conclusion",
+  userPrompt: "Topic: {{topic}}",
+  max_tokens: 1000,
+  model: "gpt-4",
+  temperature: 0.7,
+});
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  try {
+    const data = await llmService.handle(body);
+    return new Response(data, { status: 200 });
+  } catch (error) {
+    return new Response((error as Error).message, { status: 400 });
+  }
+}
+
+```
+
+
+```javascript
+/* app/page.tsx */
+import { useState } from "react";
+import useLLM, { OpenAIMessage } from "usellm";
+
+export default function HomePage() {
+  const llm = useLLM("/api/llmservice");
+  const [topic, setTopic] = useState("");
+  const [result, setResult] = useState("");
+
+  const handleClick = () => {
+    llm.chat({
+      template: "tutorial-generator",
+      inputs: { topic },
+      stream: true,
+      onStream: (message) => setResult(message.content),
+    });
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Enter topic"
+        value={topic}
+        onChange={(e) => setTopic(e.target.value)}
+      />
+      <button onClick={handleClick}>Send</button>
+      <div>{result}</div>
+    </div>
+  );
+}
+
+```
+
+This produces the following result:
+
+<img src="https://github.com/usellm/usellm/assets/1560745/3c75c050-692a-4d7f-8620-545b32b626da" width="420" alt="template demo" >
 
 
 ## Contributing
