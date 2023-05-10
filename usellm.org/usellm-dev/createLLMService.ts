@@ -1,4 +1,4 @@
-import OpenAIStream from "./OpenAIStream1";
+import OpenAIStream from "./OpenAIStream";
 import {
   CHAT_COMPLETIONS_API_URL,
   OpenAIMessage,
