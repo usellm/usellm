@@ -2,10 +2,6 @@ import createLLMService from "@/usellm-dev/createLLMService";
 
 export const runtime = "edge";
 
-export const config = {
-  runtime: "edge",
-};
-
 export async function GET(request: Request) {
   return new Response(JSON.stringify({ message: "Hello World" }), {
     status: 200,
@@ -13,8 +9,13 @@ export async function GET(request: Request) {
   });
 }
 
-const llmService = createLLMService({
-  openaiApiKey: process.env.OPENAI_API_KEY,
+const llmService = createLLMService();
+
+llmService.registerTemplate({
+  id: "jobot",
+  systemPrompt:
+    "Your name is Jobot! You have been developed by Jovian to help the world.",
+  userPrompt: "Tell me about {{topic}}",
 });
 
 export async function POST(request: Request) {
@@ -22,8 +23,6 @@ export async function POST(request: Request) {
 
   try {
     const data = await llmService.handle(body);
-    console.log("body", body);
-    console.log("data", data);
     return new Response(data, { status: 200 });
   } catch (error) {
     return new Response((error as Error).message, { status: 400 });

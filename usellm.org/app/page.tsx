@@ -3,18 +3,14 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useLLM from "@/usellm-dev";
+import { OpenAIMessage } from "@/usellm-dev/utils";
 import { useState } from "react";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
 }
 
-interface MessageProps {
-  role: string;
-  content: string;
-}
-
-function Message({ role, content }: MessageProps) {
+function Message({ role, content }: OpenAIMessage) {
   return (
     <div className="my-4">
       <div className="font-semibold text-gray-800">{capitalize(role)}</div>
@@ -24,9 +20,7 @@ function Message({ role, content }: MessageProps) {
 }
 
 export default function Home() {
-  const [history, setHistory] = useState([
-    { role: "system", content: "Your name is Jobot" },
-  ]);
+  const [history, setHistory] = useState<OpenAIMessage[]>([]);
   const [inputText, setInputText] = useState("");
 
   const llm = useLLM("/api/llmservice");
@@ -42,6 +36,8 @@ export default function Home() {
     setInputText("");
 
     await llm.chat({
+      template: "jobot",
+      inputs: { topic: "Machine Learning" },
       messages: newHistory,
       stream: true,
       onStream: (message, isFirst, isLast) => {

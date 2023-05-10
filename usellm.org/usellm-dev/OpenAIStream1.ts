@@ -12,18 +12,12 @@ export interface OpenAIStreamOptions {
 }
 
 export default async function OpenAIStream(options: OpenAIStreamOptions) {
-  const {
-    body,
-    openaiApiKey = process.env.OPENAI_API_KEY ?? "",
-    fetcher = fetch,
-  } = options;
+  const { body, openaiApiKey, fetcher = fetch } = options;
 
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
   let counter = 0;
-
-  console.log("Final openai body", body);
 
   const res = await fetcher(CHAT_COMPLETIONS_API_URL, {
     headers: {

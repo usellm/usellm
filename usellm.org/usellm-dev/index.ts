@@ -6,8 +6,10 @@ import {
 } from "./utils";
 
 export interface ChatOptions {
-  messages: OpenAIMessage[];
+  messages?: OpenAIMessage[];
   stream?: boolean;
+  template?: string;
+  inputs?: object;
   onStream?: OpenAIResponseCallback;
   onSuccess?: (message: OpenAIMessage) => void;
   onError?: (error: Error) => void;
@@ -18,8 +20,10 @@ export default function useLLM(
   fetcher: typeof fetch = fetch
 ) {
   async function chat({
-    messages,
+    messages = [],
     stream = false,
+    template,
+    inputs,
     onStream,
     onSuccess,
     onError,
@@ -27,7 +31,13 @@ export default function useLLM(
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages, stream, $action: "chat" }),
+      body: JSON.stringify({
+        messages,
+        stream,
+        $action: "chat",
+        template,
+        inputs,
+      }),
     });
 
     if (!response.ok || !response.body) {
