@@ -2,8 +2,6 @@
 
 `useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code. [Try Demo](https://usellm.org/demo)
 
-**NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
-
 ## Installation
 
 Install the package from NPM:
@@ -20,6 +18,8 @@ The libary offers the following functionality:
 2. Use `createLLMService` to create an API endpoint for the hook (server-side)
 3. User `.registerTemplate` to set up preconfigured prompts & options (server-side)
 
+**NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
+
 ### `useLLM`
 
 1. Initialize the hook with a Service URL inside a react component:
@@ -28,7 +28,7 @@ The libary offers the following functionality:
 const llm = useLLM("https://usellm.org/api/llmservice");
 ```
 
-Check the next section to learn how you can create your own service URL.
+**NOTE**: The above service URL is for testing only. Check the next section to learn how you can create your own service URL.
 
 2. Use the `.chat` method to send a chat message and provide `onSuccess` and `onError` callbacks:
 
