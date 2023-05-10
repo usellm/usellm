@@ -4,7 +4,7 @@ import {
   streamOpenAIResponse,
 } from "./utils.js";
 
-export interface ChatOptions {
+export interface UseLLMChatOptions {
   messages?: OpenAIMessage[];
   stream?: boolean;
   template?: string;
@@ -26,7 +26,7 @@ export default function useLLM(
     onStream,
     onSuccess,
     onError,
-  }: ChatOptions) {
+  }: UseLLMChatOptions) {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

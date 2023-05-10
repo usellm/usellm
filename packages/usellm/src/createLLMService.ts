@@ -19,7 +19,7 @@ const defaultTemplate = {
   temperature: 0.8,
 };
 
-interface LLMServiceTemplate {
+export interface LLMServiceTemplate {
   id: string;
   systemPrompt?: string;
   userPrompt?: string;
@@ -33,7 +33,7 @@ interface LLMServiceTemplate {
   logit_bias?: number;
 }
 
-interface LLMServiceBody {
+export interface LLMServiceBody {
   messages?: OpenAIMessage[];
   stream?: boolean;
   template?: string;
@@ -41,7 +41,7 @@ interface LLMServiceBody {
   user?: string;
 }
 
-class LLMService {
+export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   fetcher: typeof fetch;
