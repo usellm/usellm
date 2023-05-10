@@ -35,8 +35,6 @@ export default function DemoPage() {
     setInputText("");
 
     await llm.chat({
-      template: "jobot",
-      inputs: { topic: "Machine Learning" },
       messages: newHistory,
       stream: true,
       onStream: (message, isFirst, isLast) => {
