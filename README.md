@@ -2,7 +2,7 @@
 
 `useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code. 
 
-**NOTE**: This library is currently just a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). Other language models and APIs will be added soon.
+**NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
 
 ## Installation
 
