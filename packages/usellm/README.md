@@ -254,7 +254,7 @@ const defaultTemplate = {
 
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details
 
-### Step 3 - Prompt & Model Options with `registerTempalte`
+### Step 3 - Prompt & Model Options with `registerTemplate`
 
 To generate useful responses from large language models like OpenAI, you might need to customize the [options passed to the API](https://platform.openai.com/docs/api-reference/chat/create) (e.g. `model`, `max_tokens`, `temperature`) and create default prompts that provide instructions to the model to generate the desired results. To achieve this, you can create & register templates on the server using the `llmService.registerTemplate` method, and use registered templates from your react components.
 
