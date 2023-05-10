@@ -40,6 +40,15 @@ llmService.registerTemplate({
   userPrompt: "Tell me about {{topic}}",
 });
 
+llmService.registerTemplate({
+  id: "tutorial-generator",
+  systemPrompt:
+    "You job is to create a short tutorial on a given topic. Use simple words, avoid jargon. Start with an introduction, then provide a few points of explanation, and end with a conclusion",
+  userPrompt: "Topic: {{topic}}",
+  max_tokens: 200,
+  temperature: 0.7,
+});
+
 export async function POST(request: Request) {
   const body = await request.json();
   const headers = getChatResponseHeaders();

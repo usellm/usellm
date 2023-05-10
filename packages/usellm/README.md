@@ -18,7 +18,7 @@ The libary offers the following functionality:
 
 1. Use the `useLLM` hook in your react component (client-side)
 2. Use `createLLMService` to create an API endpoint for the hook (server-side)
-3. User `.registerTemplate` to set up preconfigured prompts & options (server-side
+3. User `.registerTemplate` to set up preconfigured prompts & options (server-side)
 
 ### `useLLM`
 
@@ -53,6 +53,8 @@ llm.chat({
 
 The `messages` option passed to `llm.chat` must be an array of OpenAI messages, as documented here: https://platform.openai.com/docs/api-reference/chat/create#chat/create-messages
 
+#### Example - `llm.chat`
+
 Here's a complete working example that you can use as a starting point:
 
 ```javascript
@@ -75,7 +77,7 @@ export default function MyComponent() {
   return (
     <div>
       <button onClick={handleClick}>Send</button>
-      <div>{result}</div>
+      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
     </div>
   );
 }
@@ -85,14 +87,18 @@ It produces the following output:
 
 <img src="https://github.com/usellm/usellm/assets/1560745/d4709dfa-9403-4845-9f76-2fa21667604a" alt="usellmdemo" width="320">
 
+View a live demo here: https://usellm.org/demo0
+
+#### Options - `useLLM`
+
 Here are the type signature showing the full set of options supported by `llm.chat`:
 
 ```javascript
 interface UseLLMChatOptions {
-  messages?: OpenAIMessage[];
-  stream?: boolean;
-  template?: string;
-  inputs?: object;
+  messages?: OpenAIMessage[]; // message history for generating the next message
+  stream?: boolean; // do you want to stream the response token by token?
+  template?: string; // use a preconfigured template (see the `registerTemplate` section)
+  inputs?: object; // inputs to be provided to the preconfigured template (see the `registerTemplate` section)
   onStream?: (
     message: OpenAIMessage,
     isFirst: boolean,
@@ -342,8 +348,9 @@ export async function POST(request: Request) {
 
 ```javascript
 /* app/page.tsx */
+"use client";
 import { useState } from "react";
-import useLLM, { OpenAIMessage } from "usellm";
+import useLLM from "usellm";
 
 export default function HomePage() {
   const llm = useLLM("/api/llmservice");
@@ -368,7 +375,7 @@ export default function HomePage() {
         onChange={(e) => setTopic(e.target.value)}
       />
       <button onClick={handleClick}>Send</button>
-      <div>{result}</div>
+      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
     </div>
   );
 }
