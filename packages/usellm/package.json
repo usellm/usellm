@@ -1,13 +1,13 @@
 {
   "name": "usellm",
-  "version": "0.0.5",
-  "description": "There's nothing to see here",
+  "version": "0.0.6",
+  "description": "User Large Language Models in Your React Apps",
   "scripts": {
     "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aakashns/usellm.git"
+    "url": "git+https://github.com/usellm/usellm.git"
   },
   "keywords": [
     "llm"
@@ -15,9 +15,9 @@
   "author": "Jovian",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aakashns/usellm/issues"
+    "url": "https://github.com/usellm/usellm/issues"
   },
-  "homepage": "https://github.com/aakashns/usellm#readme",
+  "homepage": "https://github.com/usellm/usellm#readme",
   "exports": {
     ".": "./dist/index.js"
   },
