@@ -1,6 +1,6 @@
 # useLLM - Use Large Language Models in Your React App
 
-`useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code. 
+`useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code.
 
 **NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
 
@@ -20,16 +20,15 @@ The libary offers the following functionality:
 2. Use `createLLMService` to create an API endpoint for the hook (server-side)
 3. User `.registerTemplate` to set up preconfigured prompts & options (server-side
 
-
 ### `useLLM`
 
 1. Initialize the hook with a Service URL inside a react component:
 
-  ```javascript
-  const llm = useLLM("https://usellm.org/api/llmservice");
-  ```
+```javascript
+const llm = useLLM("https://usellm.org/api/llmservice");
+```
 
-  Check the next section to learn how you can create your own service URL.
+Check the next section to learn how you can create your own service URL.
 
 2. Use the `.chat` method to send a chat message and provide `onSuccess` and `onError` callbacks:
 
@@ -54,12 +53,11 @@ llm.chat({
 
 The `messages` option passed to `llm.chat` must be an array of OpenAI messages, as documented here: https://platform.openai.com/docs/api-reference/chat/create#chat/create-messages
 
-
 Here's a complete working example that you can use as a starting point:
 
-
 ```javascript
-import useLLM from 'usellm';
+"use client";
+import useLLM from "usellm";
 import { useState } from "react";
 
 export default function MyComponent() {
@@ -81,7 +79,6 @@ export default function MyComponent() {
     </div>
   );
 }
-
 ```
 
 It produces the following output:
@@ -92,13 +89,17 @@ Here are the type signature showing the full set of options supported by `llm.ch
 
 ```javascript
 interface UseLLMChatOptions {
-    messages?: OpenAIMessage[];     
-    stream?: boolean;
-    template?: string;
-    inputs?: object;
-    onStream?: (message: OpenAIMessage, isFirst: boolean, isLast: boolean) => void;
-    onSuccess?: (message: OpenAIMessage) => void;
-    onError?: (error: Error) => void;
+  messages?: OpenAIMessage[];
+  stream?: boolean;
+  template?: string;
+  inputs?: object;
+  onStream?: (
+    message: OpenAIMessage,
+    isFirst: boolean,
+    isLast: boolean
+  ) => void;
+  onSuccess?: (message: OpenAIMessage) => void;
+  onError?: (error: Error) => void;
 }
 ```
 
@@ -106,9 +107,9 @@ interface UseLLMChatOptions {
 
 ```javascript
 interface OpenAIMessage {
-    content: string;
-    role: string;
-    user?: string;
+  content: string;
+  role: string;
+  user?: string;
 }
 ```
 
@@ -120,7 +121,6 @@ const llm = useLLM(serviceUrl, fetcher);
 
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/usellm.ts) for more details.
 
-
 ### `createLLMService`
 
 You'll need to provide an [API Key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to user OpenAI APIs. This API key should be sent to the browser. To connect to the OpenAI API securely from your application, you can create an API endpoint that uses the `createLLMService` helper function from `usellm`.
@@ -128,7 +128,9 @@ You'll need to provide an [API Key](https://help.openai.com/en/articles/4936850-
 1. Create the LLMService:
 
 ```javascript
-const llmService = createLLMService({ openaiApiKey: process.env.OPENAI_API_KEY });
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+});
 ```
 
 2. Store your OpenAI API key in an enviroment variable file (e.g. `.env.local` for [NextJS applications](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)):
@@ -143,25 +145,22 @@ OPENAI_API_KEY=xxxxxxxx
 /* pages/api/llmservice.js */
 
 export default async function handler(req, res) {
-  
   // verify user authentication, rate limit etc.
 
   const result = await llmService.handle(req.body);
-  
+
   res.send(result);
 }
-
 ```
 
 Note: The above example uses [NextJS API Routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes). You may need to add additional logic to your API route (e.g. checking whether the user is logged in, rate limiting, etc.) before invoking `llmService.handle` to restrict access as per your application's needs.
 
 **TIP**: Use Upstash for rate limiting: https://upstash.com/blog/upstash-ratelimit
 
-
 4. Provide the API URL/path in the `useLLM` hook in your React component:
 
 ```javascript
-  const llm = useLLM("/api/llmservice");
+const llm = useLLM("/api/llmservice");
 ```
 
 **NOTE**: To stream messages in a NextJS application, you'll need to use the `edge` runtime.
@@ -176,7 +175,7 @@ import { createLLMService } from "usellm";
 export const config = {
   runtime: 'edge',
 };
- 
+
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
 });
@@ -224,13 +223,13 @@ Here are the full set of options you can provide to `createLLMService`:
 ```javascript
 interface CreateLLMServiceArgs {
   openaiApiKey?: string;
-  fetcher?: typeof fetch;  // provide a custom fetcher
-  templates?: { [id: string]: LLMServiceTemplate };  // see next section
-  debug?: boolean;  // logs the JSON body sent to OpenAI
+  fetcher?: typeof fetch; // provide a custom fetcher
+  templates?: { [id: string]: LLMServiceTemplate }; // see next section
+  debug?: boolean; // logs the JSON body sent to OpenAI
 }
 ```
 
-Here are the default options passed to the OpenAI API (see the next section for customization): 
+Here are the default options passed to the OpenAI API (see the next section for customization):
 
 ```javascript
 const defaultTemplate = {
@@ -238,7 +237,6 @@ const defaultTemplate = {
   max_tokens: 200,
   temperature: 0.8,
 };
-
 ```
 
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details
@@ -256,7 +254,7 @@ llmService.registerTemplate({
     "Your name is Jobot! You have been developed by Jovian to help the world.",
   userPrompt: "Tell me about {{topic}}",
   model: "gpt-4",
-  temperature: 0.8
+  temperature: 0.8,
 });
 ```
 
@@ -274,7 +272,9 @@ Each prompt can contain variables e.g. `{{topic}}` whose values can be sent from
 llm.chat({
   template: "jobot",
   inputs: { topic: "Machine Learning" },
-  onSuccess: message => { console.log(message); },
+  onSuccess: (message) => {
+    console.log(message);
+  },
 });
 ```
 
@@ -340,7 +340,6 @@ export async function POST(request: Request) {
 
 ```
 
-
 ```javascript
 /* app/page.tsx */
 import { useState } from "react";
@@ -373,24 +372,12 @@ export default function HomePage() {
     </div>
   );
 }
-
 ```
 
 This produces the following result:
 
 <img src="https://github.com/usellm/usellm/assets/1560745/3c75c050-692a-4d7f-8620-545b32b626da" width="420" alt="template demo" >
 
-
 ## Contributing
 
 The library is under active development. Please open an issue to report bugs and open a pull request to contribute new features.
-
-
-
-
-
-
-
-
-
-

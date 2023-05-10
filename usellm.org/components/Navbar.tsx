@@ -6,7 +6,7 @@ export default function Navbar() {
         <a
           target="_blank"
           className="hover:text-blue-600"
-          href="https://github.com/uselllm/usellm"
+          href="https://github.com/usellm/usellm"
         >
           GitHub
         </a>
