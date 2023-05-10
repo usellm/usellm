@@ -13,10 +13,19 @@ function getChatResponseHeaders() {
   });
 }
 
-export async function GET(request: Request) {
+export async function OPTIONS(request: Request) {
+  const headers = getChatResponseHeaders();
   return new Response(JSON.stringify({ message: "Hello World" }), {
     status: 200,
-    headers: { "Content-Type": "application/json" },
+    headers,
+  });
+}
+
+export async function GET(request: Request) {
+  const headers = getChatResponseHeaders();
+  return new Response(JSON.stringify({ message: "Hello World" }), {
+    status: 200,
+    headers,
   });
 }
 
