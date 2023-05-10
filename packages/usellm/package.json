@@ -1,6 +1,6 @@
 {
   "name": "usellm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "There's nothing to see here",
   "scripts": {
     "build": "tsc"
