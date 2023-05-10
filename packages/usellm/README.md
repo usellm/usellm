@@ -385,6 +385,8 @@ This produces the following result:
 
 <img src="https://github.com/usellm/usellm/assets/1560745/3c75c050-692a-4d7f-8620-545b32b626da" width="420" alt="template demo" >
 
+Check out a live demo here: https://usellm.org/demo2
+
 ## Contributing
 
 The library is under active development. Please open an issue to report bugs and open a pull request to contribute new features.
