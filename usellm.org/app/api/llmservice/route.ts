@@ -2,7 +2,7 @@ import { createLLMService } from "usellm";
 
 export const runtime = "edge";
 
-export function getChatResponseHeaders() {
+function getChatResponseHeaders() {
   return new Headers({
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Origin": "*",
