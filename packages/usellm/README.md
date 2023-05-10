@@ -20,7 +20,8 @@ The libary offers the following functionality:
 
 **NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
 
-### `useLLM`
+
+### Step 1 - `useLLM` hook
 
 1. Initialize the hook with a Service URL inside a react component:
 
@@ -99,13 +100,13 @@ interface UseLLMChatOptions {
   stream?: boolean; // do you want to stream the response token by token?
   template?: string; // use a preconfigured template (see the `registerTemplate` section)
   inputs?: object; // inputs to be provided to the preconfigured template (see the `registerTemplate` section)
-  onStream?: (
+  onStream?: (     // called every time a new token is received (only if stream is true)
     message: OpenAIMessage,
     isFirst: boolean,
     isLast: boolean
   ) => void;
-  onSuccess?: (message: OpenAIMessage) => void;
-  onError?: (error: Error) => void;
+  onSuccess?: (message: OpenAIMessage) => void; // called when the message is received (only if stream is true)
+  onError?: (error: Error) => void; // called if an error was thrown by the service URL
 }
 ```
 
@@ -113,9 +114,9 @@ interface UseLLMChatOptions {
 
 ```javascript
 interface OpenAIMessage {
-  content: string;
-  role: string;
-  user?: string;
+  content: string;  // contains the actual text of the message
+  role: string;    // can be "system", "user", or "assistant"
+  user?: string;   // an optional user name/ID used by OpenAI for spam prevention
 }
 ```
 
@@ -127,9 +128,11 @@ const llm = useLLM(serviceUrl, fetcher);
 
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/usellm.ts) for more details.
 
-### `createLLMService`
+### Step 2 - Service URL with `createLLMService` 
 
-You'll need to provide an [API Key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to user OpenAI APIs. This API key should be sent to the browser. To connect to the OpenAI API securely from your application, you can create an API endpoint that uses the `createLLMService` helper function from `usellm`.
+Create your own service URL using the `createLLMService` function.
+
+**Why?**: You'll need to provide an [API Key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to use OpenAI APIs. This API key should NOT be sent to the browser. To connect to the OpenAI API securely from your application, you can create an API endpoint that uses the `createLLMService` helper function from `usellm`.
 
 1. Create the LLMService:
 
@@ -145,7 +148,7 @@ const llmService = createLLMService({
 OPENAI_API_KEY=xxxxxxxx
 ```
 
-3. Use `llmService.handle` in a server-side API route:
+3. Use the `llmService.handle` method in a server-side API route:
 
 ```javascript
 /* pages/api/llmservice.js */
@@ -228,7 +231,7 @@ Here are the full set of options you can provide to `createLLMService`:
 
 ```javascript
 interface CreateLLMServiceArgs {
-  openaiApiKey?: string;
+  openaiApiKey?: string;  // your OpenAI API Key (prefer passing this via an environment variable)
   fetcher?: typeof fetch; // provide a custom fetcher
   templates?: { [id: string]: LLMServiceTemplate }; // see next section
   debug?: boolean; // logs the JSON body sent to OpenAI
@@ -247,7 +250,7 @@ const defaultTemplate = {
 
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details
 
-### `registerTempalte`
+### Step 3 - Prompt & Model Options with `registerTempalte`
 
 To generate useful responses from large language models like OpenAI, you might need to customize the [options passed to the API](https://platform.openai.com/docs/api-reference/chat/create) (e.g. `model`, `max_tokens`, `temperature`) and create default prompts that provide instructions to the model to generate the desired results. To achieve this, you can create & register templates on the server using the `llmService.registerTemplate` method, and use registered templates from your react components.
 
@@ -290,7 +293,7 @@ Here are all the options supported for templates:
 
 ```javascript
 interface LLMServiceTemplate {
-  id: string;
+  id: string;  // unique identifier used while invoking the model from `llm.chat`
   systemPrompt?: string;
   userPrompt?: string;
   model?: string;
@@ -308,7 +311,7 @@ Check the [OpenAI API docs](https://platform.openai.com/docs/api-reference/chat/
 
 Check out this course on prompt engineering to craft effective prompts: https://learnprompting.org/docs/intro
 
-### Example - Template
+#### Example - Template
 
 Here's a complete example of a NextJS application that uses prompt templates:
 

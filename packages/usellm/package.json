@@ -1,6 +1,6 @@
 {
   "name": "usellm",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "User Large Language Models in Your React Apps",
   "scripts": {
     "build": "tsc"
