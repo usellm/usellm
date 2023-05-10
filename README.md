@@ -268,7 +268,7 @@ Each prompt can contain variables e.g. `{{topic}}` whose values can be sent from
 
 2. Provide the template id and inputs in your react component while calling `llm.chat`:
 
-```
+```javascript
 llm.chat({
   template: "jobot",
   inputs: { topic: "Machine Learning" },
@@ -280,7 +280,7 @@ If a `messages` argument is also provided to `llm.chat`, then the filled system 
 
 Here are all the options supported for templates:
 
-```
+```javascript
 interface LLMServiceTemplate {
   id: string;
   systemPrompt?: string;
