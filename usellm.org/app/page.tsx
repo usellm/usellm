@@ -2,9 +2,9 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import useLLM from "@/usellm-dev";
-import { OpenAIMessage } from "@/usellm-dev/utils";
 import { useState } from "react";
+import useLLM from "usellm";
+import { OpenAIMessage } from "usellm/dist/utils";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);

@@ -10,6 +10,7 @@ export interface CreateLLMServiceArgs {
   openaiApiKey?: string;
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
+  debug?: boolean;
 }
 
 const defaultTemplate = {
@@ -44,15 +45,18 @@ class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   fetcher: typeof fetch;
+  debug: boolean;
 
   constructor({
     openaiApiKey = "",
     fetcher = fetch,
     templates = {},
+    debug = false,
   }: CreateLLMServiceArgs) {
     this.openaiApiKey = openaiApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
+    this.debug = debug;
   }
 
   registerTemplate(template: LLMServiceTemplate) {
@@ -127,7 +131,10 @@ class LLMService {
 
   async chat(body: LLMServiceBody): Promise<ReadableStream | string> {
     const preparedBody = this.prepareBody(body);
-    console.log("preparedBody", preparedBody);
+    if (this.debug) {
+      console.log("[LLMService] preparedBody", preparedBody);
+    }
+
     if (preparedBody.stream) {
       return OpenAIStream({
         body: preparedBody,
@@ -156,6 +163,7 @@ export default function createLLMService({
   openaiApiKey = "",
   fetcher = fetch,
   templates = {},
+  debug = false,
 }: CreateLLMServiceArgs = {}) {
-  return new LLMService({ openaiApiKey, fetcher, templates });
+  return new LLMService({ openaiApiKey, fetcher, templates, debug });
 }

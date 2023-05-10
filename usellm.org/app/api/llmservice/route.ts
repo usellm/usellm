@@ -1,4 +1,4 @@
-import createLLMService from "@/usellm-dev/createLLMService";
+import { createLLMService } from "usellm";
 
 export const runtime = "edge";
 
@@ -9,7 +9,9 @@ export async function GET(request: Request) {
   });
 }
 
-const llmService = createLLMService();
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+});
 
 llmService.registerTemplate({
   id: "jobot",
