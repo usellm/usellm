@@ -1,12 +1,14 @@
 # useLLM - Use Large Language Models in Your React App
 
-`useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code. It's a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). Support for other language models and APIs will be added soon.
+`useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code. 
+
+**NOTE**: This library is currently just a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). Other language models and APIs will be added soon.
 
 ## Installation
 
 Install the package from NPM:
 
-```
+```bash
 npm install usellm@latest
 ```
 
@@ -41,7 +43,7 @@ llm.chat({
 
 3. The `.chat` method also supports streaming the response token-by-token using the `onStream` callback:
 
-```
+```javascript
 llm.chat({
   messages: [{ role: "user", content: "Who are you?" }],
   stream: true,
@@ -87,7 +89,7 @@ It produces the following output:
 
 Here are the type signature showing the full set of options supported by `llm.chat`:
 
-```
+```javascript
 interface UseLLMChatOptions {
     messages?: OpenAIMessage[];     
     stream?: boolean;
@@ -101,7 +103,7 @@ interface UseLLMChatOptions {
 
 `OpenAIMessage` has the following signature:
 
-```
+```javascript
 interface OpenAIMessage {
     content: string;
     role: string;
@@ -111,7 +113,7 @@ interface OpenAIMessage {
 
 Apart from a service URL, you can also provide a custom `fetcher` function to `useLLM` (it should have the same signature at `fetch`):
 
-```
+```javascript
 const llm = useLLM(serviceUrl, fetcher);
 ```
 
@@ -155,7 +157,7 @@ Note: The above example uses [NextJS API Routes](https://nextjs.org/docs/pages/b
 
 4. Provide the API URL/path in the `useLLM` hook in your React component:
 
-```
+```javascript
   const llm = useLLM("/api/llmservice");
 ```
 
@@ -186,8 +188,6 @@ export async function handler(request: Request) {
     return new Response((error as Error).message, { status: 400 });
   }
 }
-
-
 ```
 
 If you're using the `app` folder for routing, here's an examle [edge route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers#edge-and-nodejs-runtimes) you can use as a starting point:
@@ -218,7 +218,7 @@ export async function POST(request: Request) {
 
 Here are the full set of options you can provide to `createLLMService`:
 
-```
+```javascript
 interface CreateLLMServiceArgs {
   openaiApiKey?: string;
   fetcher?: typeof fetch;  // provide a custom fetcher
@@ -227,9 +227,80 @@ interface CreateLLMServiceArgs {
 }
 ```
 
+Here are the default options passed to the OpenAI API (see the next section for customization): 
+
+```javascript
+const defaultTemplate = {
+  model: "gpt-3.5-turbo",
+  max_tokens: 200,
+  temperature: 0.8,
+};
+
+```
+
 Check the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details
 
-### Contributing
+### `registerTempalte`
+
+To generate useful responses from large language models like OpenAI, you might need to customize the [options passed to the API](https://platform.openai.com/docs/api-reference/chat/create) (e.g. `model`, `max_tokens`, `temperature`) and create default prompts that provide instructions to the model to generate the desired results. To achieve this, you can create & register templates on the server using the `llmService.registerTemplate` method, and use registered templates from your react components.
+
+1. Register a template using the `registerTemplate` method :
+
+```javascript
+llmService.registerTemplate({
+  id: "jobot",
+  systemPrompt:
+    "Your name is Jobot! You have been developed by Jovian to help the world.",
+  userPrompt: "Tell me about {{topic}}",
+  model: "gpt-4",
+  temperature: 0.8
+});
+```
+
+Note that you can provide two prompts within a template:
+
+- `systemPrompt`: This is a system-level message that guides the behavior of the model throught the conversation. It is sent as `{"role": "system", "content": "..."}`.
+
+- `userPrompt`: This is simply as the first message in the conversation, and is used to generate the first response. It is sent as `{"role": "user", "content": "..."}`.
+
+Each prompt can contain variables e.g. `{{topic}}` whose values can be sent from the client (browser) using `llm.chat`.
+
+2. Provide the template id and inputs in your react component while calling `llm.chat`:
+
+```
+llm.chat({
+  template: "jobot",
+  inputs: { topic: "Machine Learning" },
+  onSuccess: message => { console.log(message); },
+});
+```
+
+If a `messages` argument is also provided to `llm.chat`, then the filled system and user prompts are simply added at the beginning of the list of provided messages.
+
+Here are all the options supported for templates:
+
+```
+interface LLMServiceTemplate {
+  id: string;
+  systemPrompt?: string;
+  userPrompt?: string;
+  model?: string;
+  temperature?: number;
+  top_p?: number;
+  n?: number;
+  max_tokens?: number;
+  presence_penalty?: number;
+  frequency_penalty?: number;
+  logit_bias?: number;
+}
+```
+
+Check the [OpenAI API docs](https://platform.openai.com/docs/api-reference/chat/create) for information about each option and view the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details.
+
+Check out this course on prompt engineering to craft effective prompts: https://learnprompting.org/docs/intro
+
+
+## Contributing
 
 The library is under active development. Please open an issue to report bugs and open a pull request to contribute new features.
 
