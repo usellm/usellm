@@ -41,20 +41,20 @@ export default function useLLM(
 
     if (!response.ok || !response.body) {
       const error = new Error(await response.text());
-      onError ? onError(error) : console.error("Chat request failed", error);
-      return;
+      if (onError) {
+        return onError(error);
+      } else {
+        throw error;
+      }
     }
 
     if (stream) {
-      const logStream: OpenAIResponseCallback = (message, isFirst, isLast) =>
-        console.log("streaming:", { message, isFirst, isLast });
-      await streamOpenAIResponse(response, onStream || logStream);
+      return streamOpenAIResponse(response, onStream);
     } else {
       const resJson = await response.json();
       const message = resJson.choices[0].message;
-      onSuccess
-        ? onSuccess(message)
-        : console.log("Received message:", message);
+      onSuccess && onSuccess(message);
+      return message;
     }
   }
 
