@@ -21,6 +21,7 @@
   "exports": {
     ".": "./dist/index.js"
   },
+  "main": "./dist/index.js",
   "devDependencies": {
     "typescript": "^5.0.4"
   },
