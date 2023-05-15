@@ -1,3 +1,5 @@
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { createLLMService } from "usellm";
 
 export const runtime = "edge";
@@ -29,8 +31,17 @@ export async function GET(request: Request) {
   });
 }
 
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, "10 s"),
+});
+
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  isAllowed: async () => {
+    const { success } = await ratelimit.limit("api");
+    return success;
+  },
 });
 
 llmService.registerTemplate({

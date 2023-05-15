@@ -35,8 +35,8 @@ const llm = useLLM("https://usellm.org/api/llmservice");
 ```javascript
 llm.chat({
   messages: [{ role: "user", content: "Who are you?" }],
-  onSuccess: (message) => console.log(message);
-  onError: (error) => console.error(error);
+  onSuccess: (message) => console.log(message),
+  onError: (error) => console.error(error),
 });
 ```
 
@@ -46,8 +46,8 @@ llm.chat({
 llm.chat({
   messages: [{ role: "user", content: "Who are you?" }],
   stream: true,
-  onStream: (message) => console.log(message);
-  onError: (error) => console.error(error);
+  onStream: (message) => console.log(message),
+  onError: (error) => console.error(error),
 });
 ```
 
@@ -191,7 +191,7 @@ const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function handler(request: Request) {
+export default async function handler(request: Request) {
   const body = await request.json();
 
   try {

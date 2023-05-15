@@ -11,6 +11,7 @@ export interface CreateLLMServiceArgs {
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
+  isAllowed?: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
 }
 
 const defaultTemplate = {
@@ -34,6 +35,7 @@ export interface LLMServiceTemplate {
 }
 
 export interface LLMServiceBody {
+  $action?: string;
   messages?: OpenAIMessage[];
   stream?: boolean;
   template?: string;
@@ -46,17 +48,20 @@ export class LLMService {
   openaiApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
+  isAllowed: (body: LLMServiceBody) => boolean | Promise<boolean>;
 
   constructor({
     openaiApiKey = "",
     fetcher = fetch,
     templates = {},
     debug = false,
+    isAllowed = () => true,
   }: CreateLLMServiceArgs) {
     this.openaiApiKey = openaiApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
+    this.isAllowed = isAllowed;
   }
 
   registerTemplate(template: LLMServiceTemplate) {
@@ -113,6 +118,10 @@ export class LLMService {
   }
 
   async handle(body: object) {
+    if (!(await this.isAllowed(body))) {
+      throw makeErrorResponse("Request not allowed");
+    }
+
     if (!this.openaiApiKey) {
       throw makeErrorResponse(
         "OpenAI API key is required. Either pass it directly or set the environgment variable OPENAI_API_KEY"
@@ -163,7 +172,8 @@ export default function createLLMService({
   openaiApiKey = "",
   fetcher = fetch,
   templates = {},
+  isAllowed = () => true,
   debug = false,
 }: CreateLLMServiceArgs = {}) {
-  return new LLMService({ openaiApiKey, fetcher, templates, debug });
+  return new LLMService({ openaiApiKey, fetcher, templates, isAllowed, debug });
 }
