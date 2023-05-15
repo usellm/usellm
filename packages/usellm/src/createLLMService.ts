@@ -11,7 +11,7 @@ export interface CreateLLMServiceArgs {
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
-  isAllowed?: (body: LLMServiceBody) => boolean | Promise<boolean>;
+  isAllowed?: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
 }
 
 const defaultTemplate = {
