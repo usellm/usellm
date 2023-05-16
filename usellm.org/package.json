@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"contentlayer dev\" \"next dev\"",
-    "build": "contentlayer build && ts-node --esm --project ./tsconfig.scripts.json ./scripts/build-components.ts && next build",
+    "build": "contentlayer build && next build",
     "start": "next start",
     "lint": "next lint"
   },
