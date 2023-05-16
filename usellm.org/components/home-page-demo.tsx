@@ -14,7 +14,7 @@ function Message({ role, content }: OpenAIMessage) {
       <div className="font-semibold text-gray-800 dark:text-white">
         {capitalize(role)}
       </div>
-      <div className="text-gray-600 dark-text-gray-100">{content}</div>
+      <div className="text-gray-600 dark:text-gray-200">{content}</div>
     </div>
   );
 }
