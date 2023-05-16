@@ -3,6 +3,7 @@ import { useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Icons } from "./icons";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
@@ -50,15 +51,15 @@ export function HomePageDemo() {
 
   return (
     <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col">
-      <div className="w-full shadow">
+      <div className="w-full shadow dark:border-b">
         <div className="w-full px-4 h-14 flex items-center mx-auto justify-between">
           <span className="text-lg font-bold ">Live Demo</span>
           <a
             target="_blank"
-            className="hover:text-blue-600"
+            className="hover:text-blue-600 flex items-center"
             href="https://github.com/usellm/usellm/tree/main/usellm.org/components/home-page-demo.tsx"
           >
-            Source
+            Source <Icons.externalLink className="inline ml-1" size={16} />
           </a>
         </div>
       </div>
