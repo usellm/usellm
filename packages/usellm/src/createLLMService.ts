@@ -1,10 +1,10 @@
-import OpenAIStream from "./OpenAIStream.js";
+import OpenAIStream from "./OpenAIStream";
 import {
   CHAT_COMPLETIONS_API_URL,
   OpenAIMessage,
   fillPrompt,
   makeErrorResponse,
-} from "./utils.js";
+} from "./utils";
 
 export interface CreateLLMServiceArgs {
   openaiApiKey?: string;
