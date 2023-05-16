@@ -23,6 +23,7 @@ import {
   Trash,
   Twitter,
   User,
+  ExternalLink,
   X,
   type Icon as LucideIcon,
 } from "lucide-react";
@@ -59,6 +60,7 @@ export const Icons = {
   user: User,
   arrowRight: ArrowRight,
   help: HelpCircle,
+  externalLink: ExternalLink,
   pizza: Pizza,
   twitter: Twitter,
   check: Check,
