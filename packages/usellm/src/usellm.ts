@@ -39,7 +39,7 @@ export default function useLLM(
       }),
     });
 
-    if (!response.ok || !response.body) {
+    if (!response.ok) {
       const error = new Error(await response.text());
       if (onError) {
         return onError(error);
