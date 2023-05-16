@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-// import { allDocs } from "contentlayer/generated";
+import { allDocs } from "@/.contentlayer/generated";
 
-// import "@/styles/mdx.css";
+import "@/styles/mdx.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -15,12 +15,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/icons";
 import { Mdx } from "@/components/mdx-components";
-// import { DocsPager } from "@/components/pager";
-// import { DashboardTableOfContents } from "@/components/toc";
-
-let allDocs;
-let DocsPager;
-let DashboardTableOfContents;
+import { DocsPager } from "@/components/pager";
+import { DashboardTableOfContents } from "@/components/toc";
 
 interface DocPageProps {
   params: {
