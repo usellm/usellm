@@ -3,7 +3,8 @@
   "version": "0.0.20",
   "description": "User Large Language Models in Your React Apps",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "npm run build && npx np --no-tests --any-branch"
   },
   "repository": {
     "type": "git",
