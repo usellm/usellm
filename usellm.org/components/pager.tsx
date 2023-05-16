@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Doc } from "@/.contentlayer/generated";
+import { Doc } from "contentlayer/generated";
 import { NavItem, NavItemWithChildren } from "@/types/nav";
 
 import { docsConfig } from "@/config/docs";
