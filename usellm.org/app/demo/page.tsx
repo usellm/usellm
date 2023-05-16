@@ -1,5 +1,4 @@
 "use client";
-import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -46,7 +45,6 @@ export default function DemoPage() {
 
   return (
     <div className="h-screen flex flex-col items-center">
-      <Navbar />
       {history.length > 0 && (
         <div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
           {history.map((message, idx) => (
