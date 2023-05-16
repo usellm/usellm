@@ -42,11 +42,13 @@ export function HomePageDemo() {
     setHistory(newHistory);
     setInputText("");
 
-    await llm.chat({
+    const message = await llm.chat({
       messages: newHistory,
       stream: true,
       onStream: (message) => setHistory([...newHistory, message]),
     });
+
+    setHistory([...newHistory, message]);
   }
 
   return (

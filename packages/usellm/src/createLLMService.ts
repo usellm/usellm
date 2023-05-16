@@ -48,7 +48,7 @@ export class LLMService {
   openaiApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
-  isAllowed: (body: LLMServiceBody) => boolean | Promise<boolean>;
+  isAllowed: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
 
   constructor({
     openaiApiKey = "",
