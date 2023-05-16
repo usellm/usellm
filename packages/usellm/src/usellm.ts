@@ -2,7 +2,7 @@ import {
   OpenAIMessage,
   OpenAIResponseCallback,
   streamOpenAIResponse,
-} from "./utils.js";
+} from "./utils";
 
 export interface UseLLMChatOptions {
   messages?: OpenAIMessage[];

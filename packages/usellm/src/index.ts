@@ -1,12 +1,12 @@
-import createLLMService from "./createLLMService.js";
-import useLLM from "./usellm.js";
-export type { OpenAIMessage } from "./utils.js";
-export type { UseLLMChatOptions } from "./usellm.js";
+import createLLMService from "./createLLMService";
+import useLLM from "./usellm";
+export type { OpenAIMessage } from "./utils";
+export type { UseLLMChatOptions } from "./usellm";
 export type {
   CreateLLMServiceArgs,
   LLMServiceBody,
   LLMServiceTemplate,
-} from "./createLLMService.js";
+} from "./createLLMService";
 
 export default useLLM;
 
