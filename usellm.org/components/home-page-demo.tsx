@@ -44,8 +44,8 @@ export function HomePageDemo() {
 
     const message = await llm.chat({
       messages: newHistory,
-      // stream: true,
-      // onStream: (message) => setHistory([...newHistory, message]),
+      stream: true,
+      onStream: (message) => setHistory([...newHistory, message]),
     });
 
     setHistory([...newHistory, message]);
