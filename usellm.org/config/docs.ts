@@ -16,6 +16,11 @@ export const docsConfig: DocsConfig = {
       href: "https://github.com/usellm/usellm",
       external: true,
     },
+    {
+      title: "Blog",
+      href: "https://usellm.substack.com",
+      external: true,
+    },
   ],
   sidebarNav: [
     {

@@ -6,6 +6,7 @@ export const siteConfig = {
     "Use large languge models in your React applications with just a few lines of code",
   links: {
     github: "https://github.com/usellm/usellm",
+    blog: "https://usellm.substack.com",
   },
 };
 
