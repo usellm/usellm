@@ -40,6 +40,8 @@ llm.chat({
 });
 ```
 
+You can also `await` the response of `llm.chat`.
+
 3. The `.chat` method also supports streaming the response token-by-token using the `onStream` callback:
 
 ```javascript
