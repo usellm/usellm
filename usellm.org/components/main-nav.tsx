@@ -42,6 +42,7 @@ export function MainNav() {
           className={cn(
             "hidden text-foreground/60 transition-colors hover:text-foreground/80 lg:block"
           )}
+          target="_blank"
         >
           Blog
         </Link>
