@@ -58,7 +58,7 @@ The `llm.chat` method also supports streaming the response token-by-token using 
 await llm.chat({
   messages: [{ role: "user", content: "Who are you?" }],
   stream: true,
-  onStream: (message) => console.log(message),
+  onStream: ({ message }) => console.log(message),
 });
 ```
 
@@ -379,7 +379,7 @@ export default function HomePage() {
       template: "tutorial-generator",
       inputs: { topic },
       stream: true,
-      onStream: (message) => setResult(message.content),
+      onStream: ({ message }) => setResult(message.content),
     });
   }
 
