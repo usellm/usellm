@@ -11,10 +11,7 @@ export interface CreateLLMServiceOptions {
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
-  isAllowed?: (
-    body: LLMServiceBody,
-    request?: Request
-  ) => boolean | Promise<boolean>;
+  isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
 }
 
 const defaultTemplate = {
@@ -51,15 +48,16 @@ export interface LLMServiceHandleOptions {
   request?: Request;
 }
 
+export interface LLMServiceHandleResponse {
+  result: ReadableStream | string;
+}
+
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
-  isAllowed: (
-    body: LLMServiceBody,
-    request?: Request
-  ) => boolean | Promise<boolean> | undefined;
+  isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
 
   constructor({
     openaiApiKey = "",
@@ -128,8 +126,11 @@ export class LLMService {
     return preparedBody;
   }
 
-  async handle({ body = {}, request }: LLMServiceHandleOptions) {
-    if (!(await this.isAllowed(body, request))) {
+  async handle({
+    body = {},
+    request,
+  }: LLMServiceHandleOptions): Promise<LLMServiceHandleResponse> {
+    if (!(await this.isAllowed({ body, request }))) {
       throw makeErrorResponse("Request not allowed");
     }
 
@@ -147,18 +148,19 @@ export class LLMService {
     }
   }
 
-  async chat(body: LLMServiceBody): Promise<ReadableStream | string> {
+  async chat(body: LLMServiceBody): Promise<LLMServiceHandleResponse> {
     const preparedBody = this.prepareBody(body);
     if (this.debug) {
       console.log("[LLMService] preparedBody", preparedBody);
     }
 
     if (preparedBody.stream) {
-      return OpenAIStream({
+      const result = await OpenAIStream({
         body: preparedBody,
         openaiApiKey: this.openaiApiKey,
         fetcher: this.fetcher,
       });
+      return { result };
     } else {
       const response = await this.fetcher(CHAT_COMPLETIONS_API_URL, {
         headers: {
@@ -172,7 +174,8 @@ export class LLMService {
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      return response.text();
+      const result = await response.text();
+      return { result };
     }
   }
 }
