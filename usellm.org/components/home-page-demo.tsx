@@ -33,7 +33,7 @@ export function HomePageDemo() {
   ]);
   const [inputText, setInputText] = useState("What can you do for me?");
 
-  const llm = useLLM({ serviceUrl: "/api/llmservice" });
+  const llm = useLLM({ serviceUrl: "/api/llm" });
 
   async function handleSend() {
     if (!inputText) {

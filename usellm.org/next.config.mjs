@@ -2,6 +2,15 @@
 
 import { withContentlayer } from "next-contentlayer";
 
-const nextConfig = {};
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/llmservice",
+        destination: "/api/llm",
+      },
+    ];
+  },
+};
 
 export default withContentlayer(nextConfig);

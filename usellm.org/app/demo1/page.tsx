@@ -2,8 +2,8 @@
 import useLLM from "usellm";
 import { useState } from "react";
 
-export default function MyComponent() {
-  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llmservice" });
+export default function Demo1Page() {
+  const llm = useLLM({ serviceUrl: "/api/llm" });
   const [result, setResult] = useState("");
 
   const handleClick = () => {

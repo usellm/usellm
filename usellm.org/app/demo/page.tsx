@@ -21,7 +21,7 @@ export default function DemoPage() {
   const [history, setHistory] = useState<OpenAIMessage[]>([]);
   const [inputText, setInputText] = useState("");
 
-  const llm = useLLM({ serviceUrl: "/api/llmservice" });
+  const llm = useLLM({ serviceUrl: "/api/llm" });
 
   async function handleSend() {
     if (!inputText) {
