@@ -12,6 +12,10 @@ export interface UseLLMChatOptions {
   onStream?: ChatStreamCallback;
 }
 
+interface LLMChatResult {
+  message: OpenAIMessage; // the final message received from OpenAI
+}
+
 export interface UseLLMOptions {
   serviceUrl?: string;
   fetcher?: typeof fetch;
@@ -27,7 +31,7 @@ export default function useLLM({
     template,
     inputs,
     onStream,
-  }: UseLLMChatOptions) {
+  }: UseLLMChatOptions): Promise<LLMChatResult> {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -6,12 +6,15 @@ import {
   makeErrorResponse,
 } from "./utils";
 
-export interface CreateLLMServiceArgs {
+export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
-  isAllowed?: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
+  isAllowed?: (
+    body: LLMServiceBody,
+    request?: Request
+  ) => boolean | Promise<boolean>;
 }
 
 const defaultTemplate = {
@@ -43,6 +46,11 @@ export interface LLMServiceBody {
   user?: string;
 }
 
+export interface LLMServiceHandleOptions {
+  body: object;
+  request?: Request;
+}
+
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
@@ -59,7 +67,7 @@ export class LLMService {
     templates = {},
     debug = false,
     isAllowed = () => true,
-  }: CreateLLMServiceArgs) {
+  }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
@@ -120,7 +128,7 @@ export class LLMService {
     return preparedBody;
   }
 
-  async handle({ body = {}, request }: { body: object; request?: Request }) {
+  async handle({ body = {}, request }: LLMServiceHandleOptions) {
     if (!(await this.isAllowed(body, request))) {
       throw makeErrorResponse("Request not allowed");
     }
@@ -175,6 +183,6 @@ export default function createLLMService({
   templates = {},
   isAllowed = () => true,
   debug = false,
-}: CreateLLMServiceArgs = {}) {
+}: CreateLLMServiceOptions = {}) {
   return new LLMService({ openaiApiKey, fetcher, templates, isAllowed, debug });
 }

@@ -2,17 +2,22 @@
 import useLLM from "usellm";
 import { useState } from "react";
 
-export default function Demo1Page() {
+export default function Demo() {
   const llm = useLLM({ serviceUrl: "/api/llm" });
   const [result, setResult] = useState("");
 
-  const handleClick = () => {
-    llm.chat({
-      messages: [{ role: "user", content: "What is a language model?" }],
-      stream: true,
-      onStream: ({ message }) => setResult(message.content),
-    });
-  };
+  async function handleClick() {
+    try {
+      const { message } = await llm.chat({
+        messages: [{ role: "user", content: "What is a language model?" }],
+        stream: true,
+        onStream: ({ message }) => setResult(message.content),
+      });
+      setResult(message.content);
+    } catch (error) {
+      console.error("Something went wrong!", error);
+    }
+  }
 
   return (
     <div className="p-4">
@@ -22,7 +27,7 @@ export default function Demo1Page() {
       >
         Send
       </button>
-      <div>{result}</div>
+      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
     </div>
   );
 }

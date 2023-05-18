@@ -3,7 +3,7 @@ import useLLM from "./usellm";
 export type { OpenAIMessage } from "./utils";
 export type { UseLLMChatOptions } from "./usellm";
 export type {
-  CreateLLMServiceArgs,
+  CreateLLMServiceOptions as CreateLLMServiceArgs,
   LLMServiceBody,
   LLMServiceTemplate,
 } from "./createLLMService";
