@@ -179,7 +179,7 @@ OPENAI_API_KEY=xxxxxxxx
 /* pages/api/llm.js */
 
 export default async function handler(req, res) {
-  const result = await llmService.handle({ body: req.body, request: req });
+  const { result } = await llmService.handle({ body: req.body, request: req });
   res.send(result);
 }
 ```
@@ -213,8 +213,8 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   try {
-    const data = await llmService.handle({ body, request });
-    return new Response(data, { status: 200 });
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
   } catch (error) {
     return new Response((error as Error).message, { status: 400 });
   }
@@ -243,8 +243,8 @@ export default async function handler(request: Request) {
   const body = await request.json();
 
   try {
-    const data = await llmService.handle({ body, request });
-    return new Response(data, { status: 200 });
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
   } catch (error) {
     return new Response((error as Error).message, { status: 400 });
   }
@@ -354,8 +354,8 @@ llmService.registerTemplate({
 export async function POST(request: Request) {
   const body = await request.json();
   try {
-    const data = await llmService.handle({ body, request });
-    return new Response(data, { status: 200 });
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
   } catch (error) {
     return new Response((error as Error).message, { status: 400 });
   }
