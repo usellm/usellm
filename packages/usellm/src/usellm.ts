@@ -12,7 +12,7 @@ export interface UseLLMChatOptions {
   onStream?: ChatStreamCallback;
 }
 
-interface LLMChatResult {
+export interface LLMChatResult {
   message: OpenAIMessage; // the final message received from OpenAI
 }
 
