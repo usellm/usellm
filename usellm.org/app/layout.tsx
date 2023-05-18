@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
-    title: siteConfig.name,
+    title: `${siteConfig.name} - React Hooks for Large Language Models`,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
