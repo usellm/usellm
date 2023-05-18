@@ -1,6 +1,6 @@
 import {
   OpenAIMessage,
-  OpenAIResponseCallback,
+  ChatStreamCallback,
   streamOpenAIResponse,
 } from "./utils";
 
@@ -9,23 +9,24 @@ export interface UseLLMChatOptions {
   stream?: boolean;
   template?: string;
   inputs?: object;
-  onStream?: OpenAIResponseCallback;
-  onSuccess?: (message: OpenAIMessage) => void;
-  onError?: (error: Error) => void;
+  onStream?: ChatStreamCallback;
 }
 
-export default function useLLM(
-  serviceUrl: string,
-  fetcher: typeof fetch = fetch
-) {
+export interface UseLLMOptions {
+  serviceUrl?: string;
+  fetcher?: typeof fetch;
+}
+
+export default function useLLM({
+  serviceUrl,
+  fetcher = fetch,
+}: UseLLMOptions = {}) {
   async function chat({
     messages = [],
     stream = false,
     template,
     inputs,
     onStream,
-    onSuccess,
-    onError,
   }: UseLLMChatOptions) {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
@@ -40,12 +41,7 @@ export default function useLLM(
     });
 
     if (!response.ok) {
-      const error = new Error(await response.text());
-      if (onError) {
-        return onError(error);
-      } else {
-        throw error;
-      }
+      throw new Error(await response.text());
     }
 
     if (stream) {
@@ -53,8 +49,7 @@ export default function useLLM(
     } else {
       const resJson = await response.json();
       const message = resJson.choices[0].message;
-      onSuccess && onSuccess(message);
-      return message;
+      return { message };
     }
   }
 

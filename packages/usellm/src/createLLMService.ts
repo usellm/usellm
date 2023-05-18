@@ -48,7 +48,10 @@ export class LLMService {
   openaiApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
-  isAllowed: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
+  isAllowed: (
+    body: LLMServiceBody,
+    request?: Request
+  ) => boolean | Promise<boolean> | undefined;
 
   constructor({
     openaiApiKey = "",
@@ -117,15 +120,13 @@ export class LLMService {
     return preparedBody;
   }
 
-  async handle(body: object) {
-    if (!(await this.isAllowed(body))) {
+  async handle({ body = {}, request }: { body: object; request?: Request }) {
+    if (!(await this.isAllowed(body, request))) {
       throw makeErrorResponse("Request not allowed");
     }
 
     if (!this.openaiApiKey) {
-      throw makeErrorResponse(
-        "OpenAI API key is required. Either pass it directly or set the environgment variable OPENAI_API_KEY"
-      );
+      throw makeErrorResponse("OpenAI API key is required.");
     }
     if (!("$action" in body)) {
       throw makeErrorResponse("`handle` expects a key $action in the body");
