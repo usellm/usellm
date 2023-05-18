@@ -6,12 +6,15 @@ import {
   makeErrorResponse,
 } from "./utils";
 
-export interface CreateLLMServiceArgs {
+export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
-  isAllowed?: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
+  isAllowed?: (
+    body: LLMServiceBody,
+    request?: Request
+  ) => boolean | Promise<boolean>;
 }
 
 const defaultTemplate = {
@@ -43,12 +46,20 @@ export interface LLMServiceBody {
   user?: string;
 }
 
+export interface LLMServiceHandleOptions {
+  body: object;
+  request?: Request;
+}
+
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
-  isAllowed: (body: LLMServiceBody) => boolean | Promise<boolean> | undefined;
+  isAllowed: (
+    body: LLMServiceBody,
+    request?: Request
+  ) => boolean | Promise<boolean> | undefined;
 
   constructor({
     openaiApiKey = "",
@@ -56,7 +67,7 @@ export class LLMService {
     templates = {},
     debug = false,
     isAllowed = () => true,
-  }: CreateLLMServiceArgs) {
+  }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
@@ -117,15 +128,13 @@ export class LLMService {
     return preparedBody;
   }
 
-  async handle(body: object) {
-    if (!(await this.isAllowed(body))) {
+  async handle({ body = {}, request }: LLMServiceHandleOptions) {
+    if (!(await this.isAllowed(body, request))) {
       throw makeErrorResponse("Request not allowed");
     }
 
     if (!this.openaiApiKey) {
-      throw makeErrorResponse(
-        "OpenAI API key is required. Either pass it directly or set the environgment variable OPENAI_API_KEY"
-      );
+      throw makeErrorResponse("OpenAI API key is required.");
     }
     if (!("$action" in body)) {
       throw makeErrorResponse("`handle` expects a key $action in the body");
@@ -174,6 +183,6 @@ export default function createLLMService({
   templates = {},
   isAllowed = () => true,
   debug = false,
-}: CreateLLMServiceArgs = {}) {
+}: CreateLLMServiceOptions = {}) {
   return new LLMService({ openaiApiKey, fetcher, templates, isAllowed, debug });
 }

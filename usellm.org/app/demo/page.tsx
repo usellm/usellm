@@ -21,7 +21,7 @@ export default function DemoPage() {
   const [history, setHistory] = useState<OpenAIMessage[]>([]);
   const [inputText, setInputText] = useState("");
 
-  const llm = useLLM("/api/llmservice");
+  const llm = useLLM({ serviceUrl: "/api/llm" });
 
   async function handleSend() {
     if (!inputText) {
@@ -33,13 +33,10 @@ export default function DemoPage() {
     setHistory(newHistory);
     setInputText("");
 
-    await llm.chat({
+    llm.chat({
       messages: newHistory,
       stream: true,
-      onStream: (message, isFirst, isLast) => {
-        const finalHistory = [...newHistory, message];
-        setHistory(finalHistory);
-      },
+      onStream: ({ message }) => setHistory([...newHistory, message]),
     });
   }
 

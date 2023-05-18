@@ -4,11 +4,15 @@ export interface OpenAIMessage {
   user?: string;
 }
 
-export type OpenAIResponseCallback = (
-  message: OpenAIMessage,
-  isFirst: boolean,
-  isLast: boolean
-) => void;
+export type ChatStreamCallback = (result: {
+  message: OpenAIMessage;
+  isFirst: boolean;
+  isLast: boolean;
+}) => void;
+
+export interface LLMChatResult {
+  message: OpenAIMessage;
+}
 
 export const CHAT_COMPLETIONS_API_URL =
   "https://api.openai.com/v1/chat/completions";
@@ -19,8 +23,8 @@ export function makeErrorResponse(message: string) {
 
 export async function streamOpenAIResponse(
   response: Response,
-  callback?: OpenAIResponseCallback
-) {
+  callback?: ChatStreamCallback
+): Promise<LLMChatResult> {
   if (!response.body) {
     throw Error("Response has no body");
   }
@@ -34,10 +38,12 @@ export async function streamOpenAIResponse(
     done = doneReading;
     const chunkValue = decoder.decode(value);
     text += chunkValue;
-    callback && callback({ content: text, role: "assistant" }, isFirst, done);
+    const message = { content: text, role: "assistant" };
+    callback && callback({ message, isFirst, isLast: done });
     isFirst = false;
   }
-  return { content: text, role: "assistant" };
+  const message = { content: text, role: "assistant" };
+  return { message };
 }
 
 export function fillPrompt(str: string, data: object = {}) {
