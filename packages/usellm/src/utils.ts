@@ -4,7 +4,7 @@ export interface OpenAIMessage {
   user?: string;
 }
 
-export type ChatStreamCallback = (options: {
+export type ChatStreamCallback = (result: {
   message: OpenAIMessage;
   isFirst: boolean;
   isLast: boolean;
