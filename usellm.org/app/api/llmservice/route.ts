@@ -1,1 +1,1 @@
-export { GET, OPTIONS, POST } from "@/app/api/llm/route";
+export { runtime, GET, OPTIONS, POST } from "@/app/api/llm/route";
