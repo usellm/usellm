@@ -10,7 +10,7 @@ import { StyleSwitcher } from "@/components/style-switcher";
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
+    default: `${siteConfig.name} - React Hooks for Large Language Models`,
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
