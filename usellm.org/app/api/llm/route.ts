@@ -5,18 +5,24 @@ export const runtime = "edge";
 
 export async function OPTIONS(request: Request) {
   const headers = getChatResponseHeaders();
-  return new Response(JSON.stringify({ message: "Hello World" }), {
-    status: 200,
-    headers,
-  });
+  return new Response(
+    JSON.stringify({ message: "Use me as a service URL with useLLM" }),
+    {
+      status: 200,
+      headers,
+    }
+  );
 }
 
 export async function GET(request: Request) {
   const headers = getChatResponseHeaders();
-  return new Response(JSON.stringify({ message: "Hello World" }), {
-    status: 200,
-    headers,
-  });
+  return new Response(
+    JSON.stringify({ message: "Use me as a service URL with useLLM" }),
+    {
+      status: 200,
+      headers,
+    }
+  );
 }
 
 export async function POST(request: Request) {

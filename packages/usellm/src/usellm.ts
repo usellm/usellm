@@ -5,7 +5,7 @@ import {
   LLMChatResult,
 } from "./utils";
 
-export interface UseLLMChatOptions {
+export interface LLMChatOptions {
   messages?: OpenAIMessage[];
   stream?: boolean;
   template?: string;
@@ -28,7 +28,7 @@ export default function useLLM({
     template,
     inputs,
     onStream,
-  }: UseLLMChatOptions): Promise<LLMChatResult> {
+  }: LLMChatOptions): Promise<LLMChatResult> {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
