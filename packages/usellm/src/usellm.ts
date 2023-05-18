@@ -13,7 +13,7 @@ export interface UseLLMChatOptions {
 }
 
 export interface LLMChatResult {
-  message: OpenAIMessage; // the final message received from OpenAI
+  message: OpenAIMessage;
 }
 
 export interface UseLLMOptions {
