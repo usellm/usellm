@@ -179,10 +179,7 @@ OPENAI_API_KEY=xxxxxxxx
 /* pages/api/llm.js */
 
 export default async function handler(req, res) {
-  // verify user authentication, rate limit etc.
-
-  const result = await llmService.handle({ body: req.body });
-
+  const result = await llmService.handle({ body: req.body, request: req });
   res.send(result);
 }
 ```
