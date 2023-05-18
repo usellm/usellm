@@ -4,6 +4,7 @@ import useLLM, { OpenAIMessage } from "usellm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "./icons";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
@@ -15,7 +16,9 @@ function Message({ role, content }: OpenAIMessage) {
       <div className="font-semibold text-gray-800 dark:text-white">
         {capitalize(role)}
       </div>
-      <div className="text-gray-600 dark:text-gray-200">{content}</div>
+      <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+        {content}
+      </div>
     </div>
   );
 }
@@ -30,7 +33,7 @@ export function HomePageDemo() {
   ]);
   const [inputText, setInputText] = useState("What can you do for me?");
 
-  const llm = useLLM("/api/llmservice");
+  const llm = useLLM({ serviceUrl: "/api/llmservice" });
 
   async function handleSend() {
     if (!inputText) {
@@ -42,10 +45,10 @@ export function HomePageDemo() {
     setHistory(newHistory);
     setInputText("");
 
-    const message = await llm.chat({
+    const { message } = await llm.chat({
       messages: newHistory,
       stream: true,
-      onStream: (message) => setHistory([...newHistory, message]),
+      onStream: ({ message }) => setHistory([...newHistory, message]),
     });
 
     setHistory([...newHistory, message]);
@@ -65,11 +68,11 @@ export function HomePageDemo() {
           </a>
         </div>
       </div>
-      <div className="w-full flex-1 overflow-y-auto px-4">
+      <ScrollToBottom className="w-full flex-1 overflow-y-auto px-4">
         {history.map((message, idx) => (
           <Message {...message} key={idx} />
         ))}
-      </div>
+      </ScrollToBottom>
       <div className="w-full py-4 flex px-4">
         <Input
           type="text"
@@ -77,6 +80,12 @@ export function HomePageDemo() {
           value={inputText}
           autoFocus
           onChange={(e) => setInputText(e.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              handleSend();
+            }
+          }}
         />
         <Button variant="default" className="ml-2" onClick={handleSend}>
           Send

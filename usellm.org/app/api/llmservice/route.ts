@@ -65,7 +65,7 @@ export async function POST(request: Request) {
   const headers = getChatResponseHeaders();
 
   try {
-    const data = await llmService.handle(body);
+    const data = await llmService.handle({ body });
     return new Response(data, { status: 200, headers });
   } catch (error) {
     return new Response((error as Error).message, { status: 400, headers });

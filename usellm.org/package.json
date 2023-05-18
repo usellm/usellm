@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"cpx ../packages/usellm/src/**/*.ts ./usellm -w\" \"contentlayer dev\" \"next dev\"",
+    "dev": "concurrently \"cpx ../packages/usellm/src/**/*.ts ./usellm --clean --verbose --watch \" \"contentlayer dev\" \"next dev\"",
     "build": "contentlayer build && cpx ../packages/usellm/src/**/*.ts ./usellm && next build",
     "start": "next start",
     "lint": "next lint"
@@ -41,6 +41,7 @@
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-scroll-to-bottom": "^4.2.0",
     "react-wrap-balancer": "^0.5.0",
     "rehype-autolink-headings": "^6.1.1",
     "rehype-pretty-code": "^0.9.5",
@@ -57,6 +58,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/react-scroll-to-bottom": "^4.2.0",
     "concurrently": "^8.0.1"
   }
 }

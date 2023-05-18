@@ -3,14 +3,14 @@ import useLLM from "usellm";
 import { useState } from "react";
 
 export default function MyComponent() {
-  const llm = useLLM("https://usellm.org/api/llmservice");
+  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llmservice" });
   const [result, setResult] = useState("");
 
   const handleClick = () => {
     llm.chat({
       messages: [{ role: "user", content: "What is a language model?" }],
       stream: true,
-      onStream: (message) => setResult(message.content),
+      onStream: ({ message }) => setResult(message.content),
     });
   };
 

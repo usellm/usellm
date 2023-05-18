@@ -3,7 +3,7 @@ import { useState } from "react";
 import useLLM from "usellm";
 
 export default function HomePage() {
-  const llm = useLLM("/api/llmservice");
+  const llm = useLLM({ serviceUrl: "/api/llmservice" });
   const [topic, setTopic] = useState("");
   const [result, setResult] = useState("");
 
@@ -12,7 +12,7 @@ export default function HomePage() {
       template: "tutorial-generator",
       inputs: { topic },
       stream: true,
-      onStream: (message) => setResult(message.content),
+      onStream: ({ message }) => setResult(message.content),
     });
   };
 
