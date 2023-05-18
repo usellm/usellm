@@ -10,6 +10,10 @@ export type ChatStreamCallback = (result: {
   isLast: boolean;
 }) => void;
 
+export interface LLMChatResult {
+  message: OpenAIMessage;
+}
+
 export const CHAT_COMPLETIONS_API_URL =
   "https://api.openai.com/v1/chat/completions";
 
@@ -20,7 +24,7 @@ export function makeErrorResponse(message: string) {
 export async function streamOpenAIResponse(
   response: Response,
   callback?: ChatStreamCallback
-) {
+): Promise<LLMChatResult> {
   if (!response.body) {
     throw Error("Response has no body");
   }

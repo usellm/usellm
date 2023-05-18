@@ -2,6 +2,7 @@ import {
   OpenAIMessage,
   ChatStreamCallback,
   streamOpenAIResponse,
+  LLMChatResult,
 } from "./utils";
 
 export interface UseLLMChatOptions {
@@ -10,10 +11,6 @@ export interface UseLLMChatOptions {
   template?: string;
   inputs?: object;
   onStream?: ChatStreamCallback;
-}
-
-export interface LLMChatResult {
-  message: OpenAIMessage;
 }
 
 export interface UseLLMOptions {
