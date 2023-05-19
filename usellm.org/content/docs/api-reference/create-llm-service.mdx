@@ -1,6 +1,77 @@
 ---
-title: Coming soon
-description: Coming soon
+title: createLLMService
+description: Server-side utility to handle useLLM requests and securely connect to external APIs
 ---
 
-Coming soon
+The `createLLMService` function is a factory function used to create a new instance of the `LLMService` class,
+which provides methods for chatting and transcribing using external services. It currently only supports connecting
+to the [OpenAI API](https://platform.openai.com/docs/api-reference/chat). More services will be added soon.
+
+### Syntax
+
+```jsx
+const llmService = createLLMService({
+  openaiApiKey,
+  fetcher,
+  templates,
+  isAllowed,
+  debug,
+});
+```
+
+### Parameters
+
+The `createLLMService` function accepts an `options` object with the following properties:
+
+- `openaiApiKey` (optional): A string representing the OpenAI API key.
+- `fetcher` (optional): A function used to make network requests. Defaults to the `fetch` function provided by the environment.
+- `templates` (optional): An object mapping template IDs to `LLMServiceTemplate` instances.
+- `isAllowed` (optional): A function that takes an object with `body` and `request` properties and returns a boolean or a promise that resolves to a boolean. This function is used to determine whether a request is allowed.
+- `debug` (optional): A boolean indicating whether debug logs should be outputted.
+
+### Return Value
+
+The `createLLMService` function returns a new instance of the `LLMService` class. This instance includes the following methods:
+
+- `handle({ body, request })`: Handles incoming server-side requests by calling the appropriate method (
+  `chat` or `transcribe`). This is the method you'll typically use in a server-side
+  environment, such as within an API route in a Next.js application.
+- `registerTemplate(template: LLMServiceTemplate)`: Registers a new template to the service. Check its [dedicated docs page](/docs/api-reference/register-template) for more information.
+- `chat(body: LLMServiceChatOptions)`: Sends a chat request to the OpenAI API.
+- `transcribe(options: LLMServiceTranscribeOptions)`: Sends a transcription request to the OpenAI API.
+
+It is recommended to use the `handle` method when handling server-side
+requests. The `handle` method is designed to work with server-side request objects
+and provides a convenient way to handle different types of requests (`chat` and `transcribe`)
+based on the `$action` property in the request body.
+
+### Example
+
+Here's an example of how you can use `createLLMService` within a Next.js API route:
+
+```jsx
+/* app/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const runtime = "edge";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error) {
+    return new Response((error as Error).message, { status: 400 });
+  }
+}
+```
+
+In this example, a new `LLMService` instance is created using the `OPENAI_API_KEY` environment variable (typically placed in
+a [`.env.local` file](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)).
+The `handle` method is used to handle POST requests to this API route.

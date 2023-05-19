@@ -29,17 +29,14 @@ export const docsConfig: DocsConfig = {
         {
           title: "Quickstart",
           href: "/docs",
-          items: [],
         },
         {
           title: "Installation",
           href: "/docs/installation",
-          items: [],
         },
         {
           title: "Usage",
           href: "/docs/usage",
-          items: [],
         },
       ],
     },
@@ -47,19 +44,28 @@ export const docsConfig: DocsConfig = {
       title: "API Reference",
       items: [
         {
-          title: "useLLM Hook",
+          title: "`useLLM`",
           href: "/docs/api-reference/usellm-hook",
-          items: [],
         },
         {
-          title: "createLLMService",
+          title: "`createLLMService`",
           href: "/docs/api-reference/create-llm-service",
-          items: [],
         },
         {
-          title: "registerTemplate",
+          title: "`llm.chat`",
+          href: "/docs/api-reference/chat",
+        },
+        {
+          title: "`llm.record`",
+          href: "/docs/api-reference/record",
+        },
+        {
+          title: "`llm.transcribe`",
+          href: "/docs/api-reference/transcribe",
+        },
+        {
+          title: "`registerTemplate`",
           href: "/docs/api-reference/register-template",
-          items: [],
         },
       ],
     },
@@ -69,32 +75,30 @@ export const docsConfig: DocsConfig = {
         {
           title: "Message Streaming",
           href: "/docs/guides/message-streaming",
-          items: [],
+        },
+        {
+          title: "Audio Transcription",
+          href: "/docs/guides/audio-transcription",
         },
         {
           title: "Prompt Engineering",
           href: "/docs/guides/prompt-engineering",
-          items: [],
         },
         {
           title: "Conversation History",
           href: "/docs/guides/conversation-history",
-          items: [],
         },
         {
           title: "Embedding Documents",
           href: "/docs/guides/embedding-documents",
-          items: [],
         },
         {
           title: "User Authentication",
           href: "/docs/guides/user-authentication",
-          items: [],
         },
         {
           title: "Rate Limiting",
           href: "/docs/guides/rate-limiting",
-          items: [],
         },
       ],
     },
@@ -104,32 +108,26 @@ export const docsConfig: DocsConfig = {
         {
           title: "Next.js (Pages Router)",
           href: "/docs/examples/nextjs-pages-router",
-          items: [],
         },
         {
           title: "Next.js (App Router)",
           href: "/docs/examples/nextjs-app-router",
-          items: [],
         },
         {
           title: "React Native (Android/iOS)",
           href: "/docs/examples/react-native-android-ios",
-          items: [],
         },
         {
           title: "Chrome Extension",
           href: "/docs/examples/chrome-extension",
-          items: [],
         },
         {
           title: "Slack Bot",
           href: "/docs/examples/slack-bot",
-          items: [],
         },
         {
           title: "Discord Bot",
           href: "/docs/examples/discord-bot",
-          items: [],
         },
       ],
     },
@@ -139,17 +137,14 @@ export const docsConfig: DocsConfig = {
         {
           title: "Development Setup",
           href: "/docs/contribute/development-setup",
-          items: [],
         },
         {
           title: "Deployment & Publishing",
           href: "/docs/contribute/deployment-and-publishing",
-          items: [],
         },
         {
           title: "Credits",
           href: "/docs/contribute/credits",
-          items: [],
         },
       ],
     },

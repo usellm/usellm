@@ -1,0 +1,66 @@
+---
+title: llm.chat
+description: Send messages to an external LLM service and receive responses.
+---
+
+The `llm.chat` function is a method returned by the `useLLM` hook. This method is used to initiate a chat conversation with the external Large Language Model (LLM) service.
+
+### Syntax
+
+```jsx
+const result = await llm.chat({
+  messages,
+  stream,
+  template,
+  inputs,
+  onStream,
+});
+```
+
+### Parameters
+
+The `chat` function accepts an `options` object with the following properties:
+
+- `messages` (required): An array of message objects to start the conversation. Each message object should have a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string.
+- `stream` (optional): A boolean value indicating whether to stream the chat. Default is `false`.
+- `template` (optional): A string defining a model's template to structure the conversation.
+- `inputs` (optional): An object containing additional inputs to the model.
+- `onStream` (optional): A callback function that is called every time a new message is received while streaming.
+
+### Return Value
+
+The `chat` function returns a `Promise` that resolves to an `LLMChatResult` object containing the resulting message of the chat.
+
+### Example
+
+Here is an example usage of the `chat` function within a React component ([live demo](/demo1)):
+
+```jsx
+"use client";
+import useLLM from "usellm";
+import { useState } from "react";
+
+export default function Demo() {
+  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+  const [result, setResult] = useState("");
+  async function handleClick() {
+    try {
+      await llm.chat({
+        messages: [{ role: "user", content: "What is a language model?" }],
+        stream: true,
+        onStream: ({ message }) => setResult(message.content),
+      });
+    } catch (error) {
+      console.error("Something went wrong!", error);
+    }
+  }
+  return (
+    <div>
+      <button onClick={handleClick}>Send</button>
+      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
+    </div>
+  );
+}
+```
+
+In the above example, `llm.chat` is used to start a chat conversation. The chat is streamed, and the `onStream` callback is used to update the state with the latest message.

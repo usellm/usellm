@@ -1,6 +1,77 @@
 ---
-title: Coming soon
-description: Coming soon
+title: useLLM
+description: React hook for interacting with a language learning model (LLM) service
 ---
 
-Coming soon
+`useLLM` is a React hook designed to interact with an external service to perform various tasks such as chatting, recording audio, and speech to text transcription.
+
+### Import
+
+```jsx
+import useLLM from "usellm";
+```
+
+### Usage
+
+```jsx
+const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" }});
+const { chat, record, stopRecording, transcribe } = llm;
+```
+
+Make sure to invoke the `useLLM` hook inside a React component (as per the [rules of hooks](https://react.dev/warnings/invalid-hook-call-warning)).
+
+### Parameters
+
+`useLLM` accepts a single object with the following parameters as its arguments:
+
+- `serviceUrl`: The base URL of the service to make requests to. Default is undefined.
+- `fetcher` (optional): A function to make HTTP requests. The default is the browser's native `fetch` function.
+
+### Return Value
+
+An object with the following functions:
+
+- `chat(options: LLMChatOptions): Promise<LLMChatResult>`
+- `record(options?: LLMRecordOptions): Promise<void>`
+- `stopRecording(): Promise<{ audioUrl: string }>`
+- `transcribe(options: LLMTranscribeOptions): Promise<any>`
+
+### Example
+
+Here's a complete working example that you can use as a starting point ([live demo](/demo1)):
+
+```javascript
+"use client";
+import useLLM from "usellm";
+import { useState } from "react";
+
+export default function Demo() {
+  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+  const [result, setResult] = useState("");
+  async function handleClick() {
+    try {
+      await llm.chat({
+        messages: [{ role: "user", content: "What is a language model?" }],
+        stream: true,
+        onStream: ({ message }) => setResult(message.content),
+      });
+    } catch (error) {
+      console.error("Something went wrong!", error);
+    }
+  }
+  return (
+    <div>
+      <button onClick={handleClick}>Send</button>
+      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
+    </div>
+  );
+}
+```
+
+It produces the following result:
+
+<img
+  src="https://github.com/usellm/usellm/assets/1560745/d4709dfa-9403-4845-9f76-2fa21667604a"
+  alt="usellmdemo"
+  width="320"
+/>

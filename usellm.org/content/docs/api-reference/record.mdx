@@ -1,0 +1,86 @@
+---
+title: llm.record
+description: Utility function for recording audio using browser APIs
+---
+
+The `record` and `stopRecording` functions are methods returned by the `useLLM` hook. These methods are used to control audio recording.
+
+### Syntax
+
+For `record` function:
+
+```jsx
+await llm.record({ deviceId });
+```
+
+For `stopRecording` function:
+
+```jsx
+const { audioUrl } = await llm.stopRecording();
+```
+
+### Parameters
+
+The `record` function accepts an `options` object with the following property:
+
+- `deviceId` (optional): A string specifying the device id to use for recording audio.
+
+The `stopRecording` function does not accept any parameters.
+
+### Return Value
+
+The `record` function does not have a return value. The audio recording starts when this function is called and continues until the `stopRecording` function is called.
+
+The `stopRecording` function returns a `Promise` that resolves to an object containing the `audioUrl` as a base64 encoded data URL.
+
+### Example
+
+Here is an example usage of the `record` and `stopRecording`([live demo](/demos/audio)):
+
+```jsx
+'use client';
+import useLLM from "usellm";
+import React, { useState } from "react";
+​
+export default function AudioRecorder() {
+  const [audioUrl, setAudioUrl] = useState("");
+  const [transcript, setTranscript] = useState("");
+  const [status, setStatus] = useState("");
+​
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+​
+  const startRecording = async () => {
+    await llm.record();
+    setStatus("Recording...");
+  };
+​
+  const stopRecording = async () => {
+    const { audioUrl } = await llm.stopRecording();
+    setAudioUrl(audioUrl);
+    setStatus("");
+  };
+​
+  const transcribe = async () => {
+    setStatus("Transcribing...");
+    const { text } = await llm.transcribe({ audioUrl });
+    setTranscript(text);
+    setStatus("");
+  };
+​
+  return (
+    <div style={{ maxWidth: 320, margin: "32px auto" }}>
+      <h1>Audio Transcription Demo</h1>
+      <button onClick={startRecording}>Record</button>
+      <button onClick={stopRecording}>Stop</button>
+      <button onClick={transcribe}>Transcribe</button>
+      <p>{status}</p>
+      {audioUrl && <audio src={audioUrl} controls />}
+      {transcript && <p>Transcript: {transcript}</p>}
+    </div>
+  );
+}
+```
+
+In this example, `llm.record` is used to start audio recording when the "Record" button is clicked, and `llm.stopRecording`
+is used to stop the recording when the "Stop" button is clicked. The resulting audio URL from the `stopRecording` function
+is stored in state and can be played back in an audio element. The recording status is also displayed on the screen.
