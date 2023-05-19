@@ -1,6 +1,96 @@
 ---
-title: Coming soon
-description: Coming soon
+title: "llmService.registerTemplate"
+description: "Server-side utility to register new templates for configuring API options and initial prompts"
 ---
 
-Coming soon
+The `registerTemplate` method allows you to register new templates that can be used to configure various API options such as the model, temperature. It can also be used to configureinitial and prompt templates (for both system and user prompts).
+
+This method can be used when you want to predefine these configurations on the server and have them ready for use on the client side.
+
+### Syntax
+
+```javascript
+llmService.registerTemplate({
+  id: string,
+  systemPrompt?: string,
+  userPrompt?: string,
+  model?: string,
+  temperature?: number,
+  top_p?: number,
+  n?: number,
+  max_tokens?: number,
+  presence_penalty?: number,
+  frequency_penalty?: number,
+  logit_bias?: number
+})
+```
+
+### Parameters
+
+`registerTempalte` accepts a single object as input representing the template you want to register. It can include the following properties:
+
+- `id` (string): A unique identifier for the template.
+- `systemPrompt` (string): A prompt for the system role. Can include placeholders, which will be filled with values provided in the `inputs` property when calling `llm.chat`.
+- `userPrompt` (string): A prompt for the user role. Can also include placeholders.
+- `model` (string): The ID of the model to use.
+- `temperature` (number): The temperature for the model's output. Higher values will make the output more random.
+- `max_tokens` (number): The maximum number of tokens for the model to generate.
+- Other properties corresponding to various [OpenAI API options](https://platform.openai.com/docs/api-reference/chat/create).
+
+### Example
+
+Here's an example of how you can use this method in a Next.js [app router](https://nextjs.org/docs/app) project ([live demo](https://usellm.org/demo2)):
+
+```javascript
+/* app/api/llm.tsx */
+
+import { createLLMService } from "usellm";
+
+export const runtime = "edge";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+});
+
+llmService.registerTemplate({
+  id: "tutorial-generator",
+  systemPrompt:
+    "Your job is to create a short tutorial on a given topic. Use simple words, avoid jargon. Start with an introduction, then provide a few points of explanation, and end with a conclusion",
+  userPrompt: "Topic: {{topic}}",
+  max_tokens: 1000,
+  model: "gpt-4",
+  temperature: 0.7,
+});
+```
+
+Then, on the client side, you can reference this template by its ID when calling `llm.chat`:
+
+```javascript
+/* app/page.tsx */
+"use client";
+import { useState } from "react";
+import useLLM from "usellm";
+
+export default function HomePage() {
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+  const [topic, setTopic] = useState("");
+  const [result, setResult] = useState("");
+
+  async function handleClick() {
+    await llm.chat({
+      template: "tutorial-generator",
+      inputs: { topic },
+      stream: true,
+      onStream: ({ message }) => setResult(message.content),
+    });
+  }
+
+  return (
+    // ...
+  );
+}
+```
+
+In this example, the "tutorial-generator" template is registered with the LLM service on the server side. Then, on
+the client side, this template is used to send a chat message. The placeholder in the `userPrompt` will be replaced
+with the value of the `topic` variable.

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Doc } from "contentlayer/generated";
 import { NavItem, NavItemWithChildren } from "@/types/nav";
-
+import ReactMarkdown from "react-markdown";
 import { docsConfig } from "@/config/docs";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
@@ -25,7 +25,7 @@ export function DocsPager({ doc }: DocsPagerProps) {
           className={buttonVariants({ variant: "outline" })}
         >
           <Icons.chevronLeft className="mr-2 h-4 w-4" />
-          {pager.prev.title}
+          <ReactMarkdown>{pager.prev.title}</ReactMarkdown>
         </Link>
       )}
       {pager?.next?.href && (
@@ -33,7 +33,7 @@ export function DocsPager({ doc }: DocsPagerProps) {
           href={pager.next.href}
           className={buttonVariants({ variant: "outline" })}
         >
-          {pager.next.title}
+          <ReactMarkdown>{pager.next.title}</ReactMarkdown>
           <Icons.chevronRight className="ml-2 h-4 w-4" />
         </Link>
       )}

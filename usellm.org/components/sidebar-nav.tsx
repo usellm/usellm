@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SidebarNavItem } from "@/types/nav";
+import ReactMarkdown from "react-markdown";
 
 import { cn } from "@/lib/utils";
 
@@ -55,7 +56,7 @@ export function DocsSidebarNavItems({
             target={item.external ? "_blank" : ""}
             rel={item.external ? "noreferrer" : ""}
           >
-            {item.title}
+            <ReactMarkdown>{item.title}</ReactMarkdown>
             {item.label && (
               <span className="ml-2 rounded-md bg-[#adfa1d] px-1.5 py-0.5 text-xs leading-none text-[#000000] no-underline group-hover:no-underline">
                 {item.label}

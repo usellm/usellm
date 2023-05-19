@@ -1,0 +1,75 @@
+---
+title: llm.transcribe
+description: Convert speech to text using an external API
+---
+
+The `transcribe` function is a method returned by the `useLLM` hook. This method is used to transcribe audio i.e. convert speech to text.
+
+### Syntax
+
+```jsx
+const { text } = await llm.transcribe({ audioUrl, language, prompt });
+```
+
+### Parameters
+
+The `transcribe` function accepts an `options` object with the following properties:
+
+- `audioUrl` (required): A string specifying the base64 encoded audio data to transcribe.
+- `language` (optional): A string specifying the language of the audio.
+- `prompt` (optional): A string specifying the prompt to be provided to the language model.
+
+### Return Value
+
+The `transcribe` function returns a `Promise` that resolves to an object with a `text` property that contains the transcription of the audio.
+
+### Example
+
+Here is an example usage of the `transcribe` function within a React component:
+
+```jsx
+'use client';
+import useLLM from "usellm";
+import React, { useState } from "react";
+​
+export default function AudioRecorder() {
+  const [audioUrl, setAudioUrl] = useState("");
+  const [transcript, setTranscript] = useState("");
+  const [status, setStatus] = useState("");
+​
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+​
+  const startRecording = async () => {
+    await llm.record();
+    setStatus("Recording...");
+  };
+​
+  const stopRecording = async () => {
+    const { audioUrl } = await llm.stopRecording();
+    setAudioUrl(audioUrl);
+    setStatus("");
+  };
+​
+  const transcribe = async () => {
+    setStatus("Transcribing...");
+    const { text } = await llm.transcribe({ audioUrl });
+    setTranscript(text);
+    setStatus("");
+  };
+​
+  return (
+    <div style={{ maxWidth: 320, margin: "32px auto" }}>
+      <h1>Audio Transcription Demo</h1>
+      <button onClick={startRecording}>Record</button>
+      <button onClick={stopRecording}>Stop</button>
+      <button onClick={transcribe}>Transcribe</button>
+      <p>{status}</p>
+      {audioUrl && <audio src={audioUrl} controls />}
+      {transcript && <p>Transcript: {transcript}</p>}
+    </div>
+  );
+}
+```
+
+In this example, `llm.transcribe` is used to transcribe the recorded audio into text when the "Transcribe" button
+is clicked. The transcription status is also displayed on the screen, and the resulting transcript is shown on the page.
