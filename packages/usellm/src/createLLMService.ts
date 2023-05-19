@@ -1,7 +1,9 @@
 import OpenAIStream from "./OpenAIStream";
 import {
+  AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
   OpenAIMessage,
+  dataURLToBlob,
   fillPrompt,
   makeErrorResponse,
 } from "./utils";
@@ -34,13 +36,18 @@ export interface LLMServiceTemplate {
   logit_bias?: number;
 }
 
-export interface LLMServiceBody {
+export interface LLMServiceChatOptions {
   $action?: string;
   messages?: OpenAIMessage[];
   stream?: boolean;
   template?: string;
   inputs?: object;
   user?: string;
+}
+
+export interface LLMServiceTranscribeOptions {
+  $action?: string;
+  audioUrl?: string;
 }
 
 export interface LLMServiceHandleOptions {
@@ -77,7 +84,7 @@ export class LLMService {
     this.templates[template.id] = template;
   }
 
-  prepareBody(body: LLMServiceBody) {
+  prepareBody(body: LLMServiceChatOptions) {
     const template = {
       ...defaultTemplate,
       ...(this.templates[body.template || ""] || {}),
@@ -142,13 +149,15 @@ export class LLMService {
     }
     const { $action, ...rest } = body;
     if ($action === "chat") {
-      return this.chat(rest as LLMServiceBody);
+      return this.chat(rest as LLMServiceChatOptions);
+    } else if ($action === "transcribe") {
+      return this.transcribe(rest as LLMServiceTranscribeOptions);
     } else {
       throw makeErrorResponse(`Action "${$action}" is not supported`);
     }
   }
 
-  async chat(body: LLMServiceBody): Promise<LLMServiceHandleResponse> {
+  async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
     const preparedBody = this.prepareBody(body);
     if (this.debug) {
       console.log("[LLMService] preparedBody", preparedBody);
@@ -177,6 +186,34 @@ export class LLMService {
       const result = await response.text();
       return { result };
     }
+  }
+
+  async transcribe(options: LLMServiceTranscribeOptions) {
+    const { audioUrl } = options;
+
+    if (!audioUrl) {
+      throw makeErrorResponse("audioUrl is required");
+    }
+
+    const audioBlob = dataURLToBlob(audioUrl);
+
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.wav");
+    formData.append("model", "whisper-1");
+
+    const response = await this.fetcher(AUDIO_TRANSCRIPTIONS_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const result = await response.text();
+    return { result };
   }
 }
 
