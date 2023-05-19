@@ -10,6 +10,21 @@ function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
 }
 
+type Status = "idle" | "recording" | "transcribing" | "streaming";
+
+function getInputPlaceholder(status: Status) {
+  switch (status) {
+    case "idle":
+      return "Ask me anthing...";
+    case "recording":
+      return "Recording audio...";
+    case "transcribing":
+      return "Transcribing audio...";
+    case "streaming":
+      return "Wait for my response...";
+  }
+}
+
 function Message({ role, content }: OpenAIMessage) {
   return (
     <div className="my-4">
@@ -24,6 +39,7 @@ function Message({ role, content }: OpenAIMessage) {
 }
 
 export function HomePageDemo() {
+  const [status, setStatus] = useState<Status>("idle");
   const [history, setHistory] = useState<OpenAIMessage[]>([
     {
       role: "assistant",
@@ -31,7 +47,7 @@ export function HomePageDemo() {
         "I'm a chatbot powered by the ChatGPT API and developed using useLLM. Ask me anything!",
     },
   ]);
-  const [inputText, setInputText] = useState("What can you do for me?");
+  const [inputText, setInputText] = useState("");
 
   const llm = useLLM({ serviceUrl: "/api/llm" });
 
@@ -40,19 +56,41 @@ export function HomePageDemo() {
       return;
     }
 
+    setStatus("streaming");
     const newHistory = [...history, { role: "user", content: inputText }];
-
     setHistory(newHistory);
     setInputText("");
-
     const { message } = await llm.chat({
       messages: newHistory,
       stream: true,
       onStream: ({ message }) => setHistory([...newHistory, message]),
     });
-
     setHistory([...newHistory, message]);
+    setStatus("idle");
   }
+
+  async function handleRecordClick() {
+    if (status === "idle") {
+      await llm.record();
+      setStatus("recording");
+    } else if (status === "recording") {
+      setStatus("transcribing");
+      const { audioUrl } = await llm.stopRecording();
+      const { text } = await llm.transcribe({ audioUrl });
+      setStatus("streaming");
+      const newHistory = [...history, { role: "user", content: text }];
+      setHistory(newHistory);
+      const { message } = await llm.chat({
+        messages: newHistory,
+        stream: true,
+        onStream: ({ message }) => setHistory([...newHistory, message]),
+      });
+      setHistory([...newHistory, message]);
+      setStatus("idle");
+    }
+  }
+
+  const RecordingIcon = status === "recording" ? Icons.square : Icons.mic;
 
   return (
     <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col">
@@ -76,8 +114,9 @@ export function HomePageDemo() {
       <div className="w-full py-4 flex px-4">
         <Input
           type="text"
-          placeholder="Enter message here"
+          placeholder={getInputPlaceholder(status)}
           value={inputText}
+          disabled={status !== "idle"}
           autoFocus
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={(event) => {
@@ -89,6 +128,13 @@ export function HomePageDemo() {
         />
         <Button variant="default" className="ml-2" onClick={handleSend}>
           Send
+        </Button>
+        <Button
+          variant={status === "recording" ? "destructive" : "default"}
+          className="ml-2"
+          onClick={handleRecordClick}
+        >
+          <RecordingIcon size={16} />
         </Button>
       </div>
     </div>

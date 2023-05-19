@@ -4,7 +4,7 @@ export type { OpenAIMessage, ChatStreamCallback, LLMChatResult } from "./utils";
 export type { LLMChatOptions, UseLLMOptions } from "./usellm";
 export type {
   CreateLLMServiceOptions,
-  LLMServiceBody,
+  LLMServiceChatOptions,
   LLMServiceTemplate,
 } from "./createLLMService";
 

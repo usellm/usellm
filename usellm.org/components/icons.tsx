@@ -8,6 +8,7 @@ import {
   Copy,
   CreditCard,
   File,
+  Mic,
   FileText,
   HelpCircle,
   Image,
@@ -19,6 +20,8 @@ import {
   Pizza,
   Plus,
   Settings,
+  Square,
+  Send,
   SunMedium,
   Trash,
   Twitter,
@@ -44,6 +47,7 @@ export const Icons = {
       <circle cx="12" cy="12" r="10"></circle>
     </svg>
   ),
+  mic: Mic,
   close: X,
   spinner: Loader2,
   chevronLeft: ChevronLeft,
@@ -55,6 +59,8 @@ export const Icons = {
   settings: Settings,
   billing: CreditCard,
   ellipsis: MoreVertical,
+  square: Square,
+  send: Send,
   add: Plus,
   warning: AlertTriangle,
   user: User,
