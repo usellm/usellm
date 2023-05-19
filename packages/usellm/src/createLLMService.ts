@@ -48,6 +48,8 @@ export interface LLMServiceChatOptions {
 export interface LLMServiceTranscribeOptions {
   $action?: string;
   audioUrl?: string;
+  language?: string;
+  prompt?: string;
 }
 
 export interface LLMServiceHandleOptions {
@@ -189,7 +191,7 @@ export class LLMService {
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {
-    const { audioUrl } = options;
+    const { audioUrl, language, prompt } = options;
 
     if (!audioUrl) {
       throw makeErrorResponse("audioUrl is required");
@@ -200,6 +202,12 @@ export class LLMService {
     const formData = new FormData();
     formData.append("file", audioBlob, "recording.wav");
     formData.append("model", "whisper-1");
+    if (language) {
+      formData.append("language", language);
+    }
+    if (prompt) {
+      formData.append("prompt", prompt);
+    }
 
     const response = await this.fetcher(AUDIO_TRANSCRIPTIONS_API_URL, {
       method: "POST",

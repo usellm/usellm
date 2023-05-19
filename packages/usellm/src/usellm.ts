@@ -5,7 +5,6 @@ import {
   ChatStreamCallback,
   streamOpenAIResponse,
   LLMChatResult,
-  makeErrorResponse,
 } from "./utils";
 
 export interface LLMChatOptions {
@@ -22,6 +21,8 @@ export interface LLMRecordOptions {
 
 export interface LLMTranscribeOptions {
   audioUrl: string;
+  language?: string;
+  prompt?: string;
 }
 
 export interface UseLLMOptions {
@@ -68,15 +69,16 @@ export default function useLLM({
   const recordingRef = useRef<{
     mediaRecorder: MediaRecorder;
     audioChunks: Blob[];
+    audioStream: MediaStream;
   } | null>(null);
 
   async function record({ deviceId }: LLMRecordOptions = {}) {
-    const stream = await navigator.mediaDevices.getUserMedia({
+    const audioStream = await navigator.mediaDevices.getUserMedia({
       audio: deviceId ? { deviceId } : true,
     });
-    const mediaRecorder = new MediaRecorder(stream);
+    const mediaRecorder = new MediaRecorder(audioStream);
     const audioChunks: Blob[] = [];
-    recordingRef.current = { mediaRecorder, audioChunks };
+    recordingRef.current = { mediaRecorder, audioChunks, audioStream };
     mediaRecorder.addEventListener("dataavailable", (event) => {
       audioChunks.push(event.data);
     });
@@ -89,23 +91,36 @@ export default function useLLM({
         reject("No recording in progress");
         return;
       }
-      const { mediaRecorder, audioChunks } = recordingRef.current;
+      const { mediaRecorder, audioChunks, audioStream } = recordingRef.current;
       mediaRecorder.addEventListener("stop", () => {
-        const audioBlob = new Blob(audioChunks);
-        recordingRef.current = null;
-        const audioUrl = URL.createObjectURL(audioBlob);
-        resolve({ audioUrl });
+        const audioBlob = new Blob(audioChunks, {
+          type: "audio/ogg; codecs=opus",
+        });
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          resolve({ audioUrl: base64data });
+        };
+        reader.readAsDataURL(audioBlob);
       });
       mediaRecorder.stop();
+      audioStream.getTracks().forEach((track) => track.stop());
     });
   }
 
-  async function transcribe({ audioUrl }: LLMTranscribeOptions) {
+  async function transcribe({
+    audioUrl,
+    language,
+    prompt,
+  }: LLMTranscribeOptions) {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         audioUrl,
+        language,
+        prompt,
         $action: "transcribe",
       }),
     });

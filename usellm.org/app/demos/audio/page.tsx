@@ -11,7 +11,7 @@ function AudioRecorder() {
 
   const startRecording = async () => {
     await llm.record();
-    setStatus("recording");
+    setStatus("Recording...");
   };
 
   const stopRecording = async () => {
@@ -24,10 +24,14 @@ function AudioRecorder() {
     setStatus("Transcribing...");
     const { text } = await llm.transcribe({ audioUrl });
     setTranscript(text);
+    setStatus("");
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: 320, margin: "32px auto" }}>
+      <h1 style={{ fontSize: 20, textAlign: "center" }}>
+        Audio Transcription Demo
+      </h1>
       <button
         style={{ margin: 8, padding: 2, border: "1px solid black" }}
         onClick={startRecording}
