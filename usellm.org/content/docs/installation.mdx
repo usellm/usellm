@@ -1,6 +1,71 @@
 ---
-title: Coming soon
-description: Coming soon
+title: Installation
+description: Install useLLM within your React project using npm, yarn, or pnpm
 ---
 
-Coming soon
+In this page, we will guide you through the process of installing useLLM with different
+package managers. We'll also cover some important prerequisites and usage details.
+
+### Prerequisites
+
+The useLLM library is designed to be used with React. Consequently, you need to have
+React installed in your project. If you're building a web application, it is also likely
+that you are using a framework like Next.js. If you're just getting started with a new
+project, you can install React and Next.js together using the following command:
+
+```bash
+npx create-next-app@latest
+```
+
+Check out the documentation for [React](https://react.dev/) and [Next.js](https://nextjs.org/docs) to learn more.
+
+### Installing useLLM
+
+You can install useLLM using different JavaScript package managers like `npm`, `yarn`,
+and `pnpm`.
+
+#### npm
+
+npm is the default package manager for Node.js. If you have Node.js installed,
+you probably already have npm. To install useLLM with npm, run the following
+command in your terminal:
+
+```bash
+npm install usellm
+```
+
+#### yarn
+
+Yarn is an alternative package manager created by Facebook. If you prefer using
+yarn, you can install useLLM using the following command:
+
+```bash
+yarn add usellm
+```
+
+#### pnpm
+
+pnpm is a fast, disk space efficient package manager. If you're using pnpm,
+you can install useLLM with the following command:
+
+```bash
+pnpm add usellm
+```
+
+### Using useLLM
+
+After installing useLLM, you can import and use the `useLLM` hook in your React components:
+
+```javascript
+import useLLM from "usellm";
+
+// Inside your React component:
+const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+```
+
+Please note that the `useLLM` hook is supposed to be used in a React component,
+and it must follow the [Rules of Hooks](https://react.dev/warnings/invalid-hook-call-warning).
+
+Also remember to replace `"https://usellm.org/api/llm"` with your own service URL.
+You may refer to the [Quickstart](https://usellm.org/docs/quickstart) and the
+[API Reference](https://usellm.org/docs/api-reference/usellm-hook) for more details.
