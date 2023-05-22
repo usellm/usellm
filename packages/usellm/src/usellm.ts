@@ -177,5 +177,25 @@ export default function useLLM({
     return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
   }
 
-  return { chat, record, stopRecording, transcribe, embed, cosineSimilarity };
+  function scoreEmbeddings(options: {
+    embeddings: Array<Array<number>>;
+    query: number[];
+  }) {
+    const { embeddings, query } = options;
+    const scores = embeddings.map((vector) => cosineSimilarity(query, vector));
+    const sortedScores = scores
+      .map((score, index) => ({ score, index }))
+      .sort((a, b) => b.score - a.score);
+    return sortedScores;
+  }
+
+  return {
+    chat,
+    record,
+    stopRecording,
+    transcribe,
+    embed,
+    cosineSimilarity,
+    scoreEmbeddings,
+  };
 }
