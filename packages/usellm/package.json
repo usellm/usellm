@@ -4,7 +4,7 @@
   "description": "User Large Language Models in Your React Apps",
   "scripts": {
     "build": "tsc",
-    "publish": "npm run build && npx np --no-tests --any-branch"
+    "publish": "npm run build && npx np --no-tests --any-branch --no-yarn"
   },
   "repository": {
     "type": "git",
