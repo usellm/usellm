@@ -132,7 +132,7 @@ export default function DocumentSearchDemoPage() {
       )}
 
       {!answer && (
-        <div className="prose">
+        <div className="prose dark:prose-invert">
           <div className="text-lg font-medium">How it Works</div>
           <ul>
             <li>
