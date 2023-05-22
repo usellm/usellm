@@ -198,7 +198,7 @@ export class LLMService {
     const { audioUrl, language, prompt } = options;
 
     if (!audioUrl) {
-      throw makeErrorResponse("audioUrl is required");
+      throw makeErrorResponse("'audioUrl' is required", 400);
     }
 
     const audioBlob = dataURLToBlob(audioUrl);
