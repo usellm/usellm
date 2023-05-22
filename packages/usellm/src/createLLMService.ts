@@ -114,7 +114,8 @@ export class LLMService {
 
     if (filledMessages.length == 0) {
       throw makeErrorResponse(
-        "Empty message list. Please provide at least one message!"
+        "Empty message list. Please provide at least one message!",
+        400
       );
     }
 
@@ -140,14 +141,17 @@ export class LLMService {
     request,
   }: LLMServiceHandleOptions): Promise<LLMServiceHandleResponse> {
     if (!(await this.isAllowed({ body, request }))) {
-      throw makeErrorResponse("Request not allowed");
+      throw makeErrorResponse("Request not allowed", 405);
     }
 
     if (!this.openaiApiKey) {
-      throw makeErrorResponse("OpenAI API key is required.");
+      throw makeErrorResponse("OpenAI API key is required.", 400);
     }
     if (!("$action" in body)) {
-      throw makeErrorResponse("`handle` expects a key $action in the body");
+      throw makeErrorResponse(
+        "`handle` expects a key $action in the body",
+        400
+      );
     }
     const { $action, ...rest } = body;
     if ($action === "chat") {
@@ -155,7 +159,7 @@ export class LLMService {
     } else if ($action === "transcribe") {
       return this.transcribe(rest as LLMServiceTranscribeOptions);
     } else {
-      throw makeErrorResponse(`Action "${$action}" is not supported`);
+      throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
     }
   }
 
