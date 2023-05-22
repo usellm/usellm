@@ -14,12 +14,10 @@ export default function EmbedDemoPage() {
     const { embeddings: queryEmbeddings } = await llm.embed({
       input: question,
     });
-
     const top3paragraphs = llm
       .scoreEmbeddings({ embeddings, query: queryEmbeddings[0], top: 3 })
       .map(({ index }) => paragraphs[index])
       .join("\n\n");
-
     const prompt = `Answer this: ${question} \n\nUse this information:${top3paragraphs}`;
     const { message } = await llm.chat({
       messages: [{ role: "user", content: prompt }],
@@ -33,11 +31,13 @@ export default function EmbedDemoPage() {
         maxLength={2000}
         rows={10}
         value={documentText}
+        placeholder="Paste a document here"
         onChange={(e) => setDocumentText(e.target.value)}
       />
       <input
         type="text"
         value={question}
+        style={{ display: "block" }}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="Ask a question about the document"
       />
