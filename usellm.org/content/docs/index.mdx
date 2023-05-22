@@ -161,7 +161,8 @@ Follow these steps to create your own service URL:
 
 ```javascript
 const llmService = createLLMService({
-  openaiApiKey: process.env.OPENAI_API_KEY,
+  openaiApiKey: process.env.OPENAI_API_KEY, // provide OpenAI API key
+  actions: ["chat", "transcribe", "embed"], // enable specific actions
 });
 ```
 
@@ -207,6 +208,7 @@ export const runtime = "edge";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
 });
 
 export async function POST(request: Request) {
@@ -237,6 +239,7 @@ export const config = {
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
 });
 
 export default async function handler(request: Request) {
@@ -339,6 +342,7 @@ export const runtime = "edge";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
 });
 
 llmService.registerTemplate({

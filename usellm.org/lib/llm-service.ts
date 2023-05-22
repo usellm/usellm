@@ -9,6 +9,7 @@ const ratelimit = new Ratelimit({
 
 export const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
   isAllowed: async () => {
     const { success } = await ratelimit.limit("api");
     return success;

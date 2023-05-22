@@ -11,7 +11,7 @@ import {
 
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
-  actions?: [];
+  actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;

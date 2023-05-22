@@ -12,6 +12,7 @@ to the [OpenAI API](https://platform.openai.com/docs/api-reference/chat). More s
 ```jsx
 const llmService = createLLMService({
   openaiApiKey,
+  actions,
   fetcher,
   templates,
   isAllowed,
@@ -24,10 +25,17 @@ const llmService = createLLMService({
 The `createLLMService` function accepts an `options` object with the following properties:
 
 - `openaiApiKey` (optional): A string representing the OpenAI API key.
+- `actions` (optional): A list of strings representing the actions that are allowed (see below). If absent, all actions are allowed.
 - `fetcher` (optional): A function used to make network requests. Defaults to the `fetch` function provided by the environment.
 - `templates` (optional): An object mapping template IDs to `LLMServiceTemplate` instances.
 - `isAllowed` (optional): A function that takes an object with `body` and `request` properties and returns a boolean or a promise that resolves to a boolean. This function is used to determine whether a request is allowed.
 - `debug` (optional): A boolean indicating whether debug logs should be outputted.
+
+The following actions are supported at the moment:
+
+- `chat`: Used to send [chat completion](https://platform.openai.com/docs/api-reference/chat/create) requests to the OpenAI API.
+- `transcribe`: Used to send [audio transcription](https://platform.openai.com/docs/api-reference/audio/create) requests to the OpenAI API.
+- `embed`: Used to send [text embedding](https://platform.openai.com/docs/api-reference/embeddings/create) requests to the OpenAI API.
 
 ### Return Value
 
@@ -58,6 +66,7 @@ export const runtime = "edge";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
 });
 
 export async function POST(request: Request) {

@@ -50,6 +50,7 @@ export const runtime = "edge";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
 });
 
 llmService.registerTemplate({
