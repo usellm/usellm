@@ -2,6 +2,7 @@ import OpenAIStream from "./OpenAIStream";
 import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
+  EMBEDDINGS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
   fillPrompt,
@@ -50,6 +51,13 @@ export interface LLMServiceTranscribeOptions {
   audioUrl?: string;
   language?: string;
   prompt?: string;
+}
+
+export interface LLMServiceEmbedOptions {
+  $action?: string;
+  input?: string;
+  user?: string;
+  model?: string;
 }
 
 export interface LLMServiceHandleOptions {
@@ -164,6 +172,8 @@ export class LLMService {
       return this.chat(rest as LLMServiceChatOptions);
     } else if ($action === "transcribe") {
       return this.transcribe(rest as LLMServiceTranscribeOptions);
+    } else if ($action === "embed") {
+      return this.embed(rest as LLMServiceEmbedOptions);
     } else {
       throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
     }
@@ -198,6 +208,26 @@ export class LLMService {
       const result = await response.text();
       return { result };
     }
+  }
+
+  async embed(options: LLMServiceEmbedOptions) {
+    const { input, user } = options;
+    const model = "text-embedding-ada-002";
+
+    const response = await this.fetcher(EMBEDDINGS_API_URL, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+      method: "POST",
+      body: JSON.stringify({ input, user, model }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const result = await response.json();
+    return { result };
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {
