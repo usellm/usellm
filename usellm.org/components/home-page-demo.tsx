@@ -117,7 +117,7 @@ export function HomePageDemo() {
   const RecordingIcon = status === "recording" ? Icons.square : Icons.mic;
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col">
+    <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col mb-8">
       <div className="w-full shadow dark:border-b">
         <div className="w-full px-4 h-14 flex items-center mx-auto justify-between">
           <span className="text-lg font-bold ">Live Demo</span>
