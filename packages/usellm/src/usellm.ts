@@ -132,5 +132,23 @@ export default function useLLM({
     return response.json();
   }
 
-  return { chat, record, stopRecording, transcribe };
+  async function embed({ input, user }: { input: string; user?: string }) {
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input,
+        user,
+        $action: "embed",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    return response.json();
+  }
+
+  return { chat, record, stopRecording, transcribe, embed };
 }
