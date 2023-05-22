@@ -6,6 +6,8 @@ description: Run, test, and add features to useLLM and contribute to the project
 If you're interested in contributing to the `useLLM` project, that's fantastic!
 This guide will walk you through the setup process.
 
+
+
 ### Step 1: Fork the Repository
 
 Start by forking the repository. You can do this by visiting the
@@ -15,12 +17,40 @@ under your own GitHub account.
 
 TODO - repository screenshot
 
+**Keep Your Fork Updated:** It's important to regularly sync your fork with the main repository. 
+The main repository will continue to receive updates as other contributors make changes. 
+By keeping your fork in sync with the main repository, you ensure that you're always working 
+with the most recent version of the project.
+
+You can sync your fork directly from GitHub:
+
+- Navigate to your forked repository on GitHub.
+- Click on `Sync fork` in the repository header.
+- Click on `Update Branch`.
+
+After you have synced your fork from GitHub, pull the updates to your local copy 
+of the repository in your development environment:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+Now, your local copy is in sync with the main repository  and you're ready to start contributing!
+
+This process ensures that you're always working with the latest codebase, reducing the chances 
+of merge conflicts and other issues that could arise from an outdated fork.
+
+
 ### Step 2: Develop in Codespaces
 
 Codespaces provides a complete, configurable development environment in seconds.
-To open the forked repository in Codespaces, navigate to your forked repository
-and click on the 'Code' button. Then, select 'Open with Codespaces' and create a
-new codespace.
+
+To open the forked repository in Codespaces follow these steps: 
+- Navigate to your forked repository
+- Click on the 'Code' button. 
+- Select 'Open with Codespaces'
+- Finally, Create a new codespace.
 
 TODO - add screenshot
 
@@ -71,7 +101,21 @@ the localhost URL to view the application in a new tab.
 
 TODO - add screenshot
 
-### Step 5: Make Changes
+### Step 5: Create a New Branch for Each Feature or Bugfix
+
+Before you start making changes, always create a new branch. Doing so helps isolate your changes 
+and makes it easier to manage them. Avoid making changes directly to the main branch.
+
+To create a new branch, use the following command:
+
+```bash
+git checkout -b your-branch-name
+```
+Replace "your-branch-name" with a descriptive name for your branch (E.x: add-feature or fix-api-error). 
+This name should provide some indication of the changes you're making in the branch.
+
+
+### Step 6: Make Changes
 
 Feel free to make changes to the codebase, either within the `usellm.org` NextJS app or within
 the `usellm` package! The `usellm.org` application is set up to copy over the `usellm` package
@@ -85,10 +129,11 @@ Here are some good places to start:
 - Fix bugs or add new features to the `usellm` package within the `packages/usellm` folder
 - Browse through open issues on the [useLLM repository](https://github.com/usellm/usellm/issues) and see if you can help out!
 
-### Step 6: Submit a Pull Request
+### Step 7: Submit a Pull Request
 
 Once you're satisfied with your changes and they're thoroughly tested, commit them to your
-branch (you can either work on your `main` branch itself, or create a feature branch e.g. `my-new-feature`).
+branch. Remember, it's a best practice to create a new branch for each feature or bugfix 
+rather than working directly on your main branch.
 
 Push your branch to your remote copy of repository:
 
@@ -96,8 +141,11 @@ Push your branch to your remote copy of repository:
 git push origin your-branch-name
 ```
 
-Then, navigate to your [original repository](https://usellm.org/usellm) on GitHub, where you can create a new pull request by [following this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+Then, navigate to your [original repository](https://usellm.org/usellm) on GitHub, 
+where you can create a new pull request by [following this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
-Please make sure to provide a thorough description of your changes, the motivation behind them, and any additional context that would aid the reviewers. All tests and checks must pass before your changes can be merged.
+When creating your pull request, be sure to provide a thorough description of your 
+changes, the motivation behind them, and any additional context that would aid the 
+reviewers. Please note that all tests and checks must pass before your changes can be merged.
 
 Thank you for your interest in contributing to `useLLM`! Your efforts help make this project better for everyone.
