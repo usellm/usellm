@@ -20,8 +20,17 @@ export const CHAT_COMPLETIONS_API_URL =
 export const AUDIO_TRANSCRIPTIONS_API_URL =
   "https://api.openai.com/v1/audio/transcriptions";
 
-export function makeErrorResponse(message: string) {
-  return new Error(JSON.stringify({ message }));
+export class ResponseError extends Error {
+  status?: number;
+}
+
+export function makeErrorResponse(
+  message: string,
+  status?: number
+): ResponseError {
+  const error = new ResponseError(JSON.stringify({ message }));
+  (error as any).status = status || 500;
+  return error;
 }
 
 export async function streamOpenAIResponse(

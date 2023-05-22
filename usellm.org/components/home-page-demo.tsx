@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "./icons";
-import ScrollToBottom from "react-scroll-to-bottom";
+import { useToast } from "./ui/use-toast";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
@@ -39,6 +39,7 @@ function Message({ role, content }: OpenAIMessage) {
 }
 
 export function HomePageDemo() {
+  const { toast } = useToast();
   const [status, setStatus] = useState<Status>("idle");
   const [history, setHistory] = useState<OpenAIMessage[]>([
     {
@@ -51,35 +52,23 @@ export function HomePageDemo() {
 
   const llm = useLLM({ serviceUrl: "/api/llm" });
 
+  let messagesWindow = useRef<Element | null>(null);
+
+  useEffect(() => {
+    if (messagesWindow?.current) {
+      messagesWindow.current.scrollTop = messagesWindow.current.scrollHeight;
+    }
+  }, [history]);
+
   async function handleSend() {
     if (!inputText) {
       return;
     }
-
-    setStatus("streaming");
-    const newHistory = [...history, { role: "user", content: inputText }];
-    setHistory(newHistory);
-    setInputText("");
-    const { message } = await llm.chat({
-      messages: newHistory,
-      stream: true,
-      onStream: ({ message }) => setHistory([...newHistory, message]),
-    });
-    setHistory([...newHistory, message]);
-    setStatus("idle");
-  }
-
-  async function handleRecordClick() {
-    if (status === "idle") {
-      await llm.record();
-      setStatus("recording");
-    } else if (status === "recording") {
-      setStatus("transcribing");
-      const { audioUrl } = await llm.stopRecording();
-      const { text } = await llm.transcribe({ audioUrl });
+    try {
       setStatus("streaming");
-      const newHistory = [...history, { role: "user", content: text }];
+      const newHistory = [...history, { role: "user", content: inputText }];
       setHistory(newHistory);
+      setInputText("");
       const { message } = await llm.chat({
         messages: newHistory,
         stream: true,
@@ -87,13 +76,48 @@ export function HomePageDemo() {
       });
       setHistory([...newHistory, message]);
       setStatus("idle");
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Something went wrong!",
+        description: error.message,
+      });
+    }
+  }
+
+  async function handleRecordClick() {
+    try {
+      if (status === "idle") {
+        await llm.record();
+        setStatus("recording");
+      } else if (status === "recording") {
+        setStatus("transcribing");
+        const { audioUrl } = await llm.stopRecording();
+        const { text } = await llm.transcribe({ audioUrl });
+        setStatus("streaming");
+        const newHistory = [...history, { role: "user", content: text }];
+        setHistory(newHistory);
+        const { message } = await llm.chat({
+          messages: newHistory,
+          stream: true,
+          onStream: ({ message }) => setHistory([...newHistory, message]),
+        });
+        setHistory([...newHistory, message]);
+        setStatus("idle");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Something went wrong!",
+        description: error.message,
+      });
     }
   }
 
   const RecordingIcon = status === "recording" ? Icons.square : Icons.mic;
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col">
+    <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col mb-8">
       <div className="w-full shadow dark:border-b">
         <div className="w-full px-4 h-14 flex items-center mx-auto justify-between">
           <span className="text-lg font-bold ">Live Demo</span>
@@ -106,11 +130,14 @@ export function HomePageDemo() {
           </a>
         </div>
       </div>
-      <ScrollToBottom className="w-full flex-1 overflow-y-auto px-4">
+      <div
+        className="w-full flex-1 overflow-y-auto px-4"
+        ref={(el) => (messagesWindow.current = el)}
+      >
         {history.map((message, idx) => (
           <Message {...message} key={idx} />
         ))}
-      </ScrollToBottom>
+      </div>
       <div className="w-full py-4 flex px-4">
         <Input
           type="text"
