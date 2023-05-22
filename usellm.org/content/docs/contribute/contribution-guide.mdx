@@ -1,0 +1,103 @@
+---
+title: Contribution Guide
+description: Run, test, and add features to useLLM and contribute to the project!
+---
+
+If you're interested in contributing to the `useLLM` project, that's fantastic!
+This guide will walk you through the setup process.
+
+### Step 1: Fork the Repository
+
+Start by forking the repository. You can do this by visiting the
+[useLLM repository](https://github.com/usellm/usellm) and clicking on the 'Fork'
+button in the top-right corner. This will create a copy of the repository
+under your own GitHub account.
+
+TODO - repository screenshot
+
+### Step 2: Develop in Codespaces
+
+Codespaces provides a complete, configurable development environment in seconds.
+To open the forked repository in Codespaces, navigate to your forked repository
+and click on the 'Code' button. Then, select 'Open with Codespaces' and create a
+new codespace.
+
+TODO - add screenshot
+
+#### Directory Structure
+
+Here's a brief overview of the directory structure in the useLLM project:
+
+- **Root Directory**: The root directory contains the core files and folders of the project,
+  including `README.md`, `LICENSE`, `package.json`, and `.gitignore`, among others.
+
+- **`/packages/usellm`**: This directory contains the npm package for the useLLM project.
+  It includes the source code and tests for the React hooks that interface with LLM APIs
+  like Open AI. The `package.json` in this directory lists the dependencies required for
+  this package.
+
+- **`/usellm.org`**: This directory contains a Next.js application, which serves as the
+  project's documentation site and demo application. Here, you'll find source files,
+  components, pages, styles, and scripts required for the application. The `package.json`
+  file in this directory lists the dependencies required for this application.
+
+The Next.js application in the `usellm.org` directory directly copies over the useLLM
+package in real time during development, making it easy to test changes to the useLLM package.
+
+### Step 3: Install Dependencies
+
+Once the codespace is ready and you're in the development environment, you will need
+to install the necessary dependencies for the project. Navigate to the `usellm.org`
+directory in the terminal and run `npm install`.
+
+```bash
+cd usellm.org
+npm install
+```
+
+This will install all the necessary dependencies listed in the `package.json` file.
+
+### Step 4: Run Development Server
+
+Once the installation process is finished, you can run the development server.
+In the `usellm.org` directory, run:
+
+```bash
+npm run dev
+```
+
+This command starts the development server. Press the "Open in Browser" button or Cmd+Click
+the localhost URL to view the application in a new tab.
+
+TODO - add screenshot
+
+### Step 5: Make Changes
+
+Feel free to make changes to the codebase, either within the `usellm.org` NextJS app or within
+the `usellm` package! The `usellm.org` application is set up to copy over the `usellm` package
+in real time, so any modifications you make to the `usellm` package can be automatically
+tested on the `usellm.org` application.
+
+Here are some good places to start:
+
+- Improve the documentation by making changes in the folder `usellm.org/content/docs` (edit the `.mdx` files)
+- Add or improve/modify demo applications within the `usellm.org/app/demos` folder
+- Fix bugs or add new features to the `usellm` package within the `packages/usellm` folder
+- Browse through open issues on the [useLLM repository](https://github.com/usellm/usellm/issues) and see if you can help out!
+
+### Step 6: Submit a Pull Request
+
+Once you're satisfied with your changes and they're thoroughly tested, commit them to your
+branch (you can either work on your `main` branch itself, or create a feature branch e.g. `my-new-feature`).
+
+Push your branch to your remote copy of repository:
+
+```bash
+git push origin your-branch-name
+```
+
+Then, navigate to your [original repository](https://usellm.org/usellm) on GitHub, where you can create a new pull request by [following this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+
+Please make sure to provide a thorough description of your changes, the motivation behind them, and any additional context that would aid the reviewers. All tests and checks must pass before your changes can be merged.
+
+Thank you for your interest in contributing to `useLLM`! Your efforts help make this project better for everyone.

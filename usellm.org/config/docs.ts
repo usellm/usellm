@@ -135,8 +135,8 @@ export const docsConfig: DocsConfig = {
       title: "Contribute",
       items: [
         {
-          title: "Development Setup",
-          href: "/docs/contribute/development-setup",
+          title: "Contribution Guide",
+          href: "/docs/contribute/contribution-guide",
         },
         {
           title: "Deployment & Publishing",
