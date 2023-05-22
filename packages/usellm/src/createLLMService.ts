@@ -86,13 +86,13 @@ export class LLMService {
     this.templates[template.id] = template;
   }
 
-  prepareBody(body: LLMServiceChatOptions) {
+  prepareChatBody(body: LLMServiceChatOptions) {
     const template = {
       ...defaultTemplate,
       ...(this.templates[body.template || ""] || {}),
     };
 
-    let filledMessages = [];
+    let filledMessages: OpenAIMessage[] = [];
 
     if (template.systemPrompt) {
       filledMessages.push({
@@ -109,7 +109,13 @@ export class LLMService {
     }
 
     if (body.messages) {
-      filledMessages = [...filledMessages, ...body.messages];
+      body.messages.forEach((message) => {
+        filledMessages.push({
+          role: message.role,
+          content: message.content,
+          user: message.user,
+        });
+      });
     }
 
     if (filledMessages.length == 0) {
@@ -164,7 +170,7 @@ export class LLMService {
   }
 
   async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
-    const preparedBody = this.prepareBody(body);
+    const preparedBody = this.prepareChatBody(body);
     if (this.debug) {
       console.log("[LLMService] preparedBody", preparedBody);
     }
