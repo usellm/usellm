@@ -5,13 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import useLLM from "@/usellm";
 import { useState } from "react";
 
-interface Embedding {
-  text: string;
-  embedding: number[];
-}
-
 const createPrompt = (paragraphs: string[], question: string) => `
-
 Read the following paragraphs from a longer document and answer the question below.
 
 --DOCUMENT BEGINS--
@@ -21,12 +15,12 @@ ${paragraphs.join("\n\n")}
 --DOCUMENT ENDS--
 
 Question: ${question}
-
 `;
 
 export default function DocumentSearchDemoPage() {
   const [documentText, setDocumentText] = useState("");
-  const [documentEmbeddings, setDocumentEmbeddings] = useState<Embedding[]>([]); // [{ text: "", embedding: [] }
+  const [paragraphs, setParagraphs] = useState<string[]>([]);
+  const [documentEmbeddings, setDocumentEmbeddings] = useState<number[][]>([]);
   const [question, setQuestion] = useState("");
   const [matchedParagraphs, setMatchedParagraphs] = useState<string[]>([]);
   const [answer, setAnswer] = useState("");
@@ -35,42 +29,32 @@ export default function DocumentSearchDemoPage() {
 
   async function handleEmbedClick() {
     const paragraphs = documentText
-      .trim()
       .split("\n\n")
       .slice(0, 20)
       .map((p) => p.trim().substring(0, 1000));
+    setParagraphs(paragraphs);
     const { embeddings } = await llm.embed({ input: paragraphs });
-    setDocumentEmbeddings(
-      embeddings.map((data: { embedding: number[] }, idx: number) => ({
-        text: paragraphs[idx],
-        embedding: data.embedding,
-      }))
-    );
+    setDocumentEmbeddings(embeddings);
   }
 
   async function handleSubmitClick() {
-    if (!question) {
+    if (!question || !documentEmbeddings.length) {
       return;
     }
+
     const { embeddings } = await llm.embed({ input: question });
-    const questionEmbedding = embeddings[0].embedding;
+    const matchingParagraphs = llm
+      .scoreEmbeddings({
+        embeddings: documentEmbeddings,
+        query: embeddings[0],
+        top: 3,
+      })
+      .map(({ index }) => paragraphs[index]);
+    setMatchedParagraphs(matchingParagraphs);
 
-    const matchingEmbeddings = documentEmbeddings
-      .map((embedding) => ({
-        ...embedding,
-        similarity: llm.cosineSimilarity(
-          embedding.embedding,
-          questionEmbedding
-        ),
-      }))
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, 3);
-
-    const paragraphs = matchingEmbeddings.map((embedding) => embedding.text);
-    setMatchedParagraphs(paragraphs);
     const initialMessage = {
       role: "user",
-      content: createPrompt(paragraphs, question),
+      content: createPrompt(matchingParagraphs, question),
     };
     const { message } = await llm.chat({
       messages: [initialMessage],

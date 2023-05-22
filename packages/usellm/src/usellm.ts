@@ -180,12 +180,14 @@ export default function useLLM({
   function scoreEmbeddings(options: {
     embeddings: Array<Array<number>>;
     query: number[];
+    top?: number;
   }) {
-    const { embeddings, query } = options;
+    const { embeddings, query, top } = options;
     const scores = embeddings.map((vector) => cosineSimilarity(query, vector));
     const sortedScores = scores
       .map((score, index) => ({ score, index }))
-      .sort((a, b) => b.score - a.score);
+      .sort((a, b) => b.score - a.score)
+      .slice(0, top || undefined);
     return sortedScores;
   }
 
