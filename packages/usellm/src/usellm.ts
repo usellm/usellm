@@ -35,6 +35,12 @@ export interface UseLLMOptions {
   fetcher?: typeof fetch;
 }
 
+export interface ScoreEmbeddingsOptions {
+  embeddings: Array<Array<number>>;
+  query: number[];
+  top?: number;
+}
+
 export default function useLLM({
   serviceUrl,
   fetcher = fetch,
@@ -177,5 +183,23 @@ export default function useLLM({
     return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
   }
 
-  return { chat, record, stopRecording, transcribe, embed, cosineSimilarity };
+  function scoreEmbeddings(options: ScoreEmbeddingsOptions) {
+    const { embeddings, query, top } = options;
+    const scores = embeddings.map((vector) => cosineSimilarity(query, vector));
+    const sortedScores = scores
+      .map((score, index) => ({ score, index }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, top || undefined);
+    return sortedScores;
+  }
+
+  return {
+    chat,
+    record,
+    stopRecording,
+    transcribe,
+    embed,
+    cosineSimilarity,
+    scoreEmbeddings,
+  };
 }
