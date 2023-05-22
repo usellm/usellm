@@ -35,6 +35,7 @@ export default function DocumentSearchDemoPage() {
 
   async function handleEmbedClick() {
     const paragraphs = documentText
+      .trim()
       .split("\n\n")
       .slice(0, 20)
       .map((p) => p.trim().substring(0, 1000));
@@ -80,9 +81,9 @@ export default function DocumentSearchDemoPage() {
   }
 
   return (
-    <div style={{ margin: "0 auto", maxWidth: 640, padding: 8 }}>
-      <h1 style={{ margin: "16px 0", fontSize: 20, fontWeight: "bold" }}>
-        Document Q&A
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="my-4 text-3xl text-center font-bold">
+        <code>llm.embed</code> - Document Q&A
       </h1>
       <Textarea
         rows={10}
@@ -143,7 +144,7 @@ export default function DocumentSearchDemoPage() {
               considered for embedding.
             </li>
             <li>
-              The question&lquo;s embedding will be used to find top 3 matching
+              The question embedding will be used to find top 3 matching
               paragraphs using cosine similary
             </li>
             <li>
