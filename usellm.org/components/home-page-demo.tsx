@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "./icons";
 import ScrollToBottom from "react-scroll-to-bottom";
+import { useToast } from "./ui/use-toast";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
@@ -39,6 +40,7 @@ function Message({ role, content }: OpenAIMessage) {
 }
 
 export function HomePageDemo() {
+  const { toast } = useToast();
   const [status, setStatus] = useState<Status>("idle");
   const [history, setHistory] = useState<OpenAIMessage[]>([
     {
@@ -55,31 +57,11 @@ export function HomePageDemo() {
     if (!inputText) {
       return;
     }
-
-    setStatus("streaming");
-    const newHistory = [...history, { role: "user", content: inputText }];
-    setHistory(newHistory);
-    setInputText("");
-    const { message } = await llm.chat({
-      messages: newHistory,
-      stream: true,
-      onStream: ({ message }) => setHistory([...newHistory, message]),
-    });
-    setHistory([...newHistory, message]);
-    setStatus("idle");
-  }
-
-  async function handleRecordClick() {
-    if (status === "idle") {
-      await llm.record();
-      setStatus("recording");
-    } else if (status === "recording") {
-      setStatus("transcribing");
-      const { audioUrl } = await llm.stopRecording();
-      const { text } = await llm.transcribe({ audioUrl });
+    try {
       setStatus("streaming");
-      const newHistory = [...history, { role: "user", content: text }];
+      const newHistory = [...history, { role: "user", content: inputText }];
       setHistory(newHistory);
+      setInputText("");
       const { message } = await llm.chat({
         messages: newHistory,
         stream: true,
@@ -87,6 +69,41 @@ export function HomePageDemo() {
       });
       setHistory([...newHistory, message]);
       setStatus("idle");
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Something went wrong!",
+        description: error.message,
+      });
+    }
+  }
+
+  async function handleRecordClick() {
+    try {
+      if (status === "idle") {
+        await llm.record();
+        setStatus("recording");
+      } else if (status === "recording") {
+        setStatus("transcribing");
+        const { audioUrl } = await llm.stopRecording();
+        const { text } = await llm.transcribe({ audioUrl });
+        setStatus("streaming");
+        const newHistory = [...history, { role: "user", content: text }];
+        setHistory(newHistory);
+        const { message } = await llm.chat({
+          messages: newHistory,
+          stream: true,
+          onStream: ({ message }) => setHistory([...newHistory, message]),
+        });
+        setHistory([...newHistory, message]);
+        setStatus("idle");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Something went wrong!",
+        description: error.message,
+      });
     }
   }
 

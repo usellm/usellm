@@ -89,6 +89,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/guides/conversation-history",
         },
         {
+          title: "Next Prompt Suggestion",
+          href: "/docs/guides/next-prompt-suggestion",
+        },
+        {
           title: "Embedding Documents",
           href: "/docs/guides/embedding-documents",
         },
