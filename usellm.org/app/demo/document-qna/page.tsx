@@ -131,7 +131,7 @@ export default function DocumentSearchDemoPage() {
         </div>
       )}
 
-      {!answer && (
+      {!answer && !matchedParagraphs && (
         <div className="prose dark:prose-invert">
           <div className="text-lg font-medium">How it Works</div>
           <ul>
