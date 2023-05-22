@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "./icons";
-import ScrollToBottom from "react-scroll-to-bottom";
 import { useToast } from "./ui/use-toast";
 
 function capitalize(word: string) {
@@ -52,6 +51,14 @@ export function HomePageDemo() {
   const [inputText, setInputText] = useState("");
 
   const llm = useLLM({ serviceUrl: "/api/llm" });
+
+  let messagesWindow = useRef<Element | null>(null);
+
+  useEffect(() => {
+    if (messagesWindow?.current) {
+      messagesWindow.current.scrollTop = messagesWindow.current.scrollHeight;
+    }
+  }, [history]);
 
   async function handleSend() {
     if (!inputText) {
@@ -123,11 +130,14 @@ export function HomePageDemo() {
           </a>
         </div>
       </div>
-      <ScrollToBottom className="w-full flex-1 overflow-y-auto px-4">
+      <div
+        className="w-full flex-1 overflow-y-auto px-4"
+        ref={(el) => (messagesWindow.current = el)}
+      >
         {history.map((message, idx) => (
           <Message {...message} key={idx} />
         ))}
-      </ScrollToBottom>
+      </div>
       <div className="w-full py-4 flex px-4">
         <Input
           type="text"
