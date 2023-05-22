@@ -35,6 +35,12 @@ export interface UseLLMOptions {
   fetcher?: typeof fetch;
 }
 
+export interface ScoreEmbeddingsOptions {
+  embeddings: Array<Array<number>>;
+  query: number[];
+  top?: number;
+}
+
 export default function useLLM({
   serviceUrl,
   fetcher = fetch,
@@ -177,11 +183,7 @@ export default function useLLM({
     return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
   }
 
-  function scoreEmbeddings(options: {
-    embeddings: Array<Array<number>>;
-    query: number[];
-    top?: number;
-  }) {
+  function scoreEmbeddings(options: ScoreEmbeddingsOptions) {
     const { embeddings, query, top } = options;
     const scores = embeddings.map((vector) => cosineSimilarity(query, vector));
     const sortedScores = scores
