@@ -20,6 +20,8 @@ export const CHAT_COMPLETIONS_API_URL =
 export const AUDIO_TRANSCRIPTIONS_API_URL =
   "https://api.openai.com/v1/audio/transcriptions";
 
+export const EMBEDDINGS_API_URL = "https://api.openai.com/v1/embeddings";
+
 export class ResponseError extends Error {
   status?: number;
 }

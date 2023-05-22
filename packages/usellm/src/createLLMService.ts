@@ -2,6 +2,7 @@ import OpenAIStream from "./OpenAIStream";
 import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
+  EMBEDDINGS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
   fillPrompt,
@@ -10,6 +11,7 @@ import {
 
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
+  actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
@@ -52,6 +54,13 @@ export interface LLMServiceTranscribeOptions {
   prompt?: string;
 }
 
+export interface LLMServiceEmbedOptions {
+  $action?: string;
+  input?: string | string[];
+  user?: string;
+  model?: string;
+}
+
 export interface LLMServiceHandleOptions {
   body: object;
   request?: Request;
@@ -66,6 +75,7 @@ export class LLMService {
   openaiApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
+  actions: string[];
   isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
 
   constructor({
@@ -74,12 +84,14 @@ export class LLMService {
     templates = {},
     debug = false,
     isAllowed = () => true,
+    actions = [],
   }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
     this.isAllowed = isAllowed;
+    this.actions = actions;
   }
 
   registerTemplate(template: LLMServiceTemplate) {
@@ -160,13 +172,22 @@ export class LLMService {
       );
     }
     const { $action, ...rest } = body;
-    if ($action === "chat") {
-      return this.chat(rest as LLMServiceChatOptions);
-    } else if ($action === "transcribe") {
-      return this.transcribe(rest as LLMServiceTranscribeOptions);
-    } else {
+
+    if (this.actions.length > 0 && !this.actions.includes($action as string)) {
       throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
     }
+
+    if ($action === "chat") {
+      return this.chat(rest as LLMServiceChatOptions);
+    }
+    if ($action === "transcribe") {
+      return this.transcribe(rest as LLMServiceTranscribeOptions);
+    }
+    if ($action === "embed") {
+      return this.embed(rest as LLMServiceEmbedOptions);
+    }
+
+    throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
   }
 
   async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
@@ -198,6 +219,26 @@ export class LLMService {
       const result = await response.text();
       return { result };
     }
+  }
+
+  async embed(options: LLMServiceEmbedOptions) {
+    const { input, user } = options;
+    const model = "text-embedding-ada-002";
+
+    const response = await this.fetcher(EMBEDDINGS_API_URL, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+      method: "POST",
+      body: JSON.stringify({ input, user, model }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const { data } = await response.json();
+    return { result: JSON.stringify({ embeddings: data }) };
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {
@@ -235,12 +276,8 @@ export class LLMService {
   }
 }
 
-export default function createLLMService({
-  openaiApiKey = "",
-  fetcher = fetch,
-  templates = {},
-  isAllowed = () => true,
-  debug = false,
-}: CreateLLMServiceOptions = {}) {
-  return new LLMService({ openaiApiKey, fetcher, templates, isAllowed, debug });
+export default function createLLMService(
+  options: CreateLLMServiceOptions = {}
+) {
+  return new LLMService(options);
 }
