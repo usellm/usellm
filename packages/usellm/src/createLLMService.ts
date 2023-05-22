@@ -56,7 +56,7 @@ export interface LLMServiceTranscribeOptions {
 
 export interface LLMServiceEmbedOptions {
   $action?: string;
-  input?: string;
+  input?: string | string[];
   user?: string;
   model?: string;
 }
@@ -237,8 +237,8 @@ export class LLMService {
     if (!response.ok) {
       throw new Error(await response.text());
     }
-    const result = await response.json();
-    return { result };
+    const { data } = await response.json();
+    return { result: JSON.stringify({ embeddings: data }) };
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {

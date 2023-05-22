@@ -15,6 +15,11 @@ export interface LLMChatOptions {
   onStream?: ChatStreamCallback;
 }
 
+export interface LLMEmbedOptions {
+  input: string | string[];
+  user?: string;
+}
+
 export interface LLMRecordOptions {
   deviceId?: string;
 }
@@ -132,7 +137,7 @@ export default function useLLM({
     return response.json();
   }
 
-  async function embed({ input, user }: { input: string; user?: string }) {
+  async function embed({ input, user }: LLMEmbedOptions) {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -150,5 +155,27 @@ export default function useLLM({
     return response.json();
   }
 
-  return { chat, record, stopRecording, transcribe, embed };
+  function dotProduct(vecA: number[], vecB: number[]): number {
+    let product = 0;
+    if (vecA.length !== vecB.length)
+      throw new Error("Vectors must be same length");
+    for (let i = 0; i < vecA.length; i++) {
+      product += (vecA[i] as number) * (vecB[i] as number);
+    }
+    return product;
+  }
+
+  function magnitude(vec: number[]): number {
+    let sum = 0;
+    for (let i = 0; i < vec.length; i++) {
+      sum += (vec[i] as number) * (vec[i] as number);
+    }
+    return Math.sqrt(sum);
+  }
+
+  function cosineSimilarity(vecA: number[], vecB: number[]): number {
+    return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
+  }
+
+  return { chat, record, stopRecording, transcribe, embed, cosineSimilarity };
 }
