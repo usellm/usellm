@@ -6,8 +6,6 @@ description: Run, test, and add features to useLLM and contribute to the project
 If you're interested in contributing to the `useLLM` project, that's fantastic!
 This guide will walk you through the setup process.
 
-
-
 ### Step 1: Fork the Repository
 
 Start by forking the repository. You can do this by visiting the
@@ -17,18 +15,20 @@ under your own GitHub account.
 
 TODO - repository screenshot
 
-**Keep Your Fork Updated:** It's important to regularly sync your fork with the main repository. 
-The main repository will continue to receive updates as other contributors make changes. 
-By keeping your fork in sync with the main repository, you ensure that you're always working 
+#### Keep Your Fork Updated
+
+It's important to regularly sync your fork with the main repository.
+The main repository will continue to receive updates as other contributors make changes.
+By keeping your fork in sync with the main repository, you ensure that you're always working
 with the most recent version of the project.
 
 You can sync your fork directly from GitHub:
 
-- Navigate to your forked repository on GitHub.
-- Click on `Sync fork` in the repository header.
-- Click on `Update Branch`.
+1. Navigate to your forked repository on GitHub.
+2. Click on `Sync fork` in the repository header.
+3. Click on `Update Branch`.
 
-After you have synced your fork from GitHub, pull the updates to your local copy 
+After you have synced your fork from GitHub, pull the updates to your local copy
 of the repository in your development environment:
 
 ```bash
@@ -36,21 +36,21 @@ git checkout main
 git pull origin main
 ```
 
-Now, your local copy is in sync with the main repository  and you're ready to start contributing!
+Now, your local copy is in sync with the main repository and you're ready to start contributing!
 
-This process ensures that you're always working with the latest codebase, reducing the chances 
+This process ensures that you're always working with the latest codebase, reducing the chances
 of merge conflicts and other issues that could arise from an outdated fork.
-
 
 ### Step 2: Develop in Codespaces
 
 Codespaces provides a complete, configurable development environment in seconds.
 
-To open the forked repository in Codespaces follow these steps: 
-- Navigate to your forked repository
-- Click on the 'Code' button. 
-- Select 'Open with Codespaces'
-- Finally, Create a new codespace.
+To open the forked repository in Codespaces follow these steps:
+
+1. Navigate to your forked repository
+2. Click on the 'Code' button.
+3. Select 'Open with Codespaces'
+4. Finally, Create a new codespace.
 
 TODO - add screenshot
 
@@ -87,7 +87,99 @@ npm install
 
 This will install all the necessary dependencies listed in the `package.json` file.
 
-### Step 4: Run Development Server
+### Step 4: Create Environment File
+
+Before starting the development server, you need to set up some environment variables.
+The `usellm.org` application requires your OpenAI API Key and Upstash Redis REST URL and Token.
+
+In the root directory of the `usellm.org` application, there's an `.env.example` file that
+lists these required variables. Here is what it looks like:
+
+```
+NEXT_PUBLIC_APP_URL=http://usellm.org
+OPENAI_API_KEY=XXXX
+UPSTASH_REDIS_REST_URL=XXXX
+UPSTASH_REDIS_REST_TOKEN=XXXX
+```
+
+To set up your environment variables:
+
+1. Copy the `.env.example` file and rename the copied file to `.env.local`.
+2. Replace `XXXX` with your actual OpenAI API Key, Upstash Redis REST URL, and
+   Token in the `.env.local` file.
+
+Please note, your `.env.local` file should never be committed to the repository,
+as it contains sensitive information. Hence it is added to the `.gitignore` file.
+
+#### Generating OpenAI API Key
+
+The OpenAI API key is a unique identifier that authorizes and tracks API requests
+associated with your project. The useLLM project utilizes this key to interface with
+OpenAI's services and resources, such as the GPT-3.5 model. Without this key, your
+application wouldn't have the necessary permissions to access these services,
+thereby inhibiting functionalities associated with OpenAI's AI models.
+
+Here are the steps to Generate OpenAI API Key:
+
+1. **Navigate to OpenAI API Keys page**: Start by visiting the
+   [OpenAI API Keys](https://platform.openai.com/account/api-keys) page.
+
+2. **Create an Account or Sign In**: If you don't already have an OpenAI account, you'll
+   need to create one. If you already have an account, simply click on 'Sign In' and enter your credentials.
+
+3. **Access API Keys Dashboard**: Once you're signed in, you'll be directed to the API
+   Keys dashboard. Here, you can manage your existing API keys and create new ones.
+
+4. **Create a New API Key**: To create a new API key, click on the 'Create new' or '+ New key'
+   button (depending on the current UI). A new window will open prompting you to provide a
+   description for the key. After filling in the details, click 'Create'.
+
+5. **Copy the API Key**: After creating the key, it will be listed in your API Keys dashboard.
+   Make sure to copy the key (a long string of alphanumeric characters) immediately, as you won't
+   be able to view it again once you leave the page or refresh.
+
+#### Generating Upstash Redis Token
+
+The Upstash Redis token is required to connect to your Redis database hosted on Upstash.
+Redis is an in-memory data structure store used as a database, cache, and message broker.
+In the context of useLLM, Redis is used for managing session data and other caching needs.
+The token authenticates your application and ensures secure communication with your Upstash
+Redis database. Without this token, your application would be unable to interact with the
+data stored in your Redis database.
+
+Here are the steps to Generate Upstash Redis URL and Token:
+
+1. **Create an Upstash account**: Start by creating an account on
+   [Upstash](https://upstash.com/), if you don't already have one.
+   Upstash offers a generous free tier that should be more than sufficient
+   for development purposes.
+
+2. **Create a new Redis database**: After logging in, navigate to your Upstash
+   dashboard and create a new Redis database by clicking on the 'Create Database' button.
+
+3. **Database Configuration**: Choose a name for your database and select the region
+   closest to you. Then, click 'Create' to create the database.
+
+4. **Get your REST URL and Token**: Once the database is created, click on the 'REST'
+   tab in the database dashboard. Here, you'll find your REST URL and Token.
+   The URL will be in the format `https://xxx.upstash.io`, and the token will be
+   a long string of alphanumeric characters.
+
+### Step 5: Create Feature Branch
+
+Before you start making changes, always create a new branch. Doing so helps isolate your changes
+and makes it easier to manage them. Avoid making changes directly to the main branch.
+
+To create a new branch, use the following command:
+
+```bash
+git checkout -b your-branch-name
+```
+
+Replace "your-branch-name" with a descriptive name for your branch (E.x: add-feature or fix-api-error).
+This name should provide some indication of the changes you're making in the branch.
+
+### Step 6: Run Development Server
 
 Once the installation process is finished, you can run the development server.
 In the `usellm.org` directory, run:
@@ -101,21 +193,7 @@ the localhost URL to view the application in a new tab.
 
 TODO - add screenshot
 
-### Step 5: Create a New Branch for Each Feature or Bugfix
-
-Before you start making changes, always create a new branch. Doing so helps isolate your changes 
-and makes it easier to manage them. Avoid making changes directly to the main branch.
-
-To create a new branch, use the following command:
-
-```bash
-git checkout -b your-branch-name
-```
-Replace "your-branch-name" with a descriptive name for your branch (E.x: add-feature or fix-api-error). 
-This name should provide some indication of the changes you're making in the branch.
-
-
-### Step 6: Make Changes
+### Step 7: Make Changes
 
 Feel free to make changes to the codebase, either within the `usellm.org` NextJS app or within
 the `usellm` package! The `usellm.org` application is set up to copy over the `usellm` package
@@ -129,10 +207,10 @@ Here are some good places to start:
 - Fix bugs or add new features to the `usellm` package within the `packages/usellm` folder
 - Browse through open issues on the [useLLM repository](https://github.com/usellm/usellm/issues) and see if you can help out!
 
-### Step 7: Submit a Pull Request
+### Step 8: Submit a Pull Request
 
 Once you're satisfied with your changes and they're thoroughly tested, commit them to your
-branch. Remember, it's a best practice to create a new branch for each feature or bugfix 
+branch. Remember, it's a best practice to create a new branch for each feature or bugfix
 rather than working directly on your main branch.
 
 Push your branch to your remote copy of repository:
@@ -141,11 +219,11 @@ Push your branch to your remote copy of repository:
 git push origin your-branch-name
 ```
 
-Then, navigate to your [original repository](https://usellm.org/usellm) on GitHub, 
+Then, navigate to your [original repository](https://usellm.org/usellm) on GitHub,
 where you can create a new pull request by [following this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
-When creating your pull request, be sure to provide a thorough description of your 
-changes, the motivation behind them, and any additional context that would aid the 
+When creating your pull request, be sure to provide a thorough description of your
+changes, the motivation behind them, and any additional context that would aid the
 reviewers. Please note that all tests and checks must pass before your changes can be merged.
 
 Thank you for your interest in contributing to `useLLM`! Your efforts help make this project better for everyone.
