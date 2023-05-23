@@ -1,11 +1,7 @@
-import createLLMService from "./createLLMService.js";
-import useLLM from "./usellm.js";
-export type {
-  OpenAIMessage,
-  ChatStreamCallback,
-  LLMChatResult,
-} from "./utils.js";
-export type { LLMChatOptions, UseLLMOptions } from "./usellm.js";
+import createLLMService from "./createLLMService";
+import useLLM from "./usellm";
+export type { OpenAIMessage, ChatStreamCallback, LLMChatResult } from "./utils";
+export type { LLMChatOptions, UseLLMOptions } from "./usellm";
 export type {
   CreateLLMServiceOptions,
   LLMServiceChatOptions,
