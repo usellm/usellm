@@ -2,8 +2,8 @@ import {
   createParser,
   ParsedEvent,
   ReconnectInterval,
-} from "./eventsource-parser";
-import { CHAT_COMPLETIONS_API_URL } from "./utils";
+} from "./eventsource-parser.js";
+import { CHAT_COMPLETIONS_API_URL } from "./utils.js";
 
 export interface OpenAIStreamOptions {
   body: object;

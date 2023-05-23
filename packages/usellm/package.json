@@ -1,9 +1,10 @@
 {
   "name": "usellm",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "User Large Language Models in Your React Apps",
   "scripts": {
     "build": "tsc",
+    "pack": "npm run build && npm pack --pack-destination ~",
     "publish": "npm run build && npx np --no-tests --any-branch --no-yarn"
   },
   "repository": {

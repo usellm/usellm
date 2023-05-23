@@ -5,7 +5,7 @@ import {
   ChatStreamCallback,
   streamOpenAIResponse,
   LLMChatResult,
-} from "./utils";
+} from "./utils.js";
 
 export interface LLMChatOptions {
   messages?: OpenAIMessage[];

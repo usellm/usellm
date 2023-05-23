@@ -1,4 +1,4 @@
-import OpenAIStream from "./OpenAIStream";
+import OpenAIStream from "./OpenAIStream.js";
 import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
@@ -7,7 +7,7 @@ import {
   dataURLToBlob,
   fillPrompt,
   makeErrorResponse,
-} from "./utils";
+} from "./utils.js";
 
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
