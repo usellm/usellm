@@ -12,7 +12,7 @@
     "build:cjs": "tsc --module commonjs --target es2017 --outDir dist/cjs",
     "build:types": "tsc --declaration true --emitDeclarationOnly true --outDir dist/types",
     "pack": "npm run build && npm pack --pack-destination ~",
-    "publish": "npm run build && npx np --no-tests --any-branch --no-yarn"
+    "release": "npm run build && npx np --no-tests --any-branch --no-yarn"
   },
   "repository": {
     "type": "git",
