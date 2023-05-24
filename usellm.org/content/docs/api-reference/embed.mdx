@@ -1,32 +1,36 @@
 ---
 title: "llm.embed"
-description: "Generates numerical embeddings for given text inputs and allowing context-sensitive AI interactions."
+description: "Generates numerical embeddings for given text inputs for allowing context-sensitive AI interactions."
 ---
 
-The `embed` function is used to generate embeddings for a given text or a list of texts.
-Embeddings are numerical representations of text data and are often used for measuring semantic similarities
+The `llm.embed` function is used to generate embeddings for a given text or a list of texts.
+[Embeddings](https://platform.openai.com/docs/guides/embeddings) are numerical representations of text data and are often used for measuring semantic similarities
 and helping in context based AI interaction.
 
-### How it works
-
-- The first 20 paragraphs of the document will be considered for embedding
-- In each paragraphs the first 1000 characters will be considered for embedding
-- The question embedding will be used to find top 3 matching paragraphs using cosine similarities
-- Matching paragraphs will be passed along with the question to the OpenAI chat completions
-  API to generate an answer
+`llm.embed` uses [OpenAI's Create Embedding](https://platform.openai.com/docs/api-reference/embeddings/create) API under the hood.
 
 ### Syntax
 
 ```javascript
-async function embed({ input, user }: { input: string | string[], user?: string })
+const { embeddings } = await llm.embed({
+  input: "Embed me please!", // single string
+});
 ```
 
-#### Parameters
+OR
+
+```javascript
+const { embeddings } = await llm.embed({
+  input: paragraphs, // list of strings
+});
+```
+
+### Parameters
 
 - `input` (String or Array of Strings): The text or texts to be embedded.
 - `user` (optional, String): An optional parameter representing the users question.
 
-#### Return Value
+### Return Value
 
 The `embed` function is an asynchronous function that returns a Promise, which resolves to an object
 containing the key 'embeddings'. The value of 'embeddings' is a list of vectors, one for each input text.
@@ -37,7 +41,7 @@ containing the key 'embeddings'. The value of 'embeddings' is a list of vectors,
 
 ### Example
 
-Here's a sample code demonstrating how to use the `llm.embed` function:
+Here's an example usage of `llm.embed` function ([live demo](https://usellm.org/demo/document-qna)):
 
 ```javascript
 "use client";
@@ -96,7 +100,3 @@ of a document text and a user question. Then, the `scoreEmbeddings` method is us
 the top 3 paragraphs that are semantically closest to the question. Afterward, a prompt is
 created by combining the question with these paragraphs, and it is passed to the `chat`
 function to generate an answer. The resulting answer is then displayed on the screen.
-
----
-
-For more details on how to use the useLLM hook, refer to the [Getting Started Guide](https://usellm.org/get-started) and the [API Reference](https://usellm.org/api-reference).
