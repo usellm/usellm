@@ -18,6 +18,7 @@ type Status =
 
 export default function TalkToAIDemoPage() {
   const [status, setStatus] = useState<Status>("idle");
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const llm = useLLM({ serviceUrl: "/api/llm" });
   const [history, setHistory] = useState<OpenAIMessage[]>([
     {
@@ -29,6 +30,7 @@ export default function TalkToAIDemoPage() {
 
   async function handleClick() {
     if (status === "idle") {
+      setAudioUrl(null);
       await llm.record();
       setStatus("recording");
     } else if (status === "recording") {
@@ -47,8 +49,10 @@ export default function TalkToAIDemoPage() {
         text: message.content,
       });
       setStatus("speaking");
+      setAudioUrl(responseAudioUrl);
       const audio = new Audio(responseAudioUrl);
       await audio.play();
+
       setStatus("idle");
     }
   }
@@ -68,6 +72,7 @@ export default function TalkToAIDemoPage() {
       {status !== "idle" && (
         <div className="text-center mt-4 text-lg">{capitalize(status)}...</div>
       )}
+      {audioUrl && <audio className="mt-4" controls src={audioUrl} />}
     </div>
   );
 }

@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/usellm/usellm#readme",
   "devDependencies": {
+    "@types/node": "^20.2.3",
     "@types/react": "^18.2.6",
     "react": "^18.2.0",
     "typescript": "^5.0.4"
