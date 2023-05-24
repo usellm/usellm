@@ -1,0 +1,102 @@
+---
+title: "llm.embed"
+description: "Generates numerical embeddings for given text inputs for allowing context-sensitive AI interactions."
+---
+
+The `llm.embed` function is used to generate embeddings for a given text or a list of texts.
+[Embeddings](https://platform.openai.com/docs/guides/embeddings) are numerical representations of text data and are often used for measuring semantic similarities
+and helping in context based AI interaction.
+
+`llm.embed` uses [OpenAI's Create Embedding](https://platform.openai.com/docs/api-reference/embeddings/create) API under the hood.
+
+### Syntax
+
+```javascript
+const { embeddings } = await llm.embed({
+  input: "Embed me please!", // single string
+});
+```
+
+OR
+
+```javascript
+const { embeddings } = await llm.embed({
+  input: paragraphs, // list of strings
+});
+```
+
+### Parameters
+
+- `input` (String or Array of Strings): The text or texts to be embedded.
+- `user` (optional, String): An optional parameter representing the users question.
+
+### Return Value
+
+The `embed` function is an asynchronous function that returns a Promise, which resolves to an object
+containing the key 'embeddings'. The value of 'embeddings' is a list of vectors, one for each input text.
+
+```javascript
+{ embeddings: number[][] }
+```
+
+### Example
+
+Here's an example usage of `llm.embed` function ([live demo](https://usellm.org/demo/document-qna)):
+
+```javascript
+"use client";
+import useLLM from "usellm";
+import React, { useState } from "react";
+
+export default function EmbedDemoPage() {
+  const [documentText, setDocumentText] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+
+  async function handleSubmit() {
+    const paragraphs = documentText.split("\n").filter((p) => p.length > 0);
+    const { embeddings } = await llm.embed({ input: paragraphs });
+    const { embeddings: queryEmbeddings } = await llm.embed({
+      input: question,
+    });
+
+    const top3paragraphs = llm
+      .scoreEmbeddings({ embeddings, query: queryEmbeddings[0], top: 3 })
+      .map(({ index }) => paragraphs[index])
+      .join("\n\n");
+
+    const prompt = `Answer this: ${question} \n\nUse this information:${top3paragraphs}`;
+    const { message } = await llm.chat({
+      messages: [{ role: "user", content: prompt }],
+    });
+    setAnswer(message.content);
+  }
+
+  return (
+    <div style={{ padding: 8 }}>
+      <textarea
+        maxLength={2000}
+        rows={10}
+        value={documentText}
+        onChange={(e) => setDocumentText(e.target.value)}
+      />
+      <input
+        type="text"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Ask a question about the document"
+      />
+      <button onClick={handleSubmit}>Ask</button>
+      <div>Answer:</div>
+      <div>{answer}</div>
+    </div>
+  );
+}
+```
+
+In this example, the `embed` function is used to generate embeddings for each paragraph
+of a document text and a user question. Then, the `scoreEmbeddings` method is used to find
+the top 3 paragraphs that are semantically closest to the question. Afterward, a prompt is
+created by combining the question with these paragraphs, and it is passed to the `chat`
+function to generate an answer. The resulting answer is then displayed on the screen.

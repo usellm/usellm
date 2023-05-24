@@ -60,6 +60,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/transcribe",
         },
         {
+          title: "`llm.embed`",
+          href: "/docs/api-reference/embed",
+        },
+        {
           title: "`registerTemplate`",
           href: "/docs/api-reference/register-template",
         },
