@@ -22,6 +22,9 @@ export const AUDIO_TRANSCRIPTIONS_API_URL =
 
 export const EMBEDDINGS_API_URL = "https://api.openai.com/v1/embeddings";
 
+export const getTextToSpeechApiUrl = (voice_id: string) =>
+  `https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`;
+
 export class ResponseError extends Error {
   status?: number;
 }

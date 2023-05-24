@@ -6,11 +6,13 @@ import {
   OpenAIMessage,
   dataURLToBlob,
   fillPrompt,
+  getTextToSpeechApiUrl,
   makeErrorResponse,
 } from "./utils";
 
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
+  elvenLabsApiKey?: string;
   actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
@@ -66,6 +68,14 @@ export interface LLMServiceHandleOptions {
   request?: Request;
 }
 
+export interface LLMServiceSpeakOptions {
+  $action?: string;
+  text?: string;
+  model_id?: string;
+  voice_id?: string;
+  voice_settings?: { stability: number; similarity_boost: number };
+}
+
 export interface LLMServiceHandleResponse {
   result: ReadableStream | string;
 }
@@ -73,6 +83,7 @@ export interface LLMServiceHandleResponse {
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
+  elvenLabsApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
@@ -80,6 +91,7 @@ export class LLMService {
 
   constructor({
     openaiApiKey = "",
+    elvenLabsApiKey = "",
     fetcher = fetch,
     templates = {},
     debug = false,
@@ -87,6 +99,7 @@ export class LLMService {
     actions = [],
   }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
+    this.elvenLabsApiKey = elvenLabsApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
@@ -186,6 +199,9 @@ export class LLMService {
     if ($action === "embed") {
       return this.embed(rest as LLMServiceEmbedOptions);
     }
+    if ($action === "speak") {
+      return this.speak(rest as LLMServiceSpeakOptions);
+    }
 
     throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
   }
@@ -273,6 +289,40 @@ export class LLMService {
     }
     const result = await response.text();
     return { result };
+  }
+
+  async speak(options: LLMServiceSpeakOptions) {
+    const {
+      text,
+      model_id = "eleven_monolingual_v1",
+      voice_id = "21m00Tcm4TlvDq8ikWAM",
+      voice_settings,
+    } = options;
+
+    const response = await this.fetcher(getTextToSpeechApiUrl(voice_id), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "xi-api-key": this.elvenLabsApiKey,
+      },
+      body: JSON.stringify({
+        text,
+        model_id,
+        voice_settings,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const responseBlob = await response.blob();
+    return new Promise<LLMServiceHandleResponse>((resolve) => {
+      var reader = new FileReader();
+      reader.onloadend = function () {
+        var base64data = reader.result as string;
+        resolve({ result: JSON.stringify({ audioUrl: base64data }) });
+      };
+      reader.readAsDataURL(responseBlob);
+    });
   }
 }
 
