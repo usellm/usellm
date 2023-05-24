@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const { result } = await llmService.handle({ body, request });
     return new Response(result, { status: 200, headers });
   } catch (error: any) {
-    console.log("error", error);
+    console.error("[LLM Service]", error);
     return new Response(error.message, {
       status: error?.status,
       headers,
