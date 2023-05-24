@@ -35,6 +35,13 @@ export interface UseLLMOptions {
   fetcher?: typeof fetch;
 }
 
+export interface SpeakOptions {
+  text: string;
+  model_id?: string;
+  voice_id?: string;
+  voice_settings?: { stability: number; similarity_boost: number };
+}
+
 export interface ScoreEmbeddingsOptions {
   embeddings: Array<Array<number>>;
   query: number[];
@@ -193,6 +200,23 @@ export default function useLLM({
     return sortedScores;
   }
 
+  async function speak(options: SpeakOptions) {
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...options,
+        $action: "speak",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    return response.json();
+  }
+
   return {
     chat,
     record,
@@ -201,5 +225,6 @@ export default function useLLM({
     embed,
     cosineSimilarity,
     scoreEmbeddings,
+    speak,
   };
 }
