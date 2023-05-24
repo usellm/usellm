@@ -317,14 +317,14 @@ export class LLMService {
       throw new Error(await response.text());
     }
     const responseBlob = await response.blob();
-    return new Promise<LLMServiceHandleResponse>((resolve) => {
-      var reader = new FileReader();
-      reader.onloadend = function () {
-        var base64data = reader.result as string;
-        resolve({ result: JSON.stringify({ audioUrl: base64data }) });
-      };
-      reader.readAsDataURL(responseBlob);
-    });
+    const responseBuffer = Buffer.from(await responseBlob.arrayBuffer());
+    const audioUrl =
+      "data:" +
+      responseBlob.type +
+      ";base64," +
+      responseBuffer.toString("base64");
+
+    return { result: JSON.stringify({ audioUrl }) };
   }
 }
 
