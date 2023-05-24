@@ -2,6 +2,8 @@ import OpenAIStream from "./OpenAIStream";
 import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
+  ELVEN_LABS_DEFAULT_MODEL_ID,
+  ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
@@ -294,8 +296,8 @@ export class LLMService {
   async speak(options: LLMServiceSpeakOptions) {
     const {
       text,
-      model_id = "eleven_monolingual_v1",
-      voice_id = "21m00Tcm4TlvDq8ikWAM",
+      model_id = ELVEN_LABS_DEFAULT_MODEL_ID,
+      voice_id = ELVEN_LABS_DEFAULT_VOICE_ID,
       voice_settings,
     } = options;
 

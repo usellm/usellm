@@ -25,6 +25,10 @@ export const EMBEDDINGS_API_URL = "https://api.openai.com/v1/embeddings";
 export const getTextToSpeechApiUrl = (voice_id: string) =>
   `https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`;
 
+export const ELVEN_LABS_DEFAULT_MODEL_ID = "eleven_monolingual_v1";
+
+export const ELVEN_LABS_DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
+
 export class ResponseError extends Error {
   status?: number;
 }
