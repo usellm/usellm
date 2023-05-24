@@ -15,12 +15,10 @@ under your own GitHub account.
 
 TODO - repository screenshot
 
-#### Keep Your Fork Updated
+#### Keeping Your Fork Updated
 
 It's important to regularly sync your fork with the main repository.
 The main repository will continue to receive updates as other contributors make changes.
-By keeping your fork in sync with the main repository, you ensure that you're always working
-with the most recent version of the project.
 
 You can sync your fork directly from GitHub:
 
@@ -38,12 +36,9 @@ git pull origin main
 
 Now, your local copy is in sync with the main repository and you're ready to start contributing!
 
-This process ensures that you're always working with the latest codebase, reducing the chances
-of merge conflicts and other issues that could arise from an outdated fork.
-
 ### Step 2: Develop in Codespaces
 
-Codespaces provides a complete, configurable development environment in seconds.
+[GitHub Codespaces](https://github.com/features/codespaces) provides a complete, configurable development environment in seconds.
 
 To open the forked repository in Codespaces follow these steps:
 
@@ -85,17 +80,24 @@ cd usellm.org
 npm install
 ```
 
-This will install all the necessary dependencies listed in the `package.json` file.
+Also, navigate to `packages/usellm` directory in the terminal and run `npm install`.
 
-### Step 4: Create Environment File
+```bash
+cd ..
+cd packages/usellm
+npm install
+```
+
+### Step 4: Add Environment Variables
 
 Before starting the development server, you need to set up some environment variables.
-The `usellm.org` application requires your OpenAI API Key and Upstash Redis REST URL and Token.
+The `usellm.org` application requires your OpenAI API Key and Upstash Redis REST URL
+and token (see below for details).
 
 In the root directory of the `usellm.org` application, there's an `.env.example` file that
 lists these required variables. Here is what it looks like:
 
-```
+```ini
 NEXT_PUBLIC_APP_URL=http://usellm.org
 OPENAI_API_KEY=XXXX
 UPSTASH_REDIS_REST_URL=XXXX
@@ -138,6 +140,8 @@ Here are the steps to Generate OpenAI API Key:
    Make sure to copy the key (a long string of alphanumeric characters) immediately, as you won't
    be able to view it again once you leave the page or refresh.
 
+TODO - Add Screenshot
+
 #### Generating Upstash Redis Token
 
 The Upstash Redis token is required to connect to your Redis database hosted on Upstash.
@@ -165,21 +169,9 @@ Here are the steps to Generate Upstash Redis URL and Token:
    The URL will be in the format `https://xxx.upstash.io`, and the token will be
    a long string of alphanumeric characters.
 
-### Step 5: Create Feature Branch
+TODO - Add Screenshot
 
-Before you start making changes, always create a new branch. Doing so helps isolate your changes
-and makes it easier to manage them. Avoid making changes directly to the main branch.
-
-To create a new branch, use the following command:
-
-```bash
-git checkout -b your-branch-name
-```
-
-Replace "your-branch-name" with a descriptive name for your branch (E.x: add-feature or fix-api-error).
-This name should provide some indication of the changes you're making in the branch.
-
-### Step 6: Run Development Server
+### Step 5: Run Development Server
 
 Once the installation process is finished, you can run the development server.
 In the `usellm.org` directory, run:
@@ -192,6 +184,21 @@ This command starts the development server. Press the "Open in Browser" button o
 the localhost URL to view the application in a new tab.
 
 TODO - add screenshot
+
+### Step 6: Create Feature Branch
+
+Before you start making changes, always create a new branch. Doing so helps isolate your changes
+and makes it easier to manage them. Avoid making changes directly to the main branch.
+
+To create a new branch open a new terminal window and use the following command:
+
+```bash
+cd usellm.org
+git checkout -b your-branch-name
+```
+
+Replace "your-branch-name" with a descriptive name for your branch (E.x: add-feature or fix-api-error).
+This name should provide some indication of the changes you're making in the branch.
 
 ### Step 7: Make Changes
 
