@@ -36,7 +36,7 @@ export default function TalkToAIDemoPage() {
     } else if (status === "recording") {
       setStatus("transcribing");
       const { audioUrl } = await llm.stopRecording();
-      const { text } = await llm.transcribe({ audioUrl });
+      const { text } = await llm.transcribe({ audioUrl, language: "en" });
       setStatus("understanding");
       const newHistory = [...history, { role: "user", content: text }];
       setHistory(newHistory);
@@ -52,7 +52,6 @@ export default function TalkToAIDemoPage() {
       setAudioUrl(responseAudioUrl);
       const audio = new Audio(responseAudioUrl);
       await audio.play();
-
       setStatus("idle");
     }
   }
