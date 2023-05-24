@@ -67,6 +67,14 @@ export const docsConfig: DocsConfig = {
           title: "`registerTemplate`",
           href: "/docs/api-reference/register-template",
         },
+        {
+          title: "`llm.scoreEmbeddings`",
+          href: "/docs/api-reference/scoreEmbeddings",
+        },
+        {
+          title: "`llm.cosineSimilarity`",
+          href: "docs/api-reference/cosineSimilarity",
+        },
       ],
     },
     {
