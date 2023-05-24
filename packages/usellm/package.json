@@ -1,9 +1,17 @@
 {
   "name": "usellm",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "User Large Language Models in Your React Apps",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
+    "build:esm": "tsc --module esnext --target es2017 --outDir dist/esm",
+    "build:cjs": "tsc --module commonjs --target es2017 --outDir dist/cjs",
+    "build:types": "tsc --declaration true --emitDeclarationOnly true --outDir dist/types",
+    "pack": "npm run build && npm pack --pack-destination ~",
     "publish": "npm run build && npx np --no-tests --any-branch --no-yarn"
   },
   "repository": {
@@ -19,17 +27,11 @@
     "url": "https://github.com/usellm/usellm/issues"
   },
   "homepage": "https://github.com/usellm/usellm#readme",
-  "exports": {
-    ".": "./dist/index.js"
-  },
-  "main": "./dist/index.js",
   "devDependencies": {
     "@types/react": "^18.2.6",
     "react": "^18.2.0",
     "typescript": "^5.0.4"
   },
-  "types": "./dist/index.d.ts",
-  "type": "module",
   "engines": {
     "node": ">=14.17"
   },
