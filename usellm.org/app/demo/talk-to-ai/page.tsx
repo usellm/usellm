@@ -48,7 +48,6 @@ export default function TalkToAIDemoPage() {
       const { audioUrl: responseAudioUrl } = await llm.speak({
         text: message.content,
       });
-      console.log({ responseAudioUrl });
       setStatus("speaking");
       setAudioUrl(responseAudioUrl);
       const audio = new Audio(responseAudioUrl);
