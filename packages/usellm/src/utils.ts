@@ -20,15 +20,6 @@ export interface ScoreEmbeddingsOptions {
   top?: number;
 }
 
-export async function fileToDataURL(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
 export const CHAT_COMPLETIONS_API_URL =
   "https://api.openai.com/v1/chat/completions";
 
@@ -124,6 +115,16 @@ export function dataURLToBlob(dataurl: string): Blob {
   }
 
   return new Blob([u8arr], { type: mime });
+}
+
+export function dataUrlExtension(dataURL: string) {
+  var extension = "";
+  if (dataURL.indexOf("/") !== -1 && dataURL.indexOf(";") !== -1) {
+    var startIndex = dataURL.indexOf("/") + 1;
+    var endIndex = dataURL.indexOf(";");
+    extension = dataURL.substring(startIndex, endIndex);
+  }
+  return extension;
 }
 
 function dotProduct(vecA: number[], vecB: number[]): number {

@@ -5,7 +5,6 @@ import {
   ChatStreamCallback,
   streamOpenAIResponse,
   LLMChatResult,
-  fileToDataURL,
   cosineSimilarity,
   scoreEmbeddings,
 } from "./utils";
@@ -60,7 +59,7 @@ export interface EditImageOptions {
 }
 
 export interface ImageVariationOptions {
-  image: File;
+  imageUrl: string;
   n?: number;
   size?: number;
 }
@@ -220,13 +219,15 @@ export default function useLLM({
   }
 
   async function editImage(options: EditImageOptions) {
-    const { imageUrl, maskUrl } = options;
+    const { imageUrl, maskUrl, prompt, n, size } = options;
 
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ...options,
+        prompt,
+        n,
+        size,
         image: imageUrl,
         mask: maskUrl,
         $action: "editImage",
@@ -241,16 +242,15 @@ export default function useLLM({
   }
 
   async function imageVariation(options: ImageVariationOptions) {
-    const { image } = options;
-
-    const imageDataUrl = fileToDataURL(image);
+    const { imageUrl, n, size } = options;
 
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ...options,
-        image: imageDataUrl,
+        image: imageUrl,
+        n: n,
+        size: size,
         $action: "imageVariation",
       }),
     });
@@ -260,6 +260,32 @@ export default function useLLM({
     }
 
     return response.json();
+  }
+
+  async function fileToDataURL(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function imageToDataURL(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas: HTMLCanvasElement = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, img.width, img.height);
+        const dataUrl = canvas.toDataURL("image/png");
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+    });
   }
 
   return {
@@ -272,8 +298,9 @@ export default function useLLM({
     scoreEmbeddings,
     speak,
     generateImage,
+    fileToDataURL,
+    imageToDataURL,
     editImage,
     imageVariation,
-    fileToDataURL,
   };
 }

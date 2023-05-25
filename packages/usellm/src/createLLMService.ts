@@ -10,6 +10,7 @@ import {
   IMAGE_VARIATIONS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
+  dataUrlExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
@@ -239,6 +240,12 @@ export class LLMService {
     if ($action === "generateImage") {
       return this.generateImage(rest as LLMServiceGenerateImageOptions);
     }
+    if ($action === "editImage") {
+      return this.editImage(rest as LLMServiceEditImageOptions);
+    }
+    if ($action === "imageVariation") {
+      return this.imageVariation(rest as LLMServiceImageVariationOptions);
+    }
     throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
   }
 
@@ -360,8 +367,17 @@ export class LLMService {
   async editImage(options: LLMServiceEditImageOptions) {
     const { image, mask, prompt, n, size, user } = options;
     const formData = new FormData();
-    formData.append("image", image);
-    mask && formData.append("mask", mask);
+    formData.append(
+      "image",
+      dataURLToBlob(image),
+      `image.${dataUrlExtension(image)}`
+    );
+    mask &&
+      formData.append(
+        "mask",
+        dataURLToBlob(mask),
+        `mask.${dataUrlExtension(mask)}`
+      );
     prompt && formData.append("prompt", prompt);
     n && formData.append("n", n.toString());
     size && formData.append("size", size);
@@ -378,14 +394,20 @@ export class LLMService {
     if (!response.ok) {
       throw new Error(await response.text());
     }
-    const result = await response.text();
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
     return { result };
   }
 
   async imageVariation(options: LLMServiceImageVariationOptions) {
     const { image, n, size, user } = options;
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append(
+      "image",
+      dataURLToBlob(image),
+      `image.${dataUrlExtension(image)}`
+    );
     n && formData.append("n", n.toString());
     size && formData.append("size", size);
     user && formData.append("user", user);
@@ -401,7 +423,9 @@ export class LLMService {
     if (!response.ok) {
       throw new Error(await response.text());
     }
-    const result = await response.text();
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
     return { result };
   }
 
