@@ -57,7 +57,7 @@ export const docsConfig: DocsConfig = {
         },
         {
           title: "`.embed`",
-          href: "/docs/api-reference/llm-embed",
+          href: "/docs/api-reference/embed",
         },
       ],
     },
