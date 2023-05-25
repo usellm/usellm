@@ -5,6 +5,7 @@ import {
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
+  IMAGE_GENERATION_API_URL,
   OpenAIMessage,
   dataURLToBlob,
   fillPrompt,
@@ -76,6 +77,14 @@ export interface LLMServiceSpeakOptions {
   model_id?: string;
   voice_id?: string;
   voice_settings?: { stability: number; similarity_boost: number };
+}
+
+export interface LLMServiceGenerateImageOptions {
+  $action?: string;
+  prompt: string;
+  n?: number;
+  size?: string;
+  response_format?: string;
 }
 
 export interface LLMServiceHandleResponse {
@@ -204,7 +213,9 @@ export class LLMService {
     if ($action === "speak") {
       return this.speak(rest as LLMServiceSpeakOptions);
     }
-
+    if ($action === "generateImage") {
+      return this.generateImage(rest as LLMServiceGenerateImageOptions);
+    }
     throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
   }
 
@@ -355,6 +366,36 @@ export class LLMService {
       responseBuffer.toString("base64");
 
     return { result: JSON.stringify({ audioUrl }) };
+  }
+
+  async generateImage(options: LLMServiceGenerateImageOptions) {
+    const { prompt } = options;
+
+    if (!prompt) {
+      throw makeErrorResponse("'prompt' is required", 400);
+    }
+
+    const response = await this.fetcher(IMAGE_GENERATION_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+      body: JSON.stringify({
+        prompt,
+        n: 1,
+        size: "256x256",
+        response_format: "url",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
+    return { result };
   }
 }
 

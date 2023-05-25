@@ -30,6 +30,10 @@ export interface LLMTranscribeOptions {
   prompt?: string;
 }
 
+export interface GenerateImageOptions {
+  prompt: string;
+}
+
 export interface UseLLMOptions {
   serviceUrl?: string;
   fetcher?: typeof fetch;
@@ -217,6 +221,23 @@ export default function useLLM({
     return response.json();
   }
 
+  async function generateImage(options: GenerateImageOptions) {
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...options,
+        $action: "generateImage",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    return response.json();
+  }
+
   return {
     chat,
     record,
@@ -226,5 +247,6 @@ export default function useLLM({
     cosineSimilarity,
     scoreEmbeddings,
     speak,
+    generateImage,
   };
 }

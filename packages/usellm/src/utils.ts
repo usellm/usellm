@@ -29,6 +29,9 @@ export const ELVEN_LABS_DEFAULT_MODEL_ID = "eleven_monolingual_v1";
 
 export const ELVEN_LABS_DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
 
+export const IMAGE_GENERATION_API_URL =
+  "https://api.openai.com/v1/images/generations";
+
 export class ResponseError extends Error {
   status?: number;
 }
