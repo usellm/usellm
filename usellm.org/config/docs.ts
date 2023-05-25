@@ -56,6 +56,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/transcribe",
         },
         {
+          title: "`.speak`",
+          href: "/docs/api-reference/speak",
+        },
+        {
           title: "`.embed`",
           href: "/docs/api-reference/embed",
         },
