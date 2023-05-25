@@ -37,35 +37,44 @@ export const docsConfig: DocsConfig = {
       ],
     },
     {
-      title: "API Reference",
+      title: "Client-Side Usage",
       items: [
         {
           title: "`useLLM`",
           href: "/docs/api-reference/usellm-hook",
         },
         {
+          title: "`.chat`",
+          href: "/docs/api-reference/chat",
+        },
+        {
+          title: "`.record`",
+          href: "/docs/api-reference/record",
+        },
+        {
+          title: "`.transcribe`",
+          href: "/docs/api-reference/transcribe",
+        },
+        {
+          title: "`.embed`",
+          href: "/docs/api-reference/embed",
+        },
+      ],
+    },
+    {
+      title: "Server-Side Usage",
+      items: [
+        {
           title: "`createLLMService`",
           href: "/docs/api-reference/create-llm-service",
         },
         {
-          title: "`llm.chat`",
-          href: "/docs/api-reference/chat",
-        },
-        {
-          title: "`llm.record`",
-          href: "/docs/api-reference/record",
-        },
-        {
-          title: "`llm.transcribe`",
-          href: "/docs/api-reference/transcribe",
-        },
-        {
-          title: "`llm.embed`",
-          href: "/docs/api-reference/embed",
-        },
-        {
-          title: "`registerTemplate`",
+          title: "`.registerTemplate`",
           href: "/docs/api-reference/register-template",
+        },
+        {
+          title: "`.handle`",
+          href: "/docs/api-reference/llmservice-handle",
         },
       ],
     },
