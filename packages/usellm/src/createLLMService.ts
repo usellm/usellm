@@ -2,12 +2,15 @@ import OpenAIStream from "./OpenAIStream";
 import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
+  EDIT_IMAGE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
+  IMAGE_VARIATIONS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
+  dataUrlToExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
@@ -85,6 +88,27 @@ export interface LLMServiceGenerateImageOptions {
   n?: number;
   size?: string;
   response_format?: string;
+  user?: string;
+}
+
+export interface LLMServiceEditImageOptions {
+  $action?: string;
+  image: string;
+  mask?: string;
+  prompt?: string;
+  n?: number;
+  size?: string;
+  response_format?: string;
+  user?: string;
+}
+
+export interface LLMServiceImageVariationOptions {
+  $action?: string;
+  image: string;
+  n?: number;
+  size?: string;
+  response_format?: string;
+  user?: string;
 }
 
 export interface LLMServiceHandleResponse {
@@ -215,6 +239,12 @@ export class LLMService {
     }
     if ($action === "generateImage") {
       return this.generateImage(rest as LLMServiceGenerateImageOptions);
+    }
+    if ($action === "editImage") {
+      return this.editImage(rest as LLMServiceEditImageOptions);
+    }
+    if ($action === "imageVariation") {
+      return this.imageVariation(rest as LLMServiceImageVariationOptions);
     }
     throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
   }
@@ -369,7 +399,7 @@ export class LLMService {
   }
 
   async generateImage(options: LLMServiceGenerateImageOptions) {
-    const { prompt } = options;
+    const { prompt, n = 1, size = "256x256" } = options;
 
     if (!prompt) {
       throw makeErrorResponse("'prompt' is required", 400);
@@ -383,10 +413,75 @@ export class LLMService {
       },
       body: JSON.stringify({
         prompt,
-        n: 1,
-        size: "256x256",
+        n: Math.min(n, 4),
+        size: size,
         response_format: "url",
       }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
+    return { result };
+  }
+
+  async editImage(options: LLMServiceEditImageOptions) {
+    const { image, mask, prompt, n, size, user } = options;
+    const formData = new FormData();
+    formData.append(
+      "image",
+      dataURLToBlob(image),
+      `image.${dataUrlToExtension(image)}`
+    );
+    mask &&
+      formData.append(
+        "mask",
+        dataURLToBlob(mask),
+        `mask.${dataUrlToExtension(mask)}`
+      );
+    prompt && formData.append("prompt", prompt);
+    n && formData.append("n", Math.max(n, 4).toString());
+    size && formData.append("size", size);
+    user && formData.append("user", user);
+
+    const response = await this.fetcher(EDIT_IMAGE_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
+    return { result };
+  }
+
+  async imageVariation(options: LLMServiceImageVariationOptions) {
+    const { image, n, size, user } = options;
+    const formData = new FormData();
+    formData.append(
+      "image",
+      dataURLToBlob(image),
+      `image.${dataUrlToExtension(image)}`
+    );
+    n && formData.append("n", Math.max(n, 4).toString());
+    size && formData.append("size", size);
+    user && formData.append("user", user);
+
+    const response = await this.fetcher(IMAGE_VARIATIONS_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
     });
 
     if (!response.ok) {
