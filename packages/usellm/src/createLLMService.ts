@@ -2,10 +2,12 @@ import OpenAIStream from "./OpenAIStream";
 import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
+  EDIT_IMAGE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
+  IMAGE_VARIATIONS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
   fillPrompt,
@@ -85,6 +87,27 @@ export interface LLMServiceGenerateImageOptions {
   n?: number;
   size?: string;
   response_format?: string;
+  user?: string;
+}
+
+export interface LLMServiceEditImageOptions {
+  $action?: string;
+  image: string;
+  mask?: string;
+  prompt?: string;
+  n?: number;
+  size?: string;
+  response_format?: string;
+  user?: string;
+}
+
+export interface LLMServiceImageVariationOptions {
+  $action?: string;
+  image: string;
+  n?: number;
+  size?: string;
+  response_format?: string;
+  user?: string;
 }
 
 export interface LLMServiceHandleResponse {
@@ -320,6 +343,54 @@ export class LLMService {
     }
 
     const response = await this.fetcher(AUDIO_TRANSCRIPTIONS_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const result = await response.text();
+    return { result };
+  }
+
+  async editImage(options: LLMServiceEditImageOptions) {
+    const { image, mask, prompt, n, size, user } = options;
+    const formData = new FormData();
+    formData.append("image", image);
+    mask && formData.append("mask", mask);
+    prompt && formData.append("prompt", prompt);
+    n && formData.append("n", n.toString());
+    size && formData.append("size", size);
+    user && formData.append("user", user);
+
+    const response = await this.fetcher(EDIT_IMAGE_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const result = await response.text();
+    return { result };
+  }
+
+  async imageVariation(options: LLMServiceImageVariationOptions) {
+    const { image, n, size, user } = options;
+    const formData = new FormData();
+    formData.append("image", image);
+    n && formData.append("n", n.toString());
+    size && formData.append("size", size);
+    user && formData.append("user", user);
+
+    const response = await this.fetcher(IMAGE_VARIATIONS_API_URL, {
       method: "POST",
       body: formData,
       headers: {

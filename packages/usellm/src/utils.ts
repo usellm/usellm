@@ -14,6 +14,15 @@ export interface LLMChatResult {
   message: OpenAIMessage;
 }
 
+export async function fileToDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export const CHAT_COMPLETIONS_API_URL =
   "https://api.openai.com/v1/chat/completions";
 
@@ -31,6 +40,11 @@ export const ELVEN_LABS_DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
 
 export const IMAGE_GENERATION_API_URL =
   "https://api.openai.com/v1/images/generations";
+
+export const EDIT_IMAGE_API_URL = "https://api.openai.com/v1/images/edits";
+
+export const IMAGE_VARIATIONS_API_URL =
+  "https://api.openai.com/v1/images/variations";
 
 export class ResponseError extends Error {
   status?: number;

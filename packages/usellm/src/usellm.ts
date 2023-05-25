@@ -6,6 +6,7 @@ import {
   streamOpenAIResponse,
   LLMChatResult,
 } from "./utils";
+import { fileToDataURL } from "@/lib/utils";
 
 export interface LLMChatOptions {
   messages?: OpenAIMessage[];
@@ -32,6 +33,8 @@ export interface LLMTranscribeOptions {
 
 export interface GenerateImageOptions {
   prompt: string;
+  n?: number;
+  size?: number;
 }
 
 export interface UseLLMOptions {
@@ -50,6 +53,20 @@ export interface ScoreEmbeddingsOptions {
   embeddings: Array<Array<number>>;
   query: number[];
   top?: number;
+}
+
+export interface EditImageOptions {
+  image: File;
+  mask?: File;
+  prompt?: string;
+  n?: number;
+  size?: number;
+}
+
+export interface ImageVariationOptions {
+  image: File;
+  n?: number;
+  size?: number;
 }
 
 export default function useLLM({
@@ -228,6 +245,52 @@ export default function useLLM({
       body: JSON.stringify({
         ...options,
         $action: "generateImage",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    return response.json();
+  }
+
+  async function editImage(options: EditImageOptions) {
+    const { image, mask } = options;
+
+    const imageDataUrl = fileToDataURL(image);
+    const maskDataUrl = mask ? fileToDataURL(mask) : undefined;
+
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...options,
+        image: imageDataUrl,
+        mask: maskDataUrl,
+        $action: "editImage",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    return response.json();
+  }
+
+  async function imageVariation(options: ImageVariationOptions) {
+    const { image } = options;
+
+    const imageDataUrl = fileToDataURL(image);
+
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...options,
+        image: imageDataUrl,
+        $action: "imageVariation",
       }),
     });
 
