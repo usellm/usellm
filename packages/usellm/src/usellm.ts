@@ -5,8 +5,8 @@ import {
   ChatStreamCallback,
   streamOpenAIResponse,
   LLMChatResult,
+  fileToDataURL,
 } from "./utils";
-import { fileToDataURL } from "@/lib/utils";
 
 export interface LLMChatOptions {
   messages?: OpenAIMessage[];
