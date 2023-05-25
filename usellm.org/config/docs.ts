@@ -59,6 +59,14 @@ export const docsConfig: DocsConfig = {
           title: "`.embed`",
           href: "/docs/api-reference/embed",
         },
+        {
+          title: "`.scoreEmbeddings`",
+          href: "/docs/api-reference/scoreEmbeddings",
+        },
+        {
+          title: "`.cosineSimilarity`",
+          href: "docs/api-reference/cosineSimilarity",
+        },
       ],
     },
     {

@@ -1,0 +1,108 @@
+---
+title: llm.cosineSimilarity
+description: Utility function to compute the cosine similarity between two vectors
+---
+
+The `llm.cosineSimilarity` function computes the cosine similarity between two vectors `vecA` and `vecB`.
+This function is often used in natural language processing and information retrieval to measure the similarity
+between two text documents, by viewing them as vectors in a high dimensional space.
+In essence, it measures the cosine of the angle between two vectors projected in a multi-dimensional space.
+
+The cosine similarity varies between -1 and 1. A value closer to 1 indicates higher similarity,
+while a value closer to -1 indicates high dissimilarity.
+
+The cosine similarity is calculated as follows:
+
+```plaintext
+cosine_similarity = dot_product(vecA, vecB) / (magnitude(vecA) * magnitude(vecB))
+```
+
+The `dotProduct` method calculates the dot product of two vectors, while the `magnitude` method computes the magnitude of a vector.
+
+### Syntax
+
+```javascript
+const similarity = cosineSimilarity(vecA, vecB);
+```
+
+### Parameters
+
+- **`vecA`**: A number array representing the first vector.
+- **`vecB`**: A number array representing the second vector.
+
+### Returns
+
+This function returns a number that represents the cosine similarity between two vectors.
+
+### Example
+
+Here's a simple example to illustrate the usage of `cosineSimilarity` ([live demo](https://usellm.org/demo/cosine-similarity)):
+
+```javascript
+"use client";
+import useLLM from "usellm";
+import React, { useState } from "react";
+
+export default function EmbedDemoPage() {
+  const [documentText, setDocumentText] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+
+  async function handleSubmit() {
+    const paragraphs = documentText.split("\n").filter((p) => p.length > 0);
+    const { embeddings: docEmbeddings } = await llm.embed({
+      input: paragraphs,
+    });
+    const { embeddings: queryEmbeddings } = await llm.embed({
+      input: question,
+    });
+
+    // Calculate similarity between the first paragraph and the query
+    const similarity = llm.cosineSimilarity(
+      docEmbeddings[0],
+      queryEmbeddings[0]
+    );
+    setAnswer(similarity.toString());
+  }
+
+  return (
+    <div style={{ padding: 8 }}>
+      <textarea
+        maxLength={2000}
+        rows={10}
+        value={documentText}
+        onChange={(e) => setDocumentText(e.target.value)}
+      />
+      <input
+        type="text"
+        value={question}
+        style={{ display: "block" }}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Ask a question about the document"
+      />
+      <button
+        className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        onClick={handleSubmit}
+      >
+        Calculate similarity
+      </button>
+      <div>Answer:</div>
+      <div>{answer}</div>
+    </div>
+  );
+}
+```
+
+In this example, the embeddings of the document and the query are first obtained using the embed function.
+The cosine similarity between the first paragraph and the query is then calculated using the cosineSimilarity
+function. The Cosine Similarity is displayed on the screen. This gives us a measure of how similar the question is to the
+first paragraph of the document.
+
+## See Also
+
+For further reading, you can refer to the following resources:
+
+- [Dot Product (Wikipedia)](https://en.wikipedia.org/wiki/Dot_product)
+- [Cosine Similarity (Wikipedia)](https://en.wikipedia.org/wiki/Cosine_similarity)
+- [Magnitude (Euclidean Vector) (Wikipedia)](https://en.wikipedia.org/wiki/Euclidean_vector#Length)

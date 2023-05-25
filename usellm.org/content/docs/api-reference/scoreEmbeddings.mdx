@@ -1,0 +1,95 @@
+---
+title: llm.scoreEmbeddings
+description: Rank embeddings by semantic similarity to a query
+---
+
+The `llm.scoreEmbeddings` method enables you to rank a list of embeddings based on their semantic
+similarity to a query embedding. This function uses cosine similarity to score each embedding in the
+list against the query, returning a sorted array of the most semantically similar embeddings,
+up to a specified number.
+
+### Syntax
+
+```javascript
+const top3paragraphs = llm.scoreEmbeddings({
+  embeddings,
+  queryEmbeddings,
+  top: 3,
+});
+```
+
+### Parameters
+
+- `embeddings`: An array of embeddings (each being an array of numbers) representing the semantic meaning of different text inputs.
+
+- `query`: An array of numbers representing the embedding of the query for which you want to find the most semantically similar embeddings.
+
+- `top`: Optional. The number of top results to return. If not provided, it returns all the embeddings sorted by their scores.
+
+### Return Value
+
+This function returns an array of objects. Each object has two properties: `score` (the cosine similarity score to the query)
+and `index` (the original index of the embedding in the provided list).
+
+## Example
+
+Score Embedding is used in the `llm.embed` function to rank the query with the paragraph. ([Live Demo](https://usellm.org/demo/document-qna))
+
+```javascript
+"use client";
+import useLLM from "usellm";
+import React, { useState } from "react";
+
+export default function EmbedDemoPage() {
+  const [documentText, setDocumentText] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+
+  async function handleSubmit() {
+    // Embed the paragraphs and the user question
+    const paragraphs = documentText.split("\n").filter((p) => p.length > 0);
+    const { embeddings } = await llm.embed({ input: paragraphs });
+    const { embeddings: queryEmbeddings } = await llm.embed({
+      input: question,
+    });
+
+    // scoreEmbeddings to get the top 3 most similar paragraphs using Cosine Similarity
+    const top3paragraphs = llm
+      .scoreEmbeddings({ embeddings, query: queryEmbeddings[0], top: 3 })
+      .map(({ index }) => paragraphs[index])
+      .join("\n\n");
+
+    // Use the top3paragraphs to chat with llm model
+    const prompt = `Answer this: ${question} \n\nUse this information:${top3paragraphs}`;
+    const { message } = await llm.chat({
+      messages: [{ role: "user", content: prompt }],
+    });
+    setAnswer(message.content);
+  }
+
+  return (
+    <div style={{ padding: 8 }}>
+      <textarea
+        maxLength={2000}
+        rows={10}
+        value={documentText}
+        onChange={(e) => setDocumentText(e.target.value)}
+      />
+      <input
+        type="text"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Ask a question about the document"
+      />
+      <button onClick={handleSubmit}>Ask</button>
+      <div>Answer:</div>
+      <div>{answer}</div>
+    </div>
+  );
+}
+```
+
+In this example, we first generate embeddings for each paragraph of a document and the query question.
+Then, we score each paragraph's embedding against the question's embedding and select the top three most similar paragraphs.
+We then provide these paragraphs as context for an AI chat, asking the AI to answer the question based on the provided information.
