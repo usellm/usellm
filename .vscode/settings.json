@@ -2,5 +2,18 @@
   "editor.tabSize": 2,
   "eslint.workingDirectories": ["./usellm.org", "./packages/usellm"],
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "explorer.autoRevealExclude": {
+    "./packages/usellm/dist": true,
+    "./usellm.org/usellm": true
+  },
+  "explorer.excludeGitIgnore": false,
+  "search.exclude": {
+    "packages/usellm/dist": true,
+    "usellm.org/usellm": true
+  },
+  "files.exclude": {
+    "packages/usellm/dist": true,
+    "usellm.org/usellm": true
+  }
 }
