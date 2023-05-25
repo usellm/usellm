@@ -243,6 +243,35 @@ export class LLMService {
     const { input, user } = options;
     const model = "text-embedding-ada-002";
 
+    if (!input) {
+      throw makeErrorResponse("'input' is required", 400);
+    }
+
+    if (typeof input !== "string" && !Array.isArray(input)) {
+      throw makeErrorResponse(
+        "'input' must be a string or a list of strings",
+        400
+      );
+    }
+
+    let santizedInput: string | string[];
+
+    if (typeof input === "string") {
+      santizedInput = input.trim();
+    } else {
+      santizedInput = input.map((s) => {
+        const trimmed = s.trim();
+        if (!trimmed) {
+          throw makeErrorResponse("'input' must not contain any empty strings");
+        }
+        return s.trim();
+      });
+    }
+
+    if (santizedInput.length === 0) {
+      throw makeErrorResponse("'input' must not be empty", 400);
+    }
+
     const response = await this.fetcher(EMBEDDINGS_API_URL, {
       headers: {
         "Content-Type": "application/json",
@@ -256,7 +285,8 @@ export class LLMService {
       throw new Error(await response.text());
     }
     const { data } = await response.json();
-    return { result: JSON.stringify({ embeddings: data }) };
+    const embeddings = data.map((d: any) => d.embedding);
+    return { result: JSON.stringify({ embeddings }) };
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {
