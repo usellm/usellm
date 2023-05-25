@@ -364,71 +364,6 @@ export class LLMService {
     return { result };
   }
 
-  async editImage(options: LLMServiceEditImageOptions) {
-    const { image, mask, prompt, n, size, user } = options;
-    const formData = new FormData();
-    formData.append(
-      "image",
-      dataURLToBlob(image),
-      `image.${dataUrlToExtension(image)}`
-    );
-    mask &&
-      formData.append(
-        "mask",
-        dataURLToBlob(mask),
-        `mask.${dataUrlToExtension(mask)}`
-      );
-    prompt && formData.append("prompt", prompt);
-    n && formData.append("n", n.toString());
-    size && formData.append("size", size);
-    user && formData.append("user", user);
-
-    const response = await this.fetcher(EDIT_IMAGE_API_URL, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${this.openaiApiKey}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-    const { data } = await response.json();
-    const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
-  }
-
-  async imageVariation(options: LLMServiceImageVariationOptions) {
-    const { image, n, size, user } = options;
-    const formData = new FormData();
-    formData.append(
-      "image",
-      dataURLToBlob(image),
-      `image.${dataUrlToExtension(image)}`
-    );
-    n && formData.append("n", n.toString());
-    size && formData.append("size", size);
-    user && formData.append("user", user);
-
-    const response = await this.fetcher(IMAGE_VARIATIONS_API_URL, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${this.openaiApiKey}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-    const { data } = await response.json();
-    const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
-  }
-
   async speak(options: LLMServiceSpeakOptions) {
     const {
       text,
@@ -464,7 +399,7 @@ export class LLMService {
   }
 
   async generateImage(options: LLMServiceGenerateImageOptions) {
-    const { prompt } = options;
+    const { prompt, n = 1, size = "256x256" } = options;
 
     if (!prompt) {
       throw makeErrorResponse("'prompt' is required", 400);
@@ -478,10 +413,75 @@ export class LLMService {
       },
       body: JSON.stringify({
         prompt,
-        n: 1,
-        size: "256x256",
+        n: Math.min(n, 4),
+        size: size,
         response_format: "url",
       }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
+    return { result };
+  }
+
+  async editImage(options: LLMServiceEditImageOptions) {
+    const { image, mask, prompt, n, size, user } = options;
+    const formData = new FormData();
+    formData.append(
+      "image",
+      dataURLToBlob(image),
+      `image.${dataUrlToExtension(image)}`
+    );
+    mask &&
+      formData.append(
+        "mask",
+        dataURLToBlob(mask),
+        `mask.${dataUrlToExtension(mask)}`
+      );
+    prompt && formData.append("prompt", prompt);
+    n && formData.append("n", Math.max(n, 4).toString());
+    size && formData.append("size", size);
+    user && formData.append("user", user);
+
+    const response = await this.fetcher(EDIT_IMAGE_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    const { data } = await response.json();
+    const images = data.map((d: any) => d.url || d.b64_json);
+    const result = JSON.stringify({ images });
+    return { result };
+  }
+
+  async imageVariation(options: LLMServiceImageVariationOptions) {
+    const { image, n, size, user } = options;
+    const formData = new FormData();
+    formData.append(
+      "image",
+      dataURLToBlob(image),
+      `image.${dataUrlToExtension(image)}`
+    );
+    n && formData.append("n", Math.max(n, 4).toString());
+    size && formData.append("size", size);
+    user && formData.append("user", user);
+
+    const response = await this.fetcher(IMAGE_VARIATIONS_API_URL, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+      },
     });
 
     if (!response.ok) {

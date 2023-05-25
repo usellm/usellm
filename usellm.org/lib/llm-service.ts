@@ -16,7 +16,6 @@ export const llmService = createLLMService({
     "embed",
     "speak",
     "generateImage",
-    "editImage",
     "imageVariation",
   ],
   isAllowed: async () => {

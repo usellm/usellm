@@ -35,7 +35,7 @@ export interface LLMTranscribeOptions {
 export interface GenerateImageOptions {
   prompt: string;
   n?: number;
-  size?: number;
+  size?: "256x256" | "512x512" | "1024x1024";
 }
 
 export interface UseLLMOptions {
@@ -55,13 +55,13 @@ export interface EditImageOptions {
   maskUrl?: string;
   prompt?: string;
   n?: number;
-  size?: number;
+  size?: "256x256" | "512x512" | "1024x1024";
 }
 
 export interface ImageVariationOptions {
   imageUrl: string;
   n?: number;
-  size?: number;
+  size?: "256x256" | "512x512" | "1024x1024";
 }
 
 export default function useLLM({
