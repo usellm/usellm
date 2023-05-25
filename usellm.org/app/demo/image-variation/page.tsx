@@ -54,7 +54,7 @@ export default function ImageVariationsDemoPage() {
         <img
           className="mt-4"
           src={resultImageUrl}
-          alt={prompt}
+          alt="result"
           width={256}
           height={256}
         />
