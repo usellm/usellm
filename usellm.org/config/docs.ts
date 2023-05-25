@@ -64,6 +64,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/embed",
         },
         {
+          title: "`.generateImage`",
+          href: "/docs/api-reference/generateImage",
+        },
+        {
           title: "`.scoreEmbeddings`",
           href: "/docs/api-reference/scoreEmbeddings",
         },
