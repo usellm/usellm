@@ -14,6 +14,12 @@ export interface LLMChatResult {
   message: OpenAIMessage;
 }
 
+export interface ScoreEmbeddingsOptions {
+  embeddings: Array<Array<number>>;
+  query: number[];
+  top?: number;
+}
+
 export async function fileToDataURL(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -118,4 +124,36 @@ export function dataURLToBlob(dataurl: string): Blob {
   }
 
   return new Blob([u8arr], { type: mime });
+}
+
+function dotProduct(vecA: number[], vecB: number[]): number {
+  let product = 0;
+  if (vecA.length !== vecB.length)
+    throw new Error("Vectors must be same length");
+  for (let i = 0; i < vecA.length; i++) {
+    product += (vecA[i] as number) * (vecB[i] as number);
+  }
+  return product;
+}
+
+function magnitude(vec: number[]): number {
+  let sum = 0;
+  for (let i = 0; i < vec.length; i++) {
+    sum += (vec[i] as number) * (vec[i] as number);
+  }
+  return Math.sqrt(sum);
+}
+
+export function cosineSimilarity(vecA: number[], vecB: number[]): number {
+  return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
+}
+
+export function scoreEmbeddings(options: ScoreEmbeddingsOptions) {
+  const { embeddings, query, top } = options;
+  const scores = embeddings.map((vector) => cosineSimilarity(query, vector));
+  const sortedScores = scores
+    .map((score, index) => ({ score, index }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, top || undefined);
+  return sortedScores;
 }

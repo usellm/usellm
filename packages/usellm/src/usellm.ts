@@ -6,6 +6,8 @@ import {
   streamOpenAIResponse,
   LLMChatResult,
   fileToDataURL,
+  cosineSimilarity,
+  scoreEmbeddings,
 } from "./utils";
 
 export interface LLMChatOptions {
@@ -49,15 +51,9 @@ export interface SpeakOptions {
   voice_settings?: { stability: number; similarity_boost: number };
 }
 
-export interface ScoreEmbeddingsOptions {
-  embeddings: Array<Array<number>>;
-  query: number[];
-  top?: number;
-}
-
 export interface EditImageOptions {
-  image: File;
-  mask?: File;
+  imageUrl: string;
+  maskUrl?: string;
   prompt?: string;
   n?: number;
   size?: number;
@@ -189,38 +185,6 @@ export default function useLLM({
     return response.json();
   }
 
-  function dotProduct(vecA: number[], vecB: number[]): number {
-    let product = 0;
-    if (vecA.length !== vecB.length)
-      throw new Error("Vectors must be same length");
-    for (let i = 0; i < vecA.length; i++) {
-      product += (vecA[i] as number) * (vecB[i] as number);
-    }
-    return product;
-  }
-
-  function magnitude(vec: number[]): number {
-    let sum = 0;
-    for (let i = 0; i < vec.length; i++) {
-      sum += (vec[i] as number) * (vec[i] as number);
-    }
-    return Math.sqrt(sum);
-  }
-
-  function cosineSimilarity(vecA: number[], vecB: number[]): number {
-    return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
-  }
-
-  function scoreEmbeddings(options: ScoreEmbeddingsOptions) {
-    const { embeddings, query, top } = options;
-    const scores = embeddings.map((vector) => cosineSimilarity(query, vector));
-    const sortedScores = scores
-      .map((score, index) => ({ score, index }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, top || undefined);
-    return sortedScores;
-  }
-
   async function speak(options: SpeakOptions) {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
@@ -256,18 +220,15 @@ export default function useLLM({
   }
 
   async function editImage(options: EditImageOptions) {
-    const { image, mask } = options;
-
-    const imageDataUrl = fileToDataURL(image);
-    const maskDataUrl = mask ? fileToDataURL(mask) : undefined;
+    const { imageUrl, maskUrl } = options;
 
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...options,
-        image: imageDataUrl,
-        mask: maskDataUrl,
+        image: imageUrl,
+        mask: maskUrl,
         $action: "editImage",
       }),
     });
@@ -311,5 +272,8 @@ export default function useLLM({
     scoreEmbeddings,
     speak,
     generateImage,
+    editImage,
+    imageVariation,
+    fileToDataURL,
   };
 }
