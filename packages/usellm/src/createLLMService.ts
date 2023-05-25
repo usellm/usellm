@@ -10,7 +10,7 @@ import {
   IMAGE_VARIATIONS_API_URL,
   OpenAIMessage,
   dataURLToBlob,
-  dataUrlExtension,
+  dataUrlToExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
@@ -370,13 +370,13 @@ export class LLMService {
     formData.append(
       "image",
       dataURLToBlob(image),
-      `image.${dataUrlExtension(image)}`
+      `image.${dataUrlToExtension(image)}`
     );
     mask &&
       formData.append(
         "mask",
         dataURLToBlob(mask),
-        `mask.${dataUrlExtension(mask)}`
+        `mask.${dataUrlToExtension(mask)}`
       );
     prompt && formData.append("prompt", prompt);
     n && formData.append("n", n.toString());
@@ -406,7 +406,7 @@ export class LLMService {
     formData.append(
       "image",
       dataURLToBlob(image),
-      `image.${dataUrlExtension(image)}`
+      `image.${dataUrlToExtension(image)}`
     );
     n && formData.append("n", n.toString());
     size && formData.append("size", size);

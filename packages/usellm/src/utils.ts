@@ -117,7 +117,7 @@ export function dataURLToBlob(dataurl: string): Blob {
   return new Blob([u8arr], { type: mime });
 }
 
-export function dataUrlExtension(dataURL: string) {
+export function dataUrlToExtension(dataURL: string) {
   var extension = "";
   if (dataURL.indexOf("/") !== -1 && dataURL.indexOf(";") !== -1) {
     var startIndex = dataURL.indexOf("/") + 1;
