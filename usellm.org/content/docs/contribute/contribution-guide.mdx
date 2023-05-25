@@ -6,14 +6,14 @@ description: Run, test, and add features to useLLM and contribute to the project
 If you're interested in contributing to the `useLLM` project, that's fantastic!
 This guide will walk you through the setup process.
 
-### Step 1: Fork the Repository
+### Step 1: Fork the useLLM Repository
 
 Start by forking the repository. You can do this by visiting the
 [useLLM repository](https://github.com/usellm/usellm) and clicking on the 'Fork'
 button in the top-right corner. This will create a copy of the repository
 under your own GitHub account.
 
-TODO - repository screenshot
+![](https://i.imgur.com/DhZch9V.png)
 
 #### Keeping Your Fork Updated
 
@@ -47,7 +47,7 @@ To open the forked repository in Codespaces follow these steps:
 3. Select 'Open with Codespaces'
 4. Finally, Create a new codespace.
 
-TODO - add screenshot
+![example](https://i.imgur.com/yTIiluT.png)
 
 #### Directory Structure
 
@@ -91,7 +91,7 @@ npm install
 ### Step 4: Add Environment Variables
 
 Before starting the development server, you need to set up some environment variables.
-The `usellm.org` application requires your OpenAI API Key and Upstash Redis REST URL
+The `usellm.org` application requires your OpenAI API key, ElevenLabs API key and Upstash Redis REST URL
 and token (see below for details).
 
 In the root directory of the `usellm.org` application, there's an `.env.example` file that
@@ -100,6 +100,7 @@ lists these required variables. Here is what it looks like:
 ```ini
 NEXT_PUBLIC_APP_URL=http://usellm.org
 OPENAI_API_KEY=XXXX
+ELVEN_LABS_API_KEY=xxxx
 UPSTASH_REDIS_REST_URL=XXXX
 UPSTASH_REDIS_REST_TOKEN=XXXX
 ```
@@ -107,8 +108,7 @@ UPSTASH_REDIS_REST_TOKEN=XXXX
 To set up your environment variables:
 
 1. Copy the `.env.example` file and rename the copied file to `.env.local`.
-2. Replace `XXXX` with your actual OpenAI API Key, Upstash Redis REST URL, and
-   Token in the `.env.local` file.
+2. Replace `XXXX` with the corresponding keys, token or URL.
 
 Please note, your `.env.local` file should never be committed to the repository,
 as it contains sensitive information. Hence it is added to the `.gitignore` file.
@@ -140,7 +140,27 @@ Here are the steps to Generate OpenAI API Key:
    Make sure to copy the key (a long string of alphanumeric characters) immediately, as you won't
    be able to view it again once you leave the page or refresh.
 
-TODO - Add Screenshot
+![example](https://i.imgur.com/fO5tiYm.png)
+
+#### Generating Eleven Labs API Key
+
+The Eleven Labs API key is a unique identifier provided by Eleven Labs, which allows access to its
+services, including its text-to-speech feature. This key is essential in the useLLM GitHub Repository
+to facilitate communication between the user's local development environment and Eleven Labs' cloud-based
+text-to-speech services. By integrating this feature, users can transform text data into lifelike speech,
+enhancing the user experience and the overall functionality of the application.
+
+The process of generating an Eleven Labs API key is properly documented in their [API Reference Guide](https://docs.elevenlabs.io/api-reference/quick-start/introduction).
+
+Here is a gist of how to generate the API key quickly:
+
+- **Create an Elevenlabs Account**: Sign up in Elevenlabs [here](https://beta.elevenlabs.io/sign-up).
+- **Navigate to your Profile**: After signing up click on your profile icon on the top right corner and
+  select "Profile"
+- **Copy the API Key**: Your name and API key(hidden) will show up in a pop-up window, unhide the API key
+  and copy it.
+
+![example](https://i.imgur.com/BgiTKeO.png)
 
 #### Generating Upstash Redis Token
 
@@ -169,7 +189,7 @@ Here are the steps to Generate Upstash Redis URL and Token:
    The URL will be in the format `https://xxx.upstash.io`, and the token will be
    a long string of alphanumeric characters.
 
-TODO - Add Screenshot
+![example](https://i.imgur.com/71k5DaQ.png)
 
 ### Step 5: Run Development Server
 
@@ -183,7 +203,7 @@ npm run dev
 This command starts the development server. Press the "Open in Browser" button or Cmd+Click
 the localhost URL to view the application in a new tab.
 
-TODO - add screenshot
+![](https://i.imgur.com/7cjqQXI.png)
 
 ### Step 6: Create Feature Branch
 
