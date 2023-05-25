@@ -4,10 +4,9 @@ import { Input } from "@/components/ui/input";
 import React, { ChangeEvent } from "react";
 import useLLM from "usellm";
 
-export default function EditImageDemoPage() {
+export default function ImageVariationsDemoPage() {
   const llm = useLLM({ serviceUrl: "/api/llm" });
   const [imageUrl, setImageUrl] = React.useState("");
-  const [prompt, setPrompt] = React.useState("");
   const [resultImageUrl, setResultImageUrl] = React.useState("");
 
   async function handleImageUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -19,13 +18,15 @@ export default function EditImageDemoPage() {
 
   async function handleGenerateClick() {
     setResultImageUrl("");
-    const { images } = await llm.editImage({ imageUrl, prompt });
+    const { images } = await llm.imageVariation({ imageUrl });
     setResultImageUrl(images[0]);
   }
 
   return (
-    <div className="max-w-4xl w-full mx-auto my-4">
-      <h1 className="font-medium text-4xl text-center">Edit Image</h1>
+    <div className="max-w-4xl w-full mx-auto my-4 px-4">
+      <h1 className="font-medium text-4xl text-center">
+        Generate Image Variations
+      </h1>
       <div className="flex flex-col mt-4">
         <Input
           type="file"
@@ -43,17 +44,9 @@ export default function EditImageDemoPage() {
             height={256}
           />
         )}
-        <div className="flex mt-4">
-          <Input
-            type="text"
-            placeholder="Enter a prompt here"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-          <Button onClick={handleGenerateClick} className="ml-2">
-            Generate
-          </Button>
-        </div>
+        <Button onClick={handleGenerateClick} className="mt-4 self-start">
+          Generate Variation
+        </Button>
       </div>
 
       {resultImageUrl && (
