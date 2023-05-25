@@ -4,46 +4,25 @@ import React, { useState } from "react";
 
 export default function EmbedDemoPage() {
   const [documentText, setDocumentText] = useState("");
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
   const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
 
-  async function handleSubmit() {
+  async function handleEmbedding() {
     const paragraphs = documentText.split("\n").filter((p) => p.length > 0);
     const { embeddings } = await llm.embed({ input: paragraphs });
-    const { embeddings: queryEmbeddings } = await llm.embed({
-      input: question,
-    });
-    const top3paragraphs = llm
-      .scoreEmbeddings({ embeddings, query: queryEmbeddings[0], top: 3 })
-      .map(({ index }) => paragraphs[index])
-      .join("\n\n");
-    const prompt = `Answer this: ${question} \n\nUse this information:${top3paragraphs}`;
-    const { message } = await llm.chat({
-      messages: [{ role: "user", content: prompt }],
-    });
-    setAnswer(message.content);
+
+    // For illustration purpose, print the first embedding to the console
+    console.log("Embedding of the first paragraph: ", embeddings[0]);
   }
 
   return (
     <div style={{ padding: 8 }}>
       <textarea
         maxLength={2000}
-        rows={10}
         value={documentText}
-        placeholder="Paste a document here"
         onChange={(e) => setDocumentText(e.target.value)}
+        placeholder="Enter a document..."
       />
-      <input
-        type="text"
-        value={question}
-        style={{ display: "block" }}
-        onChange={(e) => setQuestion(e.target.value)}
-        placeholder="Ask a question about the document"
-      />
-      <button onClick={handleSubmit}>Ask</button>
-      <div>Answer:</div>
-      <div>{answer}</div>
+      <button onClick={handleEmbedding}>Generate Embeddings</button>
     </div>
   );
 }

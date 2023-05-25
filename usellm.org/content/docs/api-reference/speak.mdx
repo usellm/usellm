@@ -1,0 +1,77 @@
+---
+title: llm.speak
+description: Converts written text into spoken audio via Text-To-Speech
+---
+
+The `llm.speak()` method generates a spoken version of a given text, essentially a
+Text-to-Speech (TTS) function. This function is useful for applications that
+require vocalizing written text.
+
+### Syntax
+
+```typescript
+const { audioUrl } = await llm.speak(options: SpeakOptions);
+```
+
+### Parameters
+
+- `options: SpeakOptions`: An object that takes the following properties:
+
+  - `text: string`: The text that needs to be converted to speech.
+
+  - `model_id?: string` (optional): The ID of the model to be used for the TTS operation. Default is set to the latest model.
+
+  - `voice_id?: string` (optional): The ID of the voice to be used for the TTS operation. Default is set to the latest voice.
+
+  - `voice_settings?: { stability: number; similarity_boost: number }` (optional): Fine-tuning parameters for the voice.
+
+### Returns
+
+A Promise that resolves to an object:
+
+- `{ audioUrl: string }`: A URL to the generated audio.
+
+### Example
+
+Here's an example of how to use `llm.speak()` in a React component ([live demo](https://usellm.org/demo/text-to-speech)):
+
+```jsx
+"use client";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import useLLM from "@/usellm";
+import { useState } from "react";
+
+export default function TextToSpeechDemoPage() {
+  const [text, setText] = useState < string > "";
+  const [audioUrl, setAudioUrl] = useState < string > "";
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+
+  async function handleSpeakClick() {
+    if (!text) return;
+    const { audioUrl } = await llm.speak({ text });
+    setAudioUrl(audioUrl);
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto my-4">
+      <h1 className="font-medium text-4xl text-center">Text to Speech</h1>
+      <Textarea
+        className="mt-4"
+        placeholder="Enter some text here"
+        rows={5}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <Button onClick={handleSpeakClick} className="my-4">
+        Speak
+      </Button>
+      {audioUrl && <audio src={audioUrl} controls />}
+    </div>
+  );
+}
+```
+
+In the example above, the text entered by the user is converted to speech when the
+"Speak" button is clicked. The spoken text can be listened to by the user as the
+audio URL returned by `llm.speak()` method is used as the source for the `<audio>` HTML element.

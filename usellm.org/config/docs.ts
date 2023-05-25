@@ -56,8 +56,24 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/transcribe",
         },
         {
+          title: "`.speak`",
+          href: "/docs/api-reference/speak",
+        },
+        {
           title: "`.embed`",
           href: "/docs/api-reference/embed",
+        },
+        {
+          title: "`.generateImage`",
+          href: "/docs/api-reference/generateImage",
+        },
+        {
+          title: "`.scoreEmbeddings`",
+          href: "/docs/api-reference/scoreEmbeddings",
+        },
+        {
+          title: "`.cosineSimilarity`",
+          href: "docs/api-reference/cosineSimilarity",
         },
       ],
     },
