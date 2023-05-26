@@ -1,9 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import useLLM from "@/usellm";
+import useLLM from "usellm";
 import { useState } from "react";
 
 const createPrompt = (paragraphs: string[], question: string) => `
@@ -25,32 +21,43 @@ export default function DocumentQna() {
   const [question, setQuestion] = useState("");
   const [matchedParagraphs, setMatchedParagraphs] = useState<string[]>([]);
   const [answer, setAnswer] = useState("");
+  const [status, setStatus] = useState("");
 
   const llm = useLLM({ serviceUrl: "/api/llm" });
-  const { toast } = useToast();
 
   async function handleEmbedClick() {
+    setStatus("Embedding...");
+    if (!documentText) {
+      window.alert("Please enter some text for the document!");
+      return;
+    }
+    setDocumentEmbeddings([]);
+    setQuestion("");
+    setMatchedParagraphs([]);
+    setAnswer("");
     const paragraphs = documentText
-      .split("\n\n")
-      .slice(0, 20)
+      .split("\n")
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0)
+      .slice(0, 100)
       .map((p) => p.trim().substring(0, 1000));
     setParagraphs(paragraphs);
     const { embeddings } = await llm.embed({ input: paragraphs });
     setDocumentEmbeddings(embeddings);
+    setStatus("");
   }
 
   async function handleSubmitClick() {
+    setStatus("Answering...");
+    setMatchedParagraphs([]);
+    setAnswer("");
     if (!documentEmbeddings.length) {
-      toast({
-        title: "Please embed the document first!",
-      });
+      window.alert("Please embed the document first!");
       return;
     }
 
     if (!question) {
-      toast({
-        title: "Please enter a question!",
-      });
+      window.alert("Please enter a question!");
       return;
     }
 
@@ -74,41 +81,47 @@ export default function DocumentQna() {
       onStream: ({ message }) => setAnswer(message.content),
     });
     setAnswer(message.content);
+    setStatus("");
   }
 
   return (
     <div className="p-4 overflow-y-auto">
       <h2 className="text-2xl font-semibold mb-4">Document Q&A</h2>
-      <Textarea
+      <textarea
+        className="p-2 border rounded mr-2 w-full block text-sm"
         rows={10}
         placeholder="Paste a long document here"
         value={documentText}
         onChange={(e) => setDocumentText(e.target.value)}
       />
       <div className="flex items-center">
-        <Button className="my-4" onClick={handleEmbedClick}>
+        <button
+          onClick={handleEmbedClick}
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 my-4"
+        >
           Embed
-        </Button>
+        </button>
         {documentEmbeddings.length > 0 && (
-          <div className="ml-2">Paragraphs embedded</div>
+          <div className="ml-2">
+            {documentEmbeddings.length} paragraphs embedded
+          </div>
         )}
       </div>
 
-      <Input
+      <input
         value={question}
+        className="p-2 border rounded w-full block"
         onChange={(e) => setQuestion(e.target.value)}
         type="text"
-        disabled={documentEmbeddings.length === 0}
         placeholder="Enter a question about the document"
       />
 
-      <Button
-        className="my-4"
+      <button
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 my-4"
         onClick={handleSubmitClick}
-        disabled={documentEmbeddings.length === 0}
       >
         Submit
-      </Button>
+      </button>
       {matchedParagraphs.length > 0 && (
         <div className="my-4">
           <div className="text-lg font-medium">Matched Paragraphs</div>
@@ -130,7 +143,9 @@ export default function DocumentQna() {
         </div>
       )}
 
-      {!answer && matchedParagraphs.length === 0 && (
+      {status && <div>{status}</div>}
+
+      {!status && !document && !answer && matchedParagraphs.length === 0 && (
         <div className="prose dark:prose-invert mt-2">
           <div className="font-medium">How it Works</div>
           <ul>

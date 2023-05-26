@@ -20,7 +20,7 @@ export const HOME_PAGE_DEMOS = [
     sourceUrl: "https://github.com/usellm/usellm/",
   },
   {
-    name: "Prompt Template",
+    name: "Prompt Engineering",
     id: "prompt-template",
     component: PromptTemplate,
     sourceUrl: "https://github.com/usellm/usellm/",
