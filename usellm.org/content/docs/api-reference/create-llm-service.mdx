@@ -66,7 +66,14 @@ export const runtime = "edge";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
-  actions: ["chat", "transcribe", "embed"],
+  actions: ["chat",
+  "transcribe",
+  "embed",
+  "speak",
+  "genearteImage",
+  "editImage",
+  "imageVariation"
+  ],
 });
 
 export async function POST(request: Request) {
