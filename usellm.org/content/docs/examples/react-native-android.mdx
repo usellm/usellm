@@ -1,0 +1,81 @@
+---
+title: React Native AI Chat App
+description: An app for chatting created using useLLM and ChatGPT API
+---
+
+This documentation is a guide to setting up the React Native AI Chat application
+powered by the ChatGPT API. The app is built using the `useLLM` React hook.
+
+> Note: The current configuration and testing of this application is specifically
+> for Android. iOS support may require some modifications.
+
+### Pre-Requisites
+
+To run this application, we need to set up the Android development environment.
+If you don't have it ready, follow the instructions based on your development OS
+targeting Android from [React Native Documentation](https://reactnative.dev/docs/environment-setup?os=macos&platform=android&guide=native).
+
+Here's a list of required software and tools:
+
+- **Node.js**: Needed to run the JavaScript code. Download
+  and install it from [Node.js official site](https://nodejs.org/en/download/).
+
+- **Watchman**(macOS only): A tool by Facebook for watching changes
+  in the filesystem. It's required for macOS. Follow
+  the instructions on the [Watchman official site](https://facebook.github.io/watchman/docs/install) to install it.
+
+- **Java Development Kit (JDK)**: Needed to run the Android emulator.
+  Install JDK from the [Oracle's official website](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html).
+
+- **Android Studio**: The official IDE for Android development. Download and install it from the [Android Studio's official site](https://developer.android.com/studio).
+
+- **Android SDK**: The Software Development Kit for Android, which comes bundled with Android Studio.
+
+- **Android SDK Platform**: Choose the specific Android platform version in Android Studio's SDK Manager.
+  It's recommended to select the latest stable version. It
+
+- **Android Virtual Device (AVD)**: The emulator used to run the Android application. Set this up in Android Studio's AVD Manager.
+
+**Android SDK**, and **Android Virtual Device** can be installed together
+while installing the **Android Studio**.
+
+After installation, you should have the following environment variables set up:
+
+- **JAVA_HOME**: This should point to the directory where JDK is installed. To add
+  Java to $PATH follow this [tutorial](https://www.scaler.com/topics/java/setup-java-home-and-ide-on-mac-os/)
+- **ANDROID_HOME**: This should point to the directory where the Android SDK is installed.
+
+### Setting Up the Project
+
+Once you have your Android development environment ready, you can set up the project.
+
+1. **Install project dependencies**: Navigate to the project root directory in your
+   terminal and run `npm install` to install all necessary dependencies specified in `package.json`.
+
+```shell
+npm install
+```
+
+2. **Start the Metro server**: Metro is a JavaScript bundler for React Native.
+   Start it by running `npm run start` from your terminal.
+
+```shell
+npm run start
+```
+
+After starting the Metro server, you'll be prompted with options. Select `a - run on Android`.
+After the build finishes, you should see the running app on your emulator/device.
+
+### Building the APK
+
+By default, this process uses the debug key to build the APK, which should be fine for development purposes. However, if you wish to publish the app on the Google Play Store, you would need a release key. Follow [these instructions](https://developer.android.com/studio/publish/app-signing#generate-key) to set up a release key.
+
+To create a release build, navigate to your project directory in your terminal and run:
+
+```
+npm run release
+```
+
+The release APK will be located at `android/app/build/outputs/apk/release/app-release.apk`.
+
+Congratulations, you have now successfully set up and built the React Native AI Chat application on your Android device.
