@@ -155,10 +155,6 @@ export const docsConfig: DocsConfig = {
       title: "Examples",
       items: [
         {
-          title: "React Native Android App",
-          href: "/docs/examples/react-native-android-ios",
-        },
-        {
           title: "Next.js (Pages Router)",
           href: "/docs/examples/nextjs-pages-router",
           label: "Soon",
