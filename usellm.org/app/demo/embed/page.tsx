@@ -4,14 +4,18 @@ import React, { useState } from "react";
 
 export default function EmbedDemoPage() {
   const [documentText, setDocumentText] = useState("");
+  const [answer, setAnswer] = useState("");
   const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
 
   async function handleEmbedding() {
     const paragraphs = documentText.split("\n").filter((p) => p.length > 0);
     const { embeddings } = await llm.embed({ input: paragraphs });
 
-    // For illustration purpose, print the first embedding to the console
-    console.log("Embedding of the first paragraph: ", embeddings[0]);
+    setAnswer(
+      embeddings[0].slice(0, 10).toString() +
+        "..." +
+        `[${embeddings[0].length}]`
+    );
   }
 
   return (
@@ -23,6 +27,8 @@ export default function EmbedDemoPage() {
         placeholder="Enter a document..."
       />
       <button onClick={handleEmbedding}>Generate Embeddings</button>
+      <div className="overflow X-scroll">Answer:</div>
+      <pre>{answer}</pre>
     </div>
   );
 }

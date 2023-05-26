@@ -3,11 +3,8 @@ title: llm.imageVariation
 description: Generates different variations of a given image.
 ---
 
-The `llm.imageVariation()` function is a powerful tool that allows developers to generate unique variations of an input image.
-This advanced feature is a part of the useLLM library and leverages AI to intelligently transform the input image,
-creating distinct and visually interesting alterations. This function is especially beneficial in various creative fields
-such as graphic design, web development, and digital art, where it can facilitate the generation of diverse visual content
-based on a single input.
+The `llm.imageVariation()` function uses AI to generate unique variations
+of an input image.
 
 ### Syntax
 
@@ -22,7 +19,7 @@ const { images } = await llm.imageVariation({ imageUrl, n, size });
 - `size` (optional): A string that specifies the size of the generated images.
   It can be either "256x256", "512x512", or "1024x1024". If not provided, the default is "256x256".
 
-### Return value
+### Return Value
 
 The function returns a Promise that resolves to an object with the following structure:
 
@@ -39,8 +36,6 @@ generate variations of an image ([live demo](https://usellm.org/demo/image-varia
 
 ```jsx
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import React, { ChangeEvent } from "react";
 import useLLM from "usellm";
 
@@ -68,7 +63,7 @@ export default function ImageVariationsDemoPage() {
         Generate Image Variations
       </h1>
       <div className="flex flex-col mt-4">
-        <Input
+        <input
           type="file"
           className="self-start"
           placeholder="Upload Image"
@@ -84,9 +79,9 @@ export default function ImageVariationsDemoPage() {
             height={256}
           />
         )}
-        <Button onClick={handleGenerateClick} className="mt-4 self-start">
+        <button onClick={handleGenerateClick} className="mt-4 self-start">
           Generate Variation
-        </Button>
+        </button>
       </div>
 
       {resultImageUrl && (
