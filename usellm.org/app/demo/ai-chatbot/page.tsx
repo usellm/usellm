@@ -3,9 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Icons } from "../icons";
-import { useToast } from "../ui/use-toast";
-import { DemoWrapper } from "../demo-wrapper";
+import { Icons } from "@/components/icons";
+import { useToast } from "@/components/ui/use-toast";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
@@ -39,7 +38,7 @@ function Message({ role, content }: OpenAIMessage) {
   );
 }
 
-export function AIChatBotDemo() {
+export default function AIChatBot() {
   const { toast } = useToast();
   const [status, setStatus] = useState<Status>("idle");
   const [history, setHistory] = useState<OpenAIMessage[]>([
@@ -118,7 +117,7 @@ export function AIChatBotDemo() {
   const RecordingIcon = status === "recording" ? Icons.square : Icons.mic;
 
   return (
-    <DemoWrapper>
+    <>
       <div
         className="w-full flex-1 overflow-y-auto px-4"
         ref={(el) => (messagesWindow.current = el)}
@@ -153,6 +152,6 @@ export function AIChatBotDemo() {
           <RecordingIcon size={16} />
         </Button>
       </div>
-    </DemoWrapper>
+    </>
   );
 }

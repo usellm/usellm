@@ -12,7 +12,8 @@ import { StyleSwitcher } from "@/components/style-switcher";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
-import { ExamplesNav, HomePageDemo } from "@/components/examples-nav";
+import { ExamplesNav } from "@/components/examples-nav";
+import { HomePageDemo } from "@/components/home-page-demo";
 
 export default function IndexPage() {
   return (
