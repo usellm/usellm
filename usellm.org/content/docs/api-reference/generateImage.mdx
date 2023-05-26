@@ -10,7 +10,7 @@ which is used to access the AI capabilities provided by OpenAI.
 ### Syntax
 
 ```typescript
-const { images } = await llm.generateImage({ prompt });
+const { images } = await llm.generateImage({ prompt, n, size });
 ```
 
 ### Parameters
@@ -18,6 +18,9 @@ const { images } = await llm.generateImage({ prompt });
 This function accepts an object with the following property:
 
 - `prompt`: A string that describes the image to be generated.
+- `n` (optional): A number that specifies the number of variations to generate. If not provided, the default is 1.
+- `size` (optional): A string that specifies the size of the generated images.
+  It can be either "256x256", "512x512", or "1024x1024". If not provided, the default is "256x256".
 
 ### Return
 
