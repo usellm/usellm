@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import useLLM from "@/usellm";
 import { useState } from "react";
 
@@ -17,7 +18,7 @@ ${paragraphs.join("\n\n")}
 Question: ${question}
 `;
 
-export default function DocumentSearchDemoPage() {
+export default function DocumentQna() {
   const [documentText, setDocumentText] = useState("");
   const [paragraphs, setParagraphs] = useState<string[]>([]);
   const [documentEmbeddings, setDocumentEmbeddings] = useState<number[][]>([]);
@@ -26,6 +27,7 @@ export default function DocumentSearchDemoPage() {
   const [answer, setAnswer] = useState("");
 
   const llm = useLLM({ serviceUrl: "/api/llm" });
+  const { toast } = useToast();
 
   async function handleEmbedClick() {
     const paragraphs = documentText
@@ -38,7 +40,17 @@ export default function DocumentSearchDemoPage() {
   }
 
   async function handleSubmitClick() {
-    if (!question || !documentEmbeddings.length) {
+    if (!documentEmbeddings.length) {
+      toast({
+        title: "Please embed the document first!",
+      });
+      return;
+    }
+
+    if (!question) {
+      toast({
+        title: "Please enter a question!",
+      });
       return;
     }
 
@@ -65,10 +77,8 @@ export default function DocumentSearchDemoPage() {
   }
 
   return (
-    <div className="max-w-4xl w-full mx-auto p-4">
-      <h1 className="my-4 text-3xl text-center font-bold">
-        <code>llm.embed</code> - Document Q&A
-      </h1>
+    <div className="p-4 overflow-y-auto">
+      <h2 className="text-2xl font-semibold mb-4">Document Q&A</h2>
       <Textarea
         rows={10}
         placeholder="Paste a long document here"
@@ -88,10 +98,15 @@ export default function DocumentSearchDemoPage() {
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         type="text"
+        disabled={documentEmbeddings.length === 0}
         placeholder="Enter a question about the document"
       />
 
-      <Button className="my-4" onClick={handleSubmitClick}>
+      <Button
+        className="my-4"
+        onClick={handleSubmitClick}
+        disabled={documentEmbeddings.length === 0}
+      >
         Submit
       </Button>
       {matchedParagraphs.length > 0 && (
@@ -115,9 +130,9 @@ export default function DocumentSearchDemoPage() {
         </div>
       )}
 
-      {!answer && !matchedParagraphs && (
-        <div className="prose dark:prose-invert">
-          <div className="text-lg font-medium">How it Works</div>
+      {!answer && matchedParagraphs.length === 0 && (
+        <div className="prose dark:prose-invert mt-2">
+          <div className="font-medium">How it Works</div>
           <ul>
             <li>
               The first 20 paragraphs of the document will be considered for
