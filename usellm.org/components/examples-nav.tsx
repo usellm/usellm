@@ -15,14 +15,14 @@ export function ExamplesNav({ className, ...props }: ExamplesNavProps) {
 
   return (
     <div className="relative">
-      <ScrollArea className="max-w-[600px] lg:max-w-none">
+      <ScrollArea>
         <div className={cn("mb-4 flex items-center", className)} {...props}>
           {HOME_PAGE_DEMOS.map((example) => (
             <Link
               href={"/?demo=" + example.id}
               key={example.id}
               className={cn(
-                "flex items-center px-4",
+                "flex items-center px-4 flex-shrink-0",
                 page === example.id
                   ? "font-bold text-primary"
                   : "font-medium text-muted-foreground"

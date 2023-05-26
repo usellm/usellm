@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import useLLM from "@/usellm";
 import { useState } from "react";
@@ -16,18 +15,21 @@ export default function TextToSpeech() {
   }
 
   return (
-    <div className="max-w-4xl w-full mx-auto my-4">
-      <h1 className="font-medium text-4xl text-center">Text to Speech</h1>
-      <Textarea
-        className="mt-4"
+    <div className="p-4 overflow-y-auto">
+      <h2 className="font-semibold text-2xl">Text to Speech</h2>
+      <textarea
+        className="p-2 border rounded w-full block mt-4"
         placeholder="Enter some text here"
         rows={5}
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <Button onClick={handleSpeakClick} className="my-4">
-        Speak
-      </Button>
+      <button
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 my-4"
+        onClick={handleSpeakClick}
+      >
+        Speak It!
+      </button>
       {audioUrl && <audio src={audioUrl} controls />}
     </div>
   );
