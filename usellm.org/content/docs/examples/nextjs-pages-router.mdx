@@ -1,6 +1,439 @@
 ---
-title: Coming soon
-description: Coming soon
+title: Next.js Example using Pages router
+description: In this example, you'll learn how to build the Chat App use the `useLLM` library in Next.js
 ---
 
-Coming soon
+## Prerequisites
+
+To successfully setup and run this example, you'll need:
+
+- Node.js
+
+## Create a Next.js App
+
+To create a Next.js app, open your terminal, cd into the directory you’d like to create the app in, and run the following command:
+
+```cmd
+npx create-next-app@latest example-nextjs-app-pages-router --use-npm
+```
+
+After running the above command, you will be asked with the following questions, please answer them as suggested below:
+
+✔ Would you like to use TypeScript with this project? [**No**] / Yes
+
+✔ Would you like to use ESLint with this project? No / [**Yes**]
+
+✔ Would you like to use Tailwind CSS with this project? No / [**Yes**]
+
+✔ Would you like to use `src/` directory with this project? No / [**Yes**]
+
+✔ Use App Router (recommended)? [**No**] / Yes
+
+✔ Would you like to customize the default import alias? [**No**] / Yes
+
+Once, you answer all the questions, `npx` will create a Next.js project in few seconds. Once its created, you should see the success message
+as shown below.
+
+<br />
+<img src="https://i.imgur.com/eMcRdQH.png" />
+
+You can now navigate into the directory `example-nextjs-app-pages-router` using the following command:
+
+```cmd
+cd example-nextjs-app-pages-router/
+```
+
+### Installing usellm dependency
+
+You can install the `usellm` dependency using below command.
+
+```cmd
+npm install usellm
+```
+
+Your app is now ready to be launched. Use the below command to launch it.
+
+```cmd
+npm run dev
+```
+
+Visit http://localhost:3000 to view the app.
+
+<br />
+
+<img src="https://i.imgur.com/b3fSBon.png" />
+
+### Understanding project folder structure
+
+```plaintext
+/my-app
+├── .next/                  # This is the output directory of the Next.js build process.
+├── node_modules/           # Node.js modules are installed in this directory.
+├── src/                    # You can opt to include your source files here.
+│   ├── pages/              # Routes are based on the file name in this directory.
+│   │   └── api/            # Serverless functions live here.
+│   └── styles/             # Styles for your application.
+├── package.json            # This file contains the list of project dependencies and scripts.
+├── package-lock.json       # This file is auto-generated and it holds information about the project dependencies tree.
+└── .gitignore              # Ignore some files from Git.
+```
+
+> **Note:** There might be other folders and files present in the typical Next.js project. Those are out of scope for this particular
+> example.
+
+## Creating a new Page
+
+To create a new page, you will have to:
+
+- Navigate to the "src">"pages" directory and
+- Create a new `.js` file `chat-example.js`
+
+```js
+export default function ChatExample() {
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+    </div>
+  );
+}
+```
+
+You should be able to visit the page on `http://localhost:3000/chat-example`
+
+<br />
+<img src="https://i.imgur.com/LCS7pd1.png" />
+
+### Add an Input field and Send Button
+
+To create a chat form, we will require an input field and a send button. This can be added like below.
+
+```js
+export default function ChatExample() {
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      <div className="w-full py-4 flex px-4">
+        <input className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+        <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 ml-2">
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Output:**
+
+<img src="https://i.imgur.com/IgzY6Gv.png" />
+
+### Adding onClick handler
+
+An onClick handler for a button in JavaScript or React is a function that is triggered when the button is clicked.
+In this case you can define a function `handleSend` and pass it as a prop to the Send button.
+
+```js
+export default function ChatExample() {
+  async function handleSend() {
+    alert("Send is Clicked");
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      <div className="w-full py-4 flex px-4">
+        <input
+          placeholder="Enter message here"
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+When you click a button, you should be able to see the alert like below:
+
+**Output:**
+
+<img src="https://i.imgur.com/zCgQdbI.png" />
+
+### Adding onChange handler
+
+An `onChange` handler for an input field in JavaScript or React is a function that is triggered whenever the value of the input field changes.
+In this case you can define a state `inputText` and a function `setInputText` to set the input field value into `inputText`.
+This can be done using `useState(...)` hook.
+
+```js
+import React, { useState } from "react";
+
+export default function ChatExample() {
+  const [inputText, setInputText] = useState("");
+
+  async function handleSend() {
+    alert("Send is Clicked");
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      <div className="w-full py-4 flex px-4">
+        <input
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter message here"
+          value={inputText}
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### Storing messages history
+
+For storing the messages history, you can use `useState` hook.
+
+```js
+const [history, setHistory] = useState([]);
+```
+
+To add the message to the history, when Send button is clicked you can update the `handleSend`
+function as below:
+
+```js
+async function handleSend() {
+  if (!inputText) {
+    return;
+  }
+  const newHistory = [...history, { role: "user", content: inputText }]; // Create a new history array by appending the new message
+  setHistory(newHistory); // Set the updated message history into the state
+  setInputText(""); // Clear the input field after updating the history
+}
+```
+
+### Showing messages history
+
+Now lets add some code to show the messages history on the page.
+This can be done using map which maps the `history` array to a message element
+
+```js
+<div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
+  {history.map((message, idx) => (
+    <div key={idx} className="my-4">
+      <div className="font-semibold text-gray-800 dark:text-gray-50">
+        {message.role.toUpperCase()}
+      </div>
+      <div className="text-gray-600 dark:text-gray-300">{message.content}</div>
+    </div>
+  ))}
+</div>
+```
+
+Here is the complete example till now.
+
+```js
+export default function ChatExample() {
+  const [history, setHistory] = useState([]);
+  const [inputText, setInputText] = useState("");
+
+  async function handleSend() {
+    if (!inputText) {
+      return;
+    }
+    const newHistory = [...history, { role: "user", content: inputText }];
+    setHistory(newHistory);
+    setInputText("");
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      {history.length > 0 && (
+        <div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
+          {history.map((message, idx) => (
+            <div key={idx} className="my-4">
+              <div className="font-semibold text-gray-800 dark:text-gray-50">
+                {message.role.toUpperCase()}
+              </div>
+              <div className="text-gray-600 dark:text-gray-300">
+                {message.content}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="w-full py-4 flex px-4">
+        <input
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter message here"
+          value={inputText}
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 border border-white focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-transparent text-white  hover:bg-gray-800 dark:text-white h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Output:**
+
+<img src="https://i.imgur.com/zgJ6VPE.png" />
+
+You should be able to interact with the input box and button.
+And should be able to see the messages history on the page when send button is clicked.
+
+## Creating a LLM service
+
+- To get the response from OpenAI, you will need to setup a service that will make an API call.
+- To create a service, Go to pages>api folder
+- Create a new file `llm.js`
+
+```.js
+import { createLLMService } from "usellm";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPEN_API_KEY,
+  actions: ["chat"],
+});
+
+export const runtime = "edge";
+
+export default async function POST(request) {
+  const body = await request.json();
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error) {
+    console.error("[LLM Service]", error);
+    return new Response(error.message, {
+      status: error?.status || 400,
+    });
+  }
+}
+```
+
+### Create an `.env` file
+
+You will need a `.env` file to store the `OPEN_API_KEY` used while creating LLM service using `createLLMService`
+
+```.env
+OPEN_API_KEY='[YOUR_OPEN_AI_KEY]'
+```
+
+## Integrating the service
+
+Now the service is ready and you can use it to send the input field value to the service and
+get the response from the service and show it on the page.
+
+### Import the useLLM library
+
+```js
+import useLLM from "usellm";
+```
+
+You will have to create a service using useLLM
+
+```js
+const llm = useLLM({ serviceUrl: "/api/llm" });
+```
+
+You can set the `stream` to `true`, so that the response starts printing word by word.
+
+Complete code for the `chat-example.js` page
+
+```js
+import React, { useState } from "react";
+import useLLM from "usellm";
+
+export default function ChatExample() {
+  const [history, setHistory] = useState([]);
+  const [inputText, setInputText] = useState("");
+
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+
+  async function handleSend() {
+    if (!inputText) {
+      return;
+    }
+    const newHistory = [...history, { role: "user", content: inputText }];
+    setHistory(newHistory);
+    setInputText("");
+
+    llm.chat({
+      messages: newHistory,
+      stream: true,
+      onStream: ({ message }) => setHistory([...newHistory, message]),
+    });
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      {history.length > 0 && (
+        <div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
+          {history.map((message, idx) => (
+            <div key={idx} className="my-4">
+              <div className="font-semibold text-gray-800 dark:text-gray-50">
+                {message.role.toUpperCase()}
+              </div>
+              <div className="text-gray-600 dark:text-gray-300">
+                {message.content}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="w-full py-4 flex px-4">
+        <input
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter message here"
+          value={inputText}
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 border border-white focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-transparent text-white  hover:bg-gray-800 dark:text-white h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Conclusion
+
+Congratulations, you have now successfully set up and built theNext.js Chat application using useLLM library. You can find the complete code in this [Github Repository](https://github.com/usellm/example-nextjs-app-pages-router)
