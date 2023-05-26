@@ -3,11 +3,13 @@ title: React Native AI Chat App
 description: An app for chatting created using useLLM and ChatGPT API
 ---
 
-This documentation is a guide to setting up the React Native AI Chat application
+This documentation is a guide for setting up the React Native AI Chat application
 powered by the ChatGPT API. The app is built using the `useLLM` React hook.
 
 > Note: The current configuration and testing of this application is specifically
 > for Android. iOS support may require some modifications.
+
+## Application Setup
 
 ### Pre-Requisites
 
@@ -48,6 +50,10 @@ After installation, you should have the following environment variables set up:
 ### Setting Up the Project
 
 Once you have your Android development environment ready, you can set up the project.
+Start by creating a fork of the original [repository](https://github.com/usellm/example-react-native-app) and
+cloning it locally or opening it in codespaces.
+
+After you're in the IDE, follow these steps:
 
 1. **Install project dependencies**: Navigate to the project root directory in your
    terminal and run `npm install` to install all necessary dependencies specified in `package.json`.
@@ -72,10 +78,75 @@ By default, this process uses the debug key to build the APK, which should be fi
 
 To create a release build, navigate to your project directory in your terminal and run:
 
-```
+```shell
 npm run release
 ```
 
 The release APK will be located at `android/app/build/outputs/apk/release/app-release.apk`.
 
 Congratulations, you have now successfully set up and built the React Native AI Chat application on your Android device.
+
+## Development Guidelines
+
+This guide will help you understand the structure of our React Native Android application
+repository and suggest the key areas and files where you can use for development.
+This is a template project so you can fork this repository and use it as a starting point
+to develope and create your own project.
+
+### Important Files in the Repository
+
+Here are the crucial files that you need to understand before developing:
+
+1. **`App.tsx`**: This is the main entry point for the app. Any root level configuration would go in here.
+
+2. **`index.js`**: This file is used to register the main App component with React Native.
+
+3. **`package.json`**: This file includes the metadata about the project like the project dependencies, scripts, versions, etc.
+
+4. **`package-lock.json`**: This is an automatically generated file that is used to pin the dependencies to specific versions for consistent installs.
+
+5. **`tsconfig.json`**: Configuration file for TypeScript. It includes the root files and the compiler options required to compile the project.
+
+6. **`src/pages/ChatScreen.tsx`**: This file handles the Chat screen of the app. Most of the chat functionalities are defined here.
+
+7. **`android/`**: This directory contains all the files related to the Android app development. The app's APK build process is handled here.
+
+8. **`ios/`**: Similar to the android directory, this directory contains all the files related to iOS app development.
+
+9. **`babel.config.js`**: This file contains configurations for Babel, which we use to convert ECMAScript 2015+ code into a
+   backward-compatible version of JavaScript.
+
+10. **`metro.config.js`**: Metro is the JavaScript bundler for React Native. This file contains configuration details for it.
+
+11. **`./android/gradle.properties`**, **`./android/settings.gradle`**, and **`./android/build.gradle`**: These are configuration files for Gradle,
+    the build system used in Android development.
+
+12. **`tailwind.config.js`**: This file is the configuration for Tailwind CSS, a utility-first CSS framework.
+
+### Ideas for Future Work
+
+Here are some files where you could potentially make changes and some suggestions for what those changes could be:
+
+1. **App.tsx**: Since this is the entry point of the application, you might want to introduce new components,
+   change the navigation structure or modify the overall look and feel of the application.
+
+2. **src/pages/ChatScreen.tsx**: As a main feature of the application, this could be a good area to update.
+   You could improve the user interface, add additional features to the chat, or optimize the existing features.
+
+3. **android/** or **ios/**: You could potentially make changes to the build process of the Android or iOS app
+   respectively. This could involve modifying build configurations, adding new build scripts, etc.
+
+4. **`package.json`**: You can add new dependencies that might enhance the app.
+
+5. **`babel.config.js` & `metro.config.js`**: You can optimize the configurations for Babel and Metro to
+   improve the performance of the application.
+
+6. **`tsconfig.json` & `tailwind.config.js`**: As these files configure TypeScript and Tailwind CSS, any
+   improvements to type-checking, styling, and design can be made here.
+
+7. **Gradle configuration files**: If you have ideas to optimize the build system, you might want to look
+   at `./android/gradle.properties`, `./android/settings.gradle`, and `./android/build.gradle`.
+
+Remember, the above are just suggestions, feel free to explore other areas as well.
+
+Thank you!
