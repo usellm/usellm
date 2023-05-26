@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import useLLM from "@/usellm";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ export default function DocumentQna() {
   const [answer, setAnswer] = useState("");
 
   const llm = useLLM({ serviceUrl: "/api/llm" });
+  const { toast } = useToast();
 
   async function handleEmbedClick() {
     const paragraphs = documentText
@@ -38,7 +40,17 @@ export default function DocumentQna() {
   }
 
   async function handleSubmitClick() {
-    if (!question || !documentEmbeddings.length) {
+    if (!documentEmbeddings.length) {
+      toast({
+        title: "Please embed the document first!",
+      });
+      return;
+    }
+
+    if (!question) {
+      toast({
+        title: "Please enter a question!",
+      });
       return;
     }
 
@@ -66,6 +78,7 @@ export default function DocumentQna() {
 
   return (
     <div className="p-4 overflow-y-auto">
+      <h2 className="text-2xl font-semibold mb-4">Document Q&A</h2>
       <Textarea
         rows={10}
         placeholder="Paste a long document here"
@@ -85,10 +98,15 @@ export default function DocumentQna() {
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         type="text"
+        disabled={documentEmbeddings.length === 0}
         placeholder="Enter a question about the document"
       />
 
-      <Button className="my-4" onClick={handleSubmitClick}>
+      <Button
+        className="my-4"
+        onClick={handleSubmitClick}
+        disabled={documentEmbeddings.length === 0}
+      >
         Submit
       </Button>
       {matchedParagraphs.length > 0 && (
