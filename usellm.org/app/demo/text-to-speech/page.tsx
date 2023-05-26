@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import useLLM from "@/usellm";
 import { useState } from "react";
 
-export default function TextToSpeechDemoPage() {
+export default function TextToSpeech() {
   const [text, setText] = useState<string>("");
   const [audioUrl, setAudioUrl] = useState<string>("");
   const llm = useLLM({ serviceUrl: "/api/llm" });

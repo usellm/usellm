@@ -1,8 +1,8 @@
 "use client";
-import useLLM from "@/usellm";
+import useLLM from "usellm";
 import React, { useState } from "react";
 
-function AudioRecorder() {
+export default function SpeechToText() {
   const [audioUrl, setAudioUrl] = useState("");
   const [transcript, setTranscript] = useState("");
   const [status, setStatus] = useState("");
@@ -56,5 +56,3 @@ function AudioRecorder() {
     </div>
   );
 }
-
-export default AudioRecorder;

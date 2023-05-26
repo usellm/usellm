@@ -16,7 +16,7 @@ type Status =
   | "thinking"
   | "speaking";
 
-export default function TalkToAIDemoPage() {
+export default function VoiceChat() {
   const [status, setStatus] = useState<Status>("idle");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const llm = useLLM({ serviceUrl: "/api/llm" });
