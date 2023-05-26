@@ -27,7 +27,7 @@ export default function EmbedDemoPage() {
         placeholder="Enter a document..."
       />
       <button onClick={handleEmbedding}>Generate Embeddings</button>
-      <div className="overflow X-scroll">Answer:</div>
+      <div>Answer:</div>
       <pre>{answer}</pre>
     </div>
   );
