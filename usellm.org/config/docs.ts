@@ -171,10 +171,8 @@ export const docsConfig: DocsConfig = {
           disabled: true,
         },
         {
-          title: "Android/iOS App",
-          href: "/docs/examples/react-native-android-ios",
-          label: "Soon",
-          disabled: true,
+          title: "Android App",
+          href: "/docs/examples/react-native-android",
         },
         {
           title: "Chrome Extension",
