@@ -1,0 +1,105 @@
+---
+title: llm.imageVariation
+description: Generates different variations of a given image.
+---
+
+The `llm.imageVariation()` function uses AI to generate unique variations
+of an input image.
+
+### Syntax
+
+```typescript
+const { images } = await llm.imageVariation({ imageUrl, n, size });
+```
+
+### Parameters
+
+- `imageUrl` (required): A string representing the data URL of the image you want to generate variations of.
+- `n` (optional): A number that specifies the number of variations to generate. If not provided, the default is 1.
+- `size` (optional): A string that specifies the size of the generated images.
+  It can be either "256x256", "512x512", or "1024x1024". If not provided, the default is "256x256".
+
+### Return Value
+
+The function returns a Promise that resolves to an object with the following structure:
+
+```javascript
+{
+  images: [ "<image_variation_URL_1>", "<image_variation_URL_2>", ... ]
+}
+```
+
+### Example
+
+Here is an example of how you can use the `llm.imageVariation()` function to
+generate variations of an image ([live demo](https://usellm.org/demo/image-variation)):
+
+```jsx
+"use client";
+import React, { ChangeEvent } from "react";
+import useLLM from "usellm";
+
+export default function ImageVariationsDemoPage() {
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+  const [imageUrl, setImageUrl] = React.useState("");
+  const [resultImageUrl, setResultImageUrl] = React.useState("");
+
+  async function handleImageUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = await llm.imageToDataURL(file);
+    setImageUrl(url);
+  }
+
+  async function handleGenerateClick() {
+    setResultImageUrl("");
+    const { images } = await llm.imageVariation({ imageUrl });
+    setResultImageUrl(images[0]);
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto my-4 px-4">
+      <h1 className="font-medium text-4xl text-center">
+        Generate Image Variations
+      </h1>
+      <div className="flex flex-col mt-4">
+        <input
+          type="file"
+          className="self-start"
+          placeholder="Upload Image"
+          onChange={handleImageUpload}
+        />
+        {imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="mt-4"
+            src={imageUrl}
+            alt="input-image"
+            width={256}
+            height={256}
+          />
+        )}
+        <button onClick={handleGenerateClick} className="mt-4 self-start">
+          Generate Variation
+        </button>
+      </div>
+
+      {resultImageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="mt-4"
+          src={resultImageUrl}
+          alt="result"
+          width={256}
+          height={256}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+In the example above, the `llm.imageVariation()` method generates a variation of the uploaded image when
+the "Generate Variation" button is clicked. The function takes an object with a `imageUrl` property that
+corresponds to the data URL of the uploaded image. The generated image variation data URL is then used to
+update the state of the `resultImageUrl`, which is displayed on the page.

@@ -68,6 +68,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/generateImage",
         },
         {
+          title: "`.imageVariation`",
+          href: "/docs/api-reference/imageVariation",
+        },
+        {
           title: "`.scoreEmbeddings`",
           href: "/docs/api-reference/scoreEmbeddings",
         },
@@ -162,16 +166,12 @@ export const docsConfig: DocsConfig = {
           disabled: true,
         },
         {
-          title: "Android/iOS App",
-          href: "/docs/examples/react-native-android-ios",
-          label: "Soon",
-          disabled: true,
+          title: "Android App",
+          href: "/docs/examples/react-native-android",
         },
         {
           title: "Chrome Extension",
           href: "/docs/examples/chrome-extension",
-          label: "Soon",
-          disabled: true,
         },
         {
           title: "Slack Bot",

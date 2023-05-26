@@ -1,0 +1,176 @@
+---
+title: React Native AI Chat App
+description: An app for chatting created using useLLM and ChatGPT API
+---
+
+This documentation is a guide for setting up the React Native AI Chat application
+powered by the ChatGPT API. The app is built using the `useLLM` React hook.
+
+> Note: The current configuration and testing of this application is specifically
+> for Android. iOS support may require some modifications.
+
+## Application Setup
+
+### Pre-Requisites
+
+To run this application, we need to set up the Android development environment.
+If you don't have it ready, follow the instructions based on your development OS
+targeting Android from [React Native Documentation](https://reactnative.dev/docs/environment-setup?os=macos&platform=android&guide=native).
+
+Here's a list of required software and tools:
+
+- **Node.js**: Needed to run the JavaScript code. Download
+  and install it from [Node.js official site](https://nodejs.org/en/download/).
+
+- **Watchman**(macOS only): A tool by Facebook for watching changes
+  in the filesystem. It's required for macOS. Follow
+  the instructions on the [Watchman official site](https://facebook.github.io/watchman/docs/install) to install it.
+
+- **Java Development Kit (JDK)**: Needed to run the Android emulator.
+  Install JDK from the [Oracle's official website](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html).
+
+- **Android Studio**: The official IDE for Android development. Download and install it from the [Android Studio's official site](https://developer.android.com/studio).
+
+- **Android SDK**: The Software Development Kit for Android, which comes bundled with Android Studio.
+
+- **Android SDK Platform**: Choose the specific Android platform version in Android Studio's SDK Manager.
+  It's recommended to select the latest stable version. It
+
+- **Android Virtual Device (AVD)**: The emulator used to run the Android application. Set this up in Android Studio's AVD Manager.
+
+**Android SDK**, and **Android Virtual Device** can be installed together
+while installing the **Android Studio**.
+
+After installation, you should have the following environment variables set up:
+
+- **JAVA_HOME**: This should point to the directory where JDK is installed. To add
+  Java to $PATH follow this [tutorial](https://www.scaler.com/topics/java/setup-java-home-and-ide-on-mac-os/)
+- **ANDROID_HOME**: This should point to the directory where the Android SDK is installed.
+
+### Setting Up the Project
+
+Once you have your Android development environment ready, you can set up the project.
+Start by creating a fork of the original [repository](https://github.com/usellm/example-react-native-app) and
+cloning it locally or opening it in codespaces.
+
+After you're in the IDE, follow these steps:
+
+1. **Install project dependencies**: Navigate to the project root directory in your
+   terminal and run `npm install` to install all necessary dependencies specified in `package.json`.
+
+```shell
+npm install
+```
+
+2. **Start the Metro server**: Metro is a JavaScript bundler for React Native.
+   Start it by running `npm run start` from your terminal.
+
+```shell
+npm run start
+```
+
+After starting the Metro server, you'll be prompted with options. Select `a - run on Android`.
+After the build finishes, you should see the running app on your emulator/device.
+
+### Building the APK
+
+By default, this process uses the debug key to build the APK, which should be fine for development purposes. However, if you wish to publish the app on the Google Play Store, you would need a release key. Follow [these instructions](https://developer.android.com/studio/publish/app-signing#generate-key) to set up a release key.
+
+To create a release build, navigate to your project directory in your terminal and run:
+
+```shell
+npm run release
+```
+
+The release APK will be located at `android/app/build/outputs/apk/release/app-release.apk`.
+
+Congratulations, you have now successfully set up and built the React Native AI Chat application on your Android device.
+
+## Development Guidelines
+
+This guide will help you understand the structure of our React Native Android application
+repository and suggest the key areas and files where you can use for development.
+This is a template project so you can fork this repository and use it as a starting point
+to develope and create your own project.
+
+### Important Files in the Repository
+
+Here are the crucial files that you need to understand before developing:
+
+1. **[App.tsx](https://github.com/usellm/example-react-native-app/blob/main/App.tsx)**: This is the main entry point for the app. Any root level configuration would go in here.
+
+2. **[index.js](https://github.com/usellm/example-react-native-app/blob/main/index.js)**: This file is used to register the main App component with React Native.
+
+3. **[package.json](https://github.com/usellm/example-react-native-app/blob/main/package.json)**: This file includes the metadata about the project like the project dependencies, scripts, versions, etc.
+
+4. **[package-lock.json](https://github.com/usellm/example-react-native-app/blob/main/package-lock.json)**: This is an automatically generated file that is used to pin the dependencies to specific versions for consistent installs.
+
+5. **[tsconfig.json](https://github.com/usellm/example-react-native-app/blob/main/tsconfig.json)**: Configuration file for TypeScript. It includes the root files and the compiler options required to compile the project.
+
+6. **[src/pages/ChatScreen.tsx](https://github.com/usellm/example-react-native-app/blob/main/src/pages/ChatScreen.tsx)**: This file handles the Chat screen of the app. Most of the chat functionalities are defined here.
+
+7. **[android/](https://github.com/usellm/example-react-native-app/tree/main/android)**: This directory contains all the files related to the Android app development. The app's APK build process is handled here.
+
+8. **[babel.config.js](https://github.com/usellm/example-react-native-app/blob/main/babel.config.js)**: This file contains configurations for Babel, which we use to convert ECMAScript 2015+ code into a
+   backward-compatible version of JavaScript.
+
+9. **[metro.config.js](https://github.com/usellm/example-react-native-app/blob/main/metro.config.js)**: Metro is the JavaScript bundler for React Native. This file contains configuration details for it.
+
+10. **[./android/gradle.properties](https://github.com/usellm/example-react-native-app/blob/main/android/gradle.properties)**, **[./android/settings.gradle](https://github.com/usellm/example-react-native-app/blob/main/android/settings.gradle)**, and **[./android/build.gradle](https://github.com/usellm/example-react-native-app/blob/main/android/build.gradle)**: These are configuration files for Gradle,
+    the build system used in Android development.
+
+11. **[tailwind.config.js](https://github.com/usellm/example-react-native-app/blob/main/tailwind.config.js)**: This file is the configuration for Tailwind CSS, a utility-first CSS framework.
+
+### Ideas for Future Work
+
+Here are some files where you could potentially make changes and some suggestions for what those changes could be:
+
+1. **App.tsx**: Since this is the entry point of the application, you might want to introduce new components,
+   change the navigation structure or modify the overall look and feel of the application.
+
+2. **src/pages/ChatScreen.tsx**: As a main feature of the application, this could be a good area to update.
+   You could improve the user interface, add additional features to the chat, or optimize the existing features.
+
+3. **android/**: You could potentially make changes to the build process of the Android.
+   This could involve modifying build configurations, adding new build scripts, etc.
+
+4. **`package.json`**: You can add new dependencies that might enhance the app.
+
+5. **`babel.config.js` & `metro.config.js`**: You can optimize the configurations for Babel and Metro to
+   improve the performance of the application.
+
+6. **`tsconfig.json` & `tailwind.config.js`**: As these files configure TypeScript and Tailwind CSS, any
+   improvements to type-checking, styling, and design can be made here.
+
+7. **Gradle configuration files**: If you have ideas to optimize the build system, you might want to look
+   at `./android/gradle.properties`, `./android/settings.gradle`, and `./android/build.gradle`.
+
+Remember, the above are just suggestions, feel free to explore other areas as well.
+
+### Resources to Learn
+
+If you're interested in learning more about React Native and mobile app development, there are several resources available that can help you get started or improve your skills. Here are some that we recommend:
+
+#### Online Tutorials and Courses
+
+1. [React Native Tutorial for Beginners - Crash Course 2021](https://www.youtube.com/watch?v=qSRrxpdMpVc): This is a comprehensive YouTube video tutorial that is designed to take you from a beginner to a competent React Native developer.
+
+2. [The Complete React Native + Hooks Course](https://www.udemy.com/course/the-complete-react-native-and-redux-course/): This course on Udemy provides an in-depth exploration of React Native and also covers Redux, a state management library.
+
+3. [React Native Documentation](https://reactnative.dev/docs/getting-started): The official React Native documentation is a great resource for getting started, and it also includes some advanced topics.
+
+4. [Learn React Native](https://www.codecademy.com/learn/learn-react-native): This Codecademy course provides interactive lessons on React Native.
+
+#### Books
+
+1. [Learning React Native](https://www.oreilly.com/library/view/learning-react-native/9781491929049/): This book provides practical introductions to both React and React Native.
+
+2. [Fullstack React Native: The Complete Guide to React Native](https://www.newline.co/fullstack-react-native/): It offers clear explanations and plenty of example code to help understand React Native concepts.
+
+#### Blogs and Communities
+
+1. [React Native Blog](https://reactnative.dev/blog): This is the official React Native blog which has updates on new releases and interesting articles.
+
+2. [Medium - React Native Development](https://medium.com/tag/react-native): This tag on Medium has several articles on various topics related to React Native development.
+
+3. [Reddit - r/reactnative](https://www.reddit.com/r/reactnative/): The React Native subreddit is a helpful community for asking questions and sharing resources.
