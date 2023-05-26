@@ -1,9 +1,8 @@
-import AIChatBot from "./ai-chatbot/page";
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function DemoPage() {
-  return (
-    <div className="max-w-4xl w-full mx-auto p-4">
-      <AIChatBot />
-    </div>
-  );
+  const router = useRouter();
+  router.push("/demo/ai-chatbot");
+  return null;
 }

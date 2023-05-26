@@ -117,7 +117,7 @@ export default function AIChatBot() {
   const RecordingIcon = status === "recording" ? Icons.square : Icons.mic;
 
   return (
-    <>
+    <div className="flex flex-col h-full max-h-[600px] overflow-y-hidden">
       <div
         className="w-full flex-1 overflow-y-auto px-4"
         ref={(el) => (messagesWindow.current = el)}
@@ -152,6 +152,6 @@ export default function AIChatBot() {
           <RecordingIcon size={16} />
         </Button>
       </div>
-    </>
+    </div>
   );
 }
