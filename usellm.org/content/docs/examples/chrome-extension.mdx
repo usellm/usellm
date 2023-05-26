@@ -1,6 +1,120 @@
 ---
-title: Coming soon
-description: Coming soon
+title: Webpage Summarizer Chrome Extension
+description: AI-powered Chrome extension for summarizing and interacting with webpages
 ---
 
-Coming soon
+### Introduction
+
+Webpage Summarizer is a handy Chrome extension that leverages the power of ChatGPT API
+to summarize web pages. It's built using the `useLLM` react hook.
+
+---
+
+### Setting Up the Extension Locally
+
+Before installing the extension on your Chrome browser, you need to set it up locally. Follow the steps below to do so:
+
+1. First, go to [Webpage Summarizer Repository](https://github.com/usellm/example-chrome-extension) and fork it to your own account
+
+2. Next, you need to clone the repository to your local machine. Open your terminal and run:
+
+   ```shell
+   git clone https://github.com/username/your-repo-name.git
+   cd your-repo-name
+   ```
+
+   If the username is "XYZuser" and repository name is "webpage-summarizer", this will be the clone command:
+
+   ```shell
+   git clone https://github.com/XYZuser/webpage-summarizer.git
+   cd webpage-summarizer
+   ```
+
+3. Then, navigate to the `app` directory and install the required dependencies using npm:
+
+   ```shell
+   cd app
+   npm install
+   ```
+
+4. Finally, run the nodemon watcher script by executing:
+
+   ```shell
+   npm run watch
+   ```
+
+---
+
+### Installing the Extension on Chrome
+
+Once you've set up the extension locally, you can install it on your Chrome browser:
+
+1. Open Chrome and navigate to `chrome://extensions/`
+2. At the top-right corner, toggle on the `Developer mode` switch
+3. Click on the `Load unpacked` button
+4. In the dialog that opens, navigate to the `extension` folder inside the cloned repository and select it
+5. Your extension should now be visible among your other extensions in Chrome
+
+---
+
+### Important Files in the Repository
+
+Here's a brief description of some of the important files in the repository:
+
+- **`./extension/content.js`** - This file injects functionality into web pages. It communicates with the background
+  script and manipulates the DOM of the webpage.
+- **`./extension/manifest.json`** - This is the extension's configuration file. It specifies basic metadata about the
+  extension like its name, description, version, and permissions it requires.
+- **`./extension/readability.js`** - A standalone version of Mozilla's readability library. It's used to parse the web
+  page and improve its readability.
+- **`./extension/index.html`** - The HTML structure of the popup that appears when you click on the extension icon.
+  This is gitignored as it is automatically generated when running the command `npm run watch`.
+- **`./app/pages/index.js`** - This is the entry point of the application where the main App component is defined.
+- **`./app/jsconfig.json`** - This file guides the JavaScript language service in Visual Studio Code to determine where
+  the base directory of the JavaScript project is located.
+- **`./app/package.json`** - Contains metadata about the app. This includes the name, version, description, and dependencies.
+- **`./app/postcss.config.js`**, **`./app/tailwind.config.js`** and **`./app/next.config.js`** - Configuration files for PostCSS,
+  Tailwind CSS and Next.js respectively.
+
+---
+
+### Next Steps and Ideas for Extension Development
+
+Here are some ideas for further development and improvement of the extension:
+
+1. **Improving the Prompt for Summarization**: Currently, the prompt used for generating the summary may be quite generic.
+   Experiment with various prompts to improve the quality of the summarization. Consider implementing an A/B testing setup to
+   measure the effectiveness of different prompts. This could involve using different prompts to different users, and then
+   collecting feedback or usage data to determine which prompts produce the best summaries.
+
+2. **Add Authorization (Sign Up/Login) Feature**: Add a sign-up/login feature to control usage and potentially implement
+   rate limiting in the future. This could involve setting up a simple backend service to manage user accounts.
+
+3. **Implement Chat Feature**: Currently, the chat feature is not implemented. Consider adding a feature that allows
+   users to interact with the extension and get contextual answers from the webpage. This would likely involve sending
+   the contents of the current webpage or the user's selected text to the ChatGPT API, and then displaying the generated
+   responses in the extension's popup window. Be sure to design the UI in a way that makes it clear to users that they're
+   chatting with an AI model, and consider adding features like a chat history or the ability to save favorite responses.
+
+4. **Add support for other browsers**: The extension currently only works with Chrome. You could work on making
+   it compatible with other browsers such as Firefox, Edge, and Safari.
+
+5. **Integration with other APIs**: Besides the ChatGPT's chat API, consider integrating other APIs to extend the
+   functionality of the extension. For instance, a translation API could be used
+
+6. **User Customization**: Allow users to customize the extension's settings to their liking. This might include
+   changing the appearance of the popup window, adjusting the length of summaries, or toggling certain features on or off.
+
+7. **Enhanced Summarization Features**: Improve the summarization algorithm by implementing advanced NLP
+   techniques or integrating with other summarization APIs. Also consider adding features like topic extraction
+   or keyword highlighting to make the summaries more useful.
+
+8. **Integration with Note-Taking Apps**: Allow users to save the summaries directly to their favorite note-taking
+   apps or cloud storage services. This would make it easier to store and access the summaries later.
+
+9. **Performance Improvements**: Analyze the performance of the extension and look for ways to make it faster and
+   more efficient. This might involve optimizing the code, reducing the size of the extension, or improving how it interacts with web pages.
+
+10. **User Feedback Collection**: Implement a feature to collect user feedback directly through the extension.
+    This could help you understand how users are using the extension, what features they find most useful,
+    and what improvements they would like to see.
