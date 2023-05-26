@@ -179,8 +179,6 @@ export const docsConfig: DocsConfig = {
         {
           title: "Chrome Extension",
           href: "/docs/examples/chrome-extension",
-          label: "Soon",
-          disabled: true,
         },
         {
           title: "Slack Bot",
