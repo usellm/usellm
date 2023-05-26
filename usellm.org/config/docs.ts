@@ -163,8 +163,7 @@ export const docsConfig: DocsConfig = {
         {
           title: "Next.js (App Router)",
           href: "/docs/examples/nextjs-app-router",
-          label: "Soon",
-          disabled: true,
+          disabled: false,
         },
         {
           title: "Android App",
