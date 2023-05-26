@@ -3,13 +3,7 @@ import { HOME_PAGE_DEMOS } from "@/config/demos";
 import { Icons } from "./icons";
 import { useSearchParams } from "next/navigation";
 
-interface DemoWrapperProps {
-  title?: string;
-  sourceUrl?: string;
-  children: React.ReactNode;
-}
-
-export function HomePageDemo({ title = "Live Demo" }: DemoWrapperProps) {
+export function HomePageDemo() {
   const searchParams = useSearchParams();
   const id = searchParams.get("demo") || "ai-chatbot";
 
@@ -23,7 +17,7 @@ export function HomePageDemo({ title = "Live Demo" }: DemoWrapperProps) {
     <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[500px] flex flex-col mb-8">
       <div className="w-full shadow dark:border-b">
         <div className="w-full px-4 h-14 flex items-center mx-auto justify-between">
-          <span className="text-lg font-bold ">{title}</span>
+          <span className="text-lg font-bold ">Live Demo</span>
           {page.sourceUrl && (
             <a
               target="_blank"
