@@ -95,7 +95,7 @@ export default function VoiceChat() {
 
   return (
     <div className="p-4 flex flex-col items-start overflow-y-scroll">
-      <h2 className="font-medium text-3xl">Talk to AI</h2>
+      <h2 className="font-semibold text-2xl">Talk to AI</h2>
       <button
         className={cn(
           "p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 mt-4"

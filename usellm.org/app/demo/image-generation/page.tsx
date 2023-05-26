@@ -18,7 +18,7 @@ export default function ImageGeneration() {
 
   return (
     <div className="p-4 overflow-y-auto">
-      <h2 className="font-medium text-3xl">Image Generation</h2>
+      <h2 className="font-semibold text-2xl">Image Generation</h2>
       <div className="flex my-4">
         <input
           className="p-2 border rounded mr-2 w-full"

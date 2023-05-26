@@ -145,29 +145,32 @@ export default function DocumentQna() {
 
       {status && <div>{status}</div>}
 
-      {!status && !document && !answer && matchedParagraphs.length === 0 && (
-        <div className="prose dark:prose-invert mt-2">
-          <div className="font-medium">How it Works</div>
-          <ul>
-            <li>
-              The first 20 paragraphs of the document will be considered for
-              embedding.
-            </li>
-            <li>
-              In each paragraph, only the first 1000 characters will be
-              considered for embedding.
-            </li>
-            <li>
-              The question embedding will be used to find top 3 matching
-              paragraphs using cosine similary
-            </li>
-            <li>
-              Matching paragraphs will be passed along with the question to the
-              OpenAI chat completions API to generate an answer.
-            </li>
-          </ul>
-        </div>
-      )}
+      {!status &&
+        !documentText &&
+        !answer &&
+        matchedParagraphs.length === 0 && (
+          <div className="prose dark:prose-invert mt-2">
+            <div className="font-medium">How it Works</div>
+            <ul>
+              <li>
+                The first 20 paragraphs of the document will be considered for
+                embedding.
+              </li>
+              <li>
+                In each paragraph, only the first 1000 characters will be
+                considered for embedding.
+              </li>
+              <li>
+                The question embedding will be used to find top 3 matching
+                paragraphs using cosine similary
+              </li>
+              <li>
+                Matching paragraphs will be passed along with the question to
+                the OpenAI chat completions API to generate an answer.
+              </li>
+            </ul>
+          </div>
+        )}
     </div>
   );
 }

@@ -28,31 +28,38 @@ export default function SpeechToText() {
   };
 
   return (
-    <div style={{ maxWidth: 320, margin: "32px auto" }}>
-      <h1 style={{ fontSize: 20, textAlign: "center" }}>
-        Audio Transcription Demo
-      </h1>
-      <button
-        style={{ margin: 8, padding: 2, border: "1px solid black" }}
-        onClick={startRecording}
-      >
-        Record
-      </button>
-      <button
-        style={{ margin: 8, padding: 2, border: "1px solid black" }}
-        onClick={stopRecording}
-      >
-        Stop
-      </button>
-      <button
-        style={{ margin: 8, padding: 2, border: "1px solid black" }}
-        onClick={transcribe}
-      >
-        Transcribe
-      </button>
+    <div className="p-4 overflow-y-auto">
+      <h1 className="font-semibold text-2xl">Speech to Text</h1>
+      <div className="my-4">
+        <button
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300"
+          onClick={startRecording}
+        >
+          Record
+        </button>
+        <button
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ml-2"
+          onClick={stopRecording}
+        >
+          Stop
+        </button>
+        <button
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ml-2"
+          onClick={transcribe}
+        >
+          Transcribe
+        </button>
+      </div>
+
+      {audioUrl && <audio className="mb-4" src={audioUrl} controls />}
+
       <p>{status}</p>
-      {audioUrl && <audio src={audioUrl} controls />}
-      {transcript && <p>Transcript: {transcript}</p>}
+
+      {transcript && (
+        <p>
+          <b>Transcript:</b> {transcript}
+        </p>
+      )}
     </div>
   );
 }
