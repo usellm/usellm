@@ -9,10 +9,10 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header";
 import { StyleSwitcher } from "@/components/style-switcher";
-import { HomePageDemo } from "@/components/home-page-demo";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
+import { ExamplesNav, HomePageDemo } from "@/components/examples-nav";
 
 export default function IndexPage() {
   return (
@@ -50,8 +50,9 @@ export default function IndexPage() {
               GitHub
             </Link>
           </div>
-          <HomePageDemo />
         </PageHeader>
+        <ExamplesNav />
+        <HomePageDemo />
       </div>
       <div className="flex-1" />
       <SiteFooter />

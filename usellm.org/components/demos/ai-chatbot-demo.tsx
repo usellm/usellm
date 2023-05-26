@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Icons } from "./icons";
-import { useToast } from "./ui/use-toast";
+import { Icons } from "../icons";
+import { useToast } from "../ui/use-toast";
+import { DemoWrapper } from "../demo-wrapper";
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.substring(1);
@@ -38,7 +39,7 @@ function Message({ role, content }: OpenAIMessage) {
   );
 }
 
-export function HomePageDemo() {
+export function AIChatBotDemo() {
   const { toast } = useToast();
   const [status, setStatus] = useState<Status>("idle");
   const [history, setHistory] = useState<OpenAIMessage[]>([
@@ -117,19 +118,7 @@ export function HomePageDemo() {
   const RecordingIcon = status === "recording" ? Icons.square : Icons.mic;
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-background shadow-xl w-full h-[480px] flex flex-col mb-8">
-      <div className="w-full shadow dark:border-b">
-        <div className="w-full px-4 h-14 flex items-center mx-auto justify-between">
-          <span className="text-lg font-bold ">Live Demo</span>
-          <a
-            target="_blank"
-            className="hover:text-blue-600 flex items-center"
-            href="https://github.com/usellm/usellm/tree/main/usellm.org/components/home-page-demo.tsx"
-          >
-            Source <Icons.externalLink className="inline ml-1" size={16} />
-          </a>
-        </div>
-      </div>
+    <DemoWrapper>
       <div
         className="w-full flex-1 overflow-y-auto px-4"
         ref={(el) => (messagesWindow.current = el)}
@@ -164,6 +153,6 @@ export function HomePageDemo() {
           <RecordingIcon size={16} />
         </Button>
       </div>
-    </div>
+    </DemoWrapper>
   );
 }
