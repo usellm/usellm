@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { StyleSwitcher } from "@/components/style-switcher";
 import { Toaster } from "@/components/ui/toaster";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: {
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <TailwindIndicator />
         </ThemeProvider>
         <StyleSwitcher />
+        <Analytics />
       </body>
     </html>
   );
