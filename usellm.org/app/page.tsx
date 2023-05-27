@@ -52,6 +52,7 @@ export default function IndexPage() {
             </Link>
           </div>
         </PageHeader>
+        <div id="demo" />
         <ExamplesNav />
         <HomePageDemo />
       </div>
