@@ -315,8 +315,12 @@ This can be done using map which maps the `history` array to a message element
 Here is the complete example till now.
 
 ```js
+"use client";
+import React, { useState } from "react";
+import useLLM, { OpenAIMessage } from "usellm";
+
 export default function ChatExample() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<OpenAIMessage[]>([]);
   const [inputText, setInputText] = useState("");
 
   async function handleSend() {
@@ -408,6 +412,11 @@ export default async function POST(request) {
 
 ### Create an `.env.local` file
 
+.env.local file is used to store environment variables that are specific to your local development environment.
+These variables can be accessed in your Next.js application using the process.env object.
+
+.env.local file should be located in the root directory of your Next.js project.
+
 #### Getting the OpenAI API key
 
 To get an OpenAI API key, you can follow these steps:
@@ -458,6 +467,7 @@ You can set the `stream` to `true`, so that the response starts printing word by
 Complete code for the `chat-example.tsx` page
 
 ```js
+"use client";
 import React, { useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 
