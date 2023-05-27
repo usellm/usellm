@@ -12,7 +12,7 @@ export default function VoiceChat() {
   const [status, setStatus] = useState<Status>("idle");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const llm = useLLM({
-    serviceUrl: "https://usellm.org/api/llm", // For testing only
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
   const [history, setHistory] = useState<OpenAIMessage[]>([
     {

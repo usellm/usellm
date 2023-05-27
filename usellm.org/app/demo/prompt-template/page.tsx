@@ -9,7 +9,7 @@ import useLLM from "usellm";
 
 export default function PromptTemplate() {
   const llm = useLLM({
-    serviceUrl: "https://usellm.org/api/llm", // For testing only
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   const [topic, setTopic] = useState("");

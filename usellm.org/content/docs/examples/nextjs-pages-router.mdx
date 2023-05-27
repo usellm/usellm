@@ -373,7 +373,7 @@ And should be able to see the messages history on the page when send button is c
 import { createLLMService } from "usellm";
 
 const llmService = createLLMService({
-  openaiApiKey: process.env.OPEN_API_KEY,
+  openaiApiKey: process.env.OPENAI_API_KEY,
   actions: ["chat"],
 });
 
@@ -403,31 +403,40 @@ These variables can be accessed in your Next.js application using the process.en
 
 #### Getting the OpenAI API key
 
-To get an OpenAI API key, you can follow these steps:
+The OpenAI API key is a unique identifier that authorizes and tracks API requests
+associated with your project. The useLLM project utilizes this key to interface with
+OpenAI's services and resources, such as the GPT-3.5 model. Without this key, your
+application wouldn't have the necessary permissions to access these services,
+thereby inhibiting functionalities associated with OpenAI's AI models.
 
-1. Visit the OpenAI website at https://openai.com/.
+Here are the steps to Generate OpenAI API Key:
 
-2. Click on the "Get started" button or navigate to the "Product" section.
+1. **Navigate to OpenAI API Keys page**: Start by visiting the
+   [OpenAI API Keys](https://platform.openai.com/account/api-keys) page.
 
-3. Explore the available products and select the one that includes access to the ChatGPT API, but please note that OpenAI may have updated or changed their offerings since then.
+2. **Create an Account or Sign In**: If you don't already have an OpenAI account, you'll
+   need to create one. If you already have an account, simply click on 'Sign In' and enter your credentials.
 
-4. Review the pricing and details of the selected product to ensure it meets your requirements.
+3. **Access API Keys Dashboard**: Once you're signed in, you'll be directed to the API
+   Keys dashboard. Here, you can manage your existing API keys and create new ones.
 
-5. If you're new to OpenAI, you may need to create an account. Click on the "Sign up" or "Get started" button and provide the necessary information to register.
+4. **Create a New API Key**: To create a new API key, click on the 'Create new' or '+ New key'
+   button (depending on the current UI). A new window will open prompting you to provide a
+   description for the key. After filling in the details, click 'Create'.
 
-6. Once you have signed up or logged into your OpenAI account, you will need to complete any required steps, such as agreeing to terms and conditions, verifying your identity, or providing payment information.
+5. **Copy the API Key**: After creating the key, it will be listed in your API Keys dashboard.
+   Make sure to copy the key (a long string of alphanumeric characters) immediately, as you won't
+   be able to view it again once you leave the page or refresh.
 
-7. After completing the necessary steps, you should gain access to your OpenAI API key. The API key is a unique authentication token that allows you to make API requests to access OpenAI services.
+![example](https://i.imgur.com/fO5tiYm.png)
 
-8. Locate and copy your API key from your OpenAI account dashboard or the designated section related to API access. The specific location may vary depending on any updates or changes made by OpenAI.
-
-It's important to keep your API key secure and treat it as sensitive information. Ensure that you do not share your API key publicly or expose it in any public repositories or code samples.
-
-Once you obtain the API key, create a `.env.local` file to store the `OPEN_API_KEY` used while creating LLM service using `createLLMService`.
+Once you obtain the API key, create a `.env.local` file to store the `OPENAI_API_KEY` used while creating LLM service using `createLLMService`.
 
 ```.env
-OPEN_API_KEY='[YOUR_OPEN_AI_KEY]'
+OPENAI_API_KEY='YOUR_OPEN_AI_KEY'
 ```
+
+<img src="https://i.imgur.com/oyMlvMQ.png" />
 
 ## Integrating Service
 
