@@ -29,7 +29,7 @@ export default function DocumentQna() {
   const [status, setStatus] = useState("");
 
   const llm = useLLM({
-    serviceUrl: "https://usellm.org/api/llm", // For testing only
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleEmbedClick() {
