@@ -96,5 +96,5 @@ function getChatResponseHeaders() {
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, "10 s"),
+  limiter: Ratelimit.slidingWindow(100, "10 s"),
 });
