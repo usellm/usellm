@@ -15,3 +15,5 @@ npm install usellm@latest
 ## Usage
 
 Please refer to the documentation site: https://usellm.org/docs
+
+Source Code: https://github.com/usellm/usellm
