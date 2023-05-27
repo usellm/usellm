@@ -331,11 +331,10 @@ Check out this course on prompt engineering to craft effective prompts: https://
 
 #### Example - Template
 
-Here's a complete example of using templates in a NextJS [app router](https://nextjs.org/docs/app) project ([live demo](https://usellm.org/demo/tutorial-generator)):
+Here's a complete example of using templates in a NextJS [app router](https://nextjs.org/docs/app) project ([live demo](https://usellm.org/demo/prompt-template)):
 
 ```javascript
 /* app/api/llm.tsx */
-
 import { createLLMService } from "usellm";
 
 export const runtime = "edge";
@@ -430,7 +429,7 @@ interface LLMServiceTemplate {
 }
 ```
 
-Check the [OpenAI API docs](https://platform.openai.com/docs/api-reference/chat/create) for information about each option and view the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details.
+Check the [OpenAI API docs](https://platform.openai.com/docs/api-reference/introduction) for information about each option and view the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details.
 
 ## Contributing
 
