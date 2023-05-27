@@ -1,3 +1,8 @@
+/* 
+- Copy and paste this code into your Next.js applications's "app/page.tsx" file to get started 
+- Make sure to run "npm install usellm" to install the useLLM pacakge
+- Replace the `serviceUrl` below with your own service URL for production
+*/
 "use client";
 import { useEffect, useRef, useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
@@ -13,7 +18,9 @@ export default function AIChatBot() {
   ]);
   const [inputText, setInputText] = useState("");
 
-  const llm = useLLM({ serviceUrl: "/api/llm" });
+  const llm = useLLM({
+    serviceUrl: "https://usellm.org/api/llm", // For testing only
+  });
 
   let messagesWindow = useRef<Element | null>(null);
 

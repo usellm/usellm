@@ -1,9 +1,17 @@
+/* 
+- Copy and paste this code into your Next.js applications's "app/page.tsx" file to get started 
+- Make sure to run "npm install usellm" to install the useLLM pacakge
+- Replace the `serviceUrl` below with your own service URL for production
+*/
 "use client";
 import { useState } from "react";
 import useLLM from "usellm";
 
 export default function PromptTemplate() {
-  const llm = useLLM({ serviceUrl: "/api/llm" });
+  const llm = useLLM({
+    serviceUrl: "https://usellm.org/api/llm", // For testing only
+  });
+
   const [topic, setTopic] = useState("");
   const [result, setResult] = useState("");
 
