@@ -157,8 +157,7 @@ export const docsConfig: DocsConfig = {
         {
           title: "Next.js (Pages Router)",
           href: "/docs/examples/nextjs-pages-router",
-          label: "Soon",
-          disabled: true,
+          disabled: false,
         },
         {
           title: "Next.js (App Router)",
