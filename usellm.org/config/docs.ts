@@ -37,6 +37,42 @@ export const docsConfig: DocsConfig = {
       ],
     },
     {
+      title: "Step-by-Step Tutorials",
+      items: [
+        {
+          title: "Next.js (Pages Router)",
+          href: "/docs/examples/nextjs-pages-router",
+          disabled: false,
+        },
+        {
+          title: "Next.js (App Router)",
+          href: "/docs/examples/nextjs-app-router",
+          disabled: false,
+        },
+        {
+          title: "Android App",
+          href: "/docs/examples/react-native-android",
+        },
+        {
+          title: "Chrome Extension",
+          href: "/docs/examples/chrome-extension",
+        },
+        {
+          title: "Slack Bot",
+          href: "/docs/examples/slack-bot",
+          label: "Soon",
+          disabled: true,
+        },
+        {
+          title: "Discord Bot",
+          href: "/docs/examples/discord-bot",
+          label: "Soon",
+          disabled: true,
+        },
+      ],
+    },
+
+    {
       title: "Client-Side Usage",
       items: [
         {
@@ -184,41 +220,6 @@ export const docsConfig: DocsConfig = {
     //     },
     //   ],
     // },
-    {
-      title: "Starter Templates",
-      items: [
-        {
-          title: "Next.js (Pages Router)",
-          href: "/docs/examples/nextjs-pages-router",
-          disabled: false,
-        },
-        {
-          title: "Next.js (App Router)",
-          href: "/docs/examples/nextjs-app-router",
-          disabled: false,
-        },
-        {
-          title: "Android App",
-          href: "/docs/examples/react-native-android",
-        },
-        {
-          title: "Chrome Extension",
-          href: "/docs/examples/chrome-extension",
-        },
-        {
-          title: "Slack Bot",
-          href: "/docs/examples/slack-bot",
-          label: "Soon",
-          disabled: true,
-        },
-        {
-          title: "Discord Bot",
-          href: "/docs/examples/discord-bot",
-          label: "Soon",
-          disabled: true,
-        },
-      ],
-    },
     {
       title: "Contribute",
       items: [
