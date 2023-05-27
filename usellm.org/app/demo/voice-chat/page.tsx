@@ -5,7 +5,7 @@
 */
 "use client";
 
-import useLLM, { OpenAIMessage } from "@/usellm";
+import useLLM, { OpenAIMessage } from "usellm";
 import { useState } from "react";
 
 export default function VoiceChat() {
