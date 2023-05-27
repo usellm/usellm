@@ -1,3 +1,8 @@
+/* 
+- Copy and paste this code into your Next.js applications's "app/page.tsx" file to get started 
+- Make sure to run "npm install usellm" to install the useLLM pacakge
+- Replace the `serviceUrl` below with your own service URL for production
+*/
 "use client";
 import { Textarea } from "@/components/ui/textarea";
 import useLLM from "@/usellm";
@@ -6,7 +11,9 @@ import { useState } from "react";
 export default function TextToSpeech() {
   const [text, setText] = useState<string>("");
   const [audioUrl, setAudioUrl] = useState<string>("");
-  const llm = useLLM({ serviceUrl: "/api/llm" });
+  const llm = useLLM({
+    serviceUrl: "https://usellm.org/api/llm", // For testing only
+  });
 
   async function handleSpeakClick() {
     if (!text) return;

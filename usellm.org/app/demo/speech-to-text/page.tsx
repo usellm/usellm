@@ -1,3 +1,8 @@
+/* 
+- Copy and paste this code into your Next.js applications's "app/page.tsx" file to get started 
+- Make sure to run "npm install usellm" to install the useLLM pacakge
+- Replace the `serviceUrl` below with your own service URL for production
+*/
 "use client";
 import useLLM from "usellm";
 import React, { useState } from "react";
@@ -7,7 +12,9 @@ export default function SpeechToText() {
   const [transcript, setTranscript] = useState("");
   const [status, setStatus] = useState("");
 
-  const llm = useLLM({ serviceUrl: "/api/llm" });
+  const llm = useLLM({
+    serviceUrl: "https://usellm.org/api/llm", // For testing only
+  });
 
   const startRecording = async () => {
     await llm.record();
