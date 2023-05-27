@@ -83,6 +83,7 @@ export default function HomePage() {
       inputs: { topic },
       stream: true,
       onStream: ({ message }) => setResult(message.content),
+      messages: [], // additional messages to continue the conversation
     });
   }
 
