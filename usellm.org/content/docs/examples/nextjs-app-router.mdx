@@ -144,6 +144,7 @@ To create a new page, you will have to:
 - Create a new `.tsx` file `page.tsx` inside "chat-example
 
 ```tsx
+"use client";
 export default function ChatExample() {
   return (
     <div className="max-w-4xl w-full mx-auto p-4">
@@ -155,6 +156,8 @@ export default function ChatExample() {
 }
 ```
 
+You can navigate to '/chat-example' to see the output.
+
 <br />
 <img src="https://i.imgur.com/LCS7pd1.png" />
 
@@ -163,6 +166,7 @@ export default function ChatExample() {
 To create a chat form, we will require an input field and a send button. This can be added like below.
 
 ```js
+"use client";
 export default function ChatExample() {
   return (
     <div className="max-w-4xl w-full mx-auto p-4">
@@ -190,6 +194,7 @@ An onClick handler for a button in JavaScript or React is a function that is tri
 In this case you can define a function `handleSend` and pass it as a prop to the Send button.
 
 ```js
+"use client";
 export default function ChatExample() {
   async function handleSend() {
     alert("Send is Clicked");
@@ -310,8 +315,12 @@ This can be done using map which maps the `history` array to a message element
 Here is the complete example till now.
 
 ```js
+"use client";
+import React, { useState } from "react";
+import useLLM, { OpenAIMessage } from "usellm";
+
 export default function ChatExample() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<OpenAIMessage[]>([]);
   const [inputText, setInputText] = useState("");
 
   async function handleSend() {
@@ -403,6 +412,11 @@ export default async function POST(request) {
 
 ### Create an `.env.local` file
 
+.env.local file is used to store environment variables that are specific to your local development environment.
+These variables can be accessed in your Next.js application using the process.env object.
+
+.env.local file should be located in the root directory of your Next.js project.
+
 #### Getting the OpenAI API key
 
 To get an OpenAI API key, you can follow these steps:
@@ -453,6 +467,7 @@ You can set the `stream` to `true`, so that the response starts printing word by
 Complete code for the `chat-example.tsx` page
 
 ```js
+"use client";
 import React, { useState } from "react";
 import useLLM, { OpenAIMessage } from "usellm";
 
