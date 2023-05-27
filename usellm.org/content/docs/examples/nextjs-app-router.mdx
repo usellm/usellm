@@ -1,6 +1,521 @@
 ---
-title: Coming soon
-description: Coming soon
+title: Next.js (App Router)
+description: Build an AI chatbot with `useLLM` and Next.js
 ---
 
-Coming soon
+This comprehensive guide will walk you through the process of creating a [Next.js](https://nextjs.org/) AI Chat application powered by the ChatGPT API.
+
+This tutorial is designed using Typescript with the Next.js [App Router](https://nextjs.org/docs/app).
+
+By the end of this tutorial, you will have a fully functional chat application that utilizes the advanced natural language processing capabilities of ChatGPT to provide intelligent and interactive conversations.
+
+If you are beginner and not familiar with Typescript, you can follow [this guide](https://usellm.org/docs/examples/nextjs-pages-router)
+
+You can find the finished code of this tutorial in this [Github repository](https://github.com/usellm/example-nextjs-app-router).
+
+Let's get started!
+
+## Setup Development Environment
+
+### Create Github Repository
+
+Follow the steps to create a GitHub repository:
+
+1. Sign in to your GitHub account. If you don't have an account, you can create one for free at https://github.com/join.
+
+2. Once you're signed in, click on the "+" sign at the top right corner of the GitHub interface. Then, select "New repository" from the dropdown menu.
+
+3. On the "Create a new repository" page, you'll need to provide some information:
+
+   - **Repository name:** Enter a name for your repository. Choose a descriptive name that reflects the purpose of your project.
+   - **Description (optional):** Add a brief description to provide an overview of your project.
+   - **Public or Private:** Choose whether you want your repository to be public (visible to everyone) or private (accessible only to you or collaborators).
+   - **Initialize this repository with a README:** Select this option to create an initial README file for your repository. It's a good practice to include a README to provide information about your project.
+   - **Choose a license (optional):** If you want to specify a license for your project, you can choose one from the provided list. Otherwise, you can skip this step.
+
+4. Once you've filled in the necessary details, click on the "Create repository" button.
+
+5. Congratulations! You have successfully created a GitHub repository. You'll be redirected to the repository page, where you can find various options and settings for managing your repository.
+
+<img src="https://i.imgur.com/yYVLPhc.png" />
+
+### Using GitHub Codespaces
+
+We will be using GitHub Codespaces to run the code.
+GitHub Codespaces is a cloud-based development environment provided by GitHub.
+It allows developers to write, build, test, and debug code directly in the browser, without the need for local development setups.
+With GitHub Codespaces, you can quickly set up and access a fully configured development environment for your projects.
+
+To run code in GitHub Codespaces, follow these steps:
+
+1. Open your GitHub repository.
+
+2. If Codespaces is already enabled for your repository, you will see a green "Code" button at the top right corner of the repository page. Click on the arrow next to it, and select "Open with Codespaces" from the dropdown menu.
+
+   If you haven't set up Codespaces for your repository, you can click on the "Code" button and select "Open with Codespaces" from the dropdown menu. This will prompt you to configure and set up Codespaces for your repository.
+
+3. Once you click on "Open with Codespaces," GitHub will create a new Codespace based on your repository's configuration. It will set up the necessary development environment, including the required dependencies and tools.
+
+4. After the Codespace is set up, you will be redirected to the Codespaces interface, which provides an integrated development environment (IDE) within your browser.
+
+5. In the Codespaces IDE, you can view and edit the files in your repository. You can navigate through the file structure, make changes to the code, and create new files as needed.
+
+## Create Next.js App
+
+1. Open the terminal by clicking on the terminal panel to activate it.
+
+2. Delete the Readme.md file that you might have created while creating the Github Repository.
+   This is to avoid conflict because we are going to setup the Next.js project from scratch, which creates the Readme.md file
+
+3. Create a Next.js app using the following command:
+
+```cmd
+npx create-next-app@latest . --use-npm
+```
+
+4. After running the above command, you will be asked with the following questions, please answer them as suggested below:
+
+   ✔ Would you like to use TypeScript with this project? > [No] / [**Yes**]
+
+   ✔ Would you like to use ESLint with this project? > No / [**Yes**]
+
+   ✔ Would you like to use Tailwind CSS with this project? > No / [**Yes**]
+
+   ✔ Would you like to use `src/` directory with this project? > No / [**Yes**]
+
+   ✔ Use App Router (recommended)? > No / [**Yes**]
+
+   ✔ Would you like to customize the default import alias? > [**No**] / Yes
+
+Once, you answer all the questions, `npx` will setup a Next.js project for you in few seconds.
+Once its created, you should see the success message as shown below.
+
+<br />
+<img src="https://i.imgur.com/eMcRdQH.png" />
+
+### Installing usellm Dependency
+
+To install the `usellm` dependency using below command.
+
+```cmd
+npm install usellm
+```
+
+Your app is now ready to be launched. Use the below command to launch it.
+
+```cmd
+npm run dev
+```
+
+After running the above the code, the App will run and you should see the message in right bottom corner.
+
+<img src="https://i.imgur.com/BuRLahr.png" />
+
+<br />
+You can click "Open in Browser" button to see the App's homepage.
+<br />
+
+<img src="https://i.imgur.com/b3fSBon.png" />
+
+### Project Folder Structure
+
+```plaintext
+/my-app
+├── .next/                  # This is the output directory of the Next.js build process.
+├── node_modules/           # Node.js modules are installed in this directory.
+├── app/                    # You can opt to include your source files here.
+│   ├── api/                # Create server-side API endpoints for a route
+│   ├── chat-example/
+│   │    └── page.tsx       # This file contains the unique UI of a route and make the path publicly accessible
+├── package.json            # This file contains the list of project dependencies and scripts.
+├── package-lock.json       # This file is auto-generated and it holds information about the project dependencies tree.
+└── .gitignore              # Ignore some files from Git.
+```
+
+> **Note:** There might be other folders and files present in the typical Next.js project. Those are out of scope for this particular
+> example.
+
+## Creating New Page
+
+To create a new page, you will have to:
+
+- Navigate to the "app" folder
+- Create a new folder "chat-example"
+- Create a new `.tsx` file `page.tsx` inside "chat-example
+
+```tsx
+export default function ChatExample() {
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+    </div>
+  );
+}
+```
+
+<br />
+<img src="https://i.imgur.com/LCS7pd1.png" />
+
+### Add an Input field and Send Button
+
+To create a chat form, we will require an input field and a send button. This can be added like below.
+
+```js
+export default function ChatExample() {
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      <div className="w-full py-4 flex px-4">
+        <input className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+        <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 ml-2">
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Output:**
+
+<img src="https://i.imgur.com/IgzY6Gv.png" />
+
+### Adding onClick Handler
+
+An onClick handler for a button in JavaScript or React is a function that is triggered when the button is clicked.
+In this case you can define a function `handleSend` and pass it as a prop to the Send button.
+
+```js
+export default function ChatExample() {
+  async function handleSend() {
+    alert("Send is Clicked");
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      <div className="w-full py-4 flex px-4">
+        <input
+          placeholder="Enter message here"
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+When you click a button, you should be able to see the alert like below:
+
+**Output:**
+
+<img src="https://i.imgur.com/zCgQdbI.png" />
+
+### Adding onChange Handler
+
+An `onChange` handler for an input field in JavaScript or React is a function that is triggered whenever the value of the input field changes.
+In this case you can define a state `inputText` and a function `setInputText` to set the input field value into `inputText`.
+This can be done using `useState(...)` hook.
+
+```js
+"use client";
+import React, { useState } from "react";
+
+export default function ChatExample() {
+  const [inputText, setInputText] = useState("");
+
+  async function handleSend() {
+    alert("Send is Clicked");
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      <div className="w-full py-4 flex px-4">
+        <input
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter message here"
+          value={inputText}
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### Storing Messages History
+
+For storing the messages history, you can use `useState` hook.
+
+```js
+"use client";
+import useLLM, { OpenAIMessage } from "usellm";
+...
+const [history, setHistory] = useState<OpenAIMessage[]>([]);
+```
+
+To add the message to the history, when Send button is clicked you can update the `handleSend`
+function as below:
+
+```js
+async function handleSend() {
+  if (!inputText) {
+    return;
+  }
+  const newHistory = [...history, { role: "user", content: inputText }]; // Create a new history array by appending the new message
+  setHistory(newHistory); // Set the updated message history into the state
+  setInputText(""); // Clear the input field after updating the history
+}
+```
+
+### Showing Messages History
+
+Now lets add some code to show the messages history on the page.
+This can be done using map which maps the `history` array to a message element
+
+```js
+<div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
+  {history.map((message, idx) => (
+    <div key={idx} className="my-4">
+      <div className="font-semibold text-gray-800 dark:text-gray-50">
+        {message.role.toUpperCase()}
+      </div>
+      <div className="text-gray-600 dark:text-gray-300">{message.content}</div>
+    </div>
+  ))}
+</div>
+```
+
+Here is the complete example till now.
+
+```js
+export default function ChatExample() {
+  const [history, setHistory] = useState([]);
+  const [inputText, setInputText] = useState("");
+
+  async function handleSend() {
+    if (!inputText) {
+      return;
+    }
+    const newHistory = [...history, { role: "user", content: inputText }];
+    setHistory(newHistory);
+    setInputText("");
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      {history.length > 0 && (
+        <div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
+          {history.map((message, idx) => (
+            <div key={idx} className="my-4">
+              <div className="font-semibold text-gray-800 dark:text-gray-50">
+                {message.role.toUpperCase()}
+              </div>
+              <div className="text-gray-600 dark:text-gray-300">
+                {message.content}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="w-full py-4 flex px-4">
+        <input
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter message here"
+          value={inputText}
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 border border-white focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-transparent text-white  hover:bg-gray-800 dark:text-white h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Output:**
+
+<img src="https://i.imgur.com/zgJ6VPE.png" />
+
+You should be able to interact with the input box and button.
+And should be able to see the messages history on the page when send button is clicked.
+
+## Creating a LLM service
+
+- To get the response from OpenAI, you will need to setup a service that will make an API call.
+- To create a service, Go to "app" folder
+- Create a "api" folder inside "app" folder
+- Create a "llm" folder inside "api" folder
+- Create a new file `route.tsx` inside "llm" folder
+
+```.js
+import { createLLMService } from "usellm";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPEN_API_KEY,
+  actions: ["chat"],
+});
+
+export const runtime = "edge";
+
+export default async function POST(request) {
+  const body = await request.json();
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error) {
+    console.error("[LLM Service]", error);
+    return new Response(error.message, {
+      status: error?.status || 400,
+    });
+  }
+}
+```
+
+### Create an `.env.local` file
+
+#### Getting the OpenAI API key
+
+To get an OpenAI API key, you can follow these steps:
+
+1. Visit the OpenAI website at https://openai.com/.
+
+2. Click on the "Get started" button or navigate to the "Product" section.
+
+3. Explore the available products and select the one that includes access to the ChatGPT API. As of my knowledge cutoff date in September 2021, the API was known as the "ChatGPT API," but please note that OpenAI may have updated or changed their offerings since then.
+
+4. Review the pricing and details of the selected product to ensure it meets your requirements.
+
+5. If you're new to OpenAI, you may need to create an account. Click on the "Sign up" or "Get started" button and provide the necessary information to register.
+
+6. Once you have signed up or logged into your OpenAI account, you will need to complete any required steps, such as agreeing to terms and conditions, verifying your identity, or providing payment information.
+
+7. After completing the necessary steps, you should gain access to your OpenAI API key. The API key is a unique authentication token that allows you to make API requests to access OpenAI services.
+
+8. Locate and copy your API key from your OpenAI account dashboard or the designated section related to API access. The specific location may vary depending on any updates or changes made by OpenAI.
+
+It's important to keep your API key secure and treat it as sensitive information. Ensure that you do not share your API key publicly or expose it in any public repositories or code samples.
+
+Once you obtain the API key, create a `.env.local` file to store the `OPEN_API_KEY` used while creating LLM service using `createLLMService`.
+
+```.env
+OPEN_API_KEY='[YOUR_OPEN_AI_KEY]'
+```
+
+## Integrating Service
+
+Now the service is ready and you can use it to send the input field value to the service and
+get the response from the service and show it on the page.
+
+### Import the usellm library
+
+```js
+import useLLM, { OpenAIMessage } from "usellm";
+```
+
+You will have to create a service using useLLM
+
+```js
+const llm = useLLM({ serviceUrl: "/api/llm" });
+```
+
+You can set the `stream` to `true`, so that the response starts printing word by word.
+
+Complete code for the `chat-example.tsx` page
+
+```js
+import React, { useState } from "react";
+import useLLM, { OpenAIMessage } from "usellm";
+
+export default function ChatExample() {
+  const [history, setHistory] = useState<OpenAIMessage[]>([]);
+  const [inputText, setInputText] = useState("");
+
+  const llm = useLLM({ serviceUrl: "/api/llm" });
+
+  async function handleSend() {
+    if (!inputText) {
+      return;
+    }
+    const newHistory = [...history, { role: "user", content: inputText }];
+    setHistory(newHistory);
+    setInputText("");
+
+    llm.chat({
+      messages: newHistory,
+      stream: true,
+      onStream: ({ message }) => setHistory([...newHistory, message]),
+    });
+  }
+
+  return (
+    <div className="max-w-4xl w-full mx-auto p-4">
+      <h1 className="text-lg font-bold mb-4 px-4">
+        This is useLLM chat Example
+      </h1>
+      {history.length > 0 && (
+        <div className="max-w-4xl w-full flex-1 overflow-y-auto px-4">
+          {history.map((message, idx) => (
+            <div key={idx} className="my-4">
+              <div className="font-semibold text-gray-800 dark:text-gray-50">
+                {message.role.toUpperCase()}
+              </div>
+              <div className="text-gray-600 dark:text-gray-300">
+                {message.content}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="w-full py-4 flex px-4">
+        <input
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter message here"
+          value={inputText}
+          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <button
+          onClick={handleSend}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 border border-white focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-transparent text-white  hover:bg-gray-800 dark:text-white h-10 py-2 px-4 ml-2"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Conclusion
+
+Congratulations, you have now successfully set up and built the Next.js Chat application using `usellm` library.
+You can find the complete code in this [Github Repository](https://github.com/usellm/example-nextjs-app-router).
