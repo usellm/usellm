@@ -2,7 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createLLMService } from "usellm";
 
-export const llmService = createLLMService({
+const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
   actions: [
