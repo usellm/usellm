@@ -388,24 +388,21 @@ And should be able to see the messages history on the page when send button is c
 ```.js
 import { createLLMService } from "usellm";
 
+export const runtime = "edge";
+
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   actions: ["chat"],
 });
 
-export const runtime = "edge";
-
-export default async function POST(request) {
+export async function POST(request: Request) {
   const body = await request.json();
 
   try {
     const { result } = await llmService.handle({ body, request });
     return new Response(result, { status: 200 });
-  } catch (error) {
-    console.error("[LLM Service]", error);
-    return new Response(error.message, {
-      status: error?.status || 400,
-    });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
   }
 }
 ```
