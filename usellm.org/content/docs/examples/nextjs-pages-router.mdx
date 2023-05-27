@@ -373,7 +373,7 @@ And should be able to see the messages history on the page when send button is c
 import { createLLMService } from "usellm";
 
 const llmService = createLLMService({
-  openaiApiKey: process.env.OPEN_API_KEY,
+  openaiApiKey: process.env.OPENAI_API_KEY,
   actions: ["chat"],
 });
 
@@ -430,10 +430,10 @@ Here are the steps to Generate OpenAI API Key:
 
 ![example](https://i.imgur.com/fO5tiYm.png)
 
-Once you obtain the API key, create a `.env.local` file to store the `OPEN_API_KEY` used while creating LLM service using `createLLMService`.
+Once you obtain the API key, create a `.env.local` file to store the `OPENAI_API_KEY` used while creating LLM service using `createLLMService`.
 
 ```.env
-OPEN_API_KEY='YOUR_OPEN_AI_KEY'
+OPENAI_API_KEY='YOUR_OPEN_AI_KEY'
 ```
 
 ## Integrating Service
