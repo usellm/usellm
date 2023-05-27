@@ -28,7 +28,7 @@ export interface CreateLLMServiceOptions {
 
 const defaultTemplate = {
   model: "gpt-3.5-turbo",
-  max_tokens: 200,
+  max_tokens: 1000,
   temperature: 0.8,
 };
 

@@ -42,7 +42,7 @@ llmService.registerTemplate({
 Here's an example of how you can use this method in a Next.js [app router](https://nextjs.org/docs/app) project ([live demo](https://github.com/usellm/example-nextjs-pages-router)):
 
 ```javascript
-/* app/api/llm.tsx */
+/* app/api/llm/route.tsx */
 
 import { createLLMService } from "usellm";
 
@@ -83,6 +83,7 @@ export default function HomePage() {
       inputs: { topic },
       stream: true,
       onStream: ({ message }) => setResult(message.content),
+      messages: [], // additional messages to continue the conversation
     });
   }
 

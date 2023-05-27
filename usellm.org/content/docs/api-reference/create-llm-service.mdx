@@ -58,7 +58,7 @@ based on the `$action` property in the request body.
 Here's an example of how you can use `createLLMService` within a Next.js API route:
 
 ```jsx
-/* app/api/llm.ts */
+/* app/api/llm/route.ts */
 
 import { createLLMService } from "usellm";
 
@@ -70,7 +70,7 @@ const llmService = createLLMService({
   "transcribe",
   "embed",
   "speak",
-  "genearteImage",
+  "generateImage",
   "editImage",
   "imageVariation"
   ],
