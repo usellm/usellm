@@ -4,7 +4,6 @@
 - Replace the `serviceUrl` below with your own service URL for production
 */
 "use client";
-import { Textarea } from "@/components/ui/textarea";
 import useLLM from "@/usellm";
 import { useState } from "react";
 
