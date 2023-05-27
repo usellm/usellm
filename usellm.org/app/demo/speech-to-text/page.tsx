@@ -32,19 +32,19 @@ export default function SpeechToText() {
       <h1 className="font-semibold text-2xl">Speech to Text</h1>
       <div className="my-4">
         <button
-          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300"
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium"
           onClick={startRecording}
         >
           Record
         </button>
         <button
-          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ml-2"
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2"
           onClick={stopRecording}
         >
           Stop
         </button>
         <button
-          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ml-2"
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2"
           onClick={transcribe}
         >
           Transcribe
