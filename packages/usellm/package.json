@@ -1,6 +1,6 @@
 {
   "name": "usellm",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "User Large Language Models in Your React Apps",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
