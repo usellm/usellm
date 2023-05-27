@@ -12,7 +12,7 @@ export default function ImageGeneration() {
   const [image, setImage] = useState("");
   const [status, setStatus] = useState("");
   const llm = useLLM({
-    serviceUrl: "https://usellm.org/api/llm",
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleGenerateClick() {

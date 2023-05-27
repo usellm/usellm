@@ -19,7 +19,7 @@ export default function AIChatBot() {
   const [inputText, setInputText] = useState("");
 
   const llm = useLLM({
-    serviceUrl: "https://usellm.org/api/llm", // For testing only
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   let messagesWindow = useRef<Element | null>(null);

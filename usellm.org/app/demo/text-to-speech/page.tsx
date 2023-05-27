@@ -4,14 +4,14 @@
 - Replace the `serviceUrl` below with your own service URL for production
 */
 "use client";
-import useLLM from "@/usellm";
+import useLLM from "usellm";
 import { useState } from "react";
 
 export default function TextToSpeech() {
   const [text, setText] = useState<string>("");
   const [audioUrl, setAudioUrl] = useState<string>("");
   const llm = useLLM({
-    serviceUrl: "https://usellm.org/api/llm", // For testing only
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleSpeakClick() {
