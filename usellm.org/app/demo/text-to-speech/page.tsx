@@ -18,14 +18,14 @@ export default function TextToSpeech() {
     <div className="p-4 overflow-y-auto">
       <h2 className="font-semibold text-2xl">Text to Speech</h2>
       <textarea
-        className="p-2 border rounded w-full block mt-4"
+        className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
         placeholder="Enter some text here"
         rows={5}
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
       <button
-        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 my-4"
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium my-4"
         onClick={handleSpeakClick}
       >
         Speak It!

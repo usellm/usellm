@@ -88,7 +88,7 @@ export default function DocumentQna() {
     <div className="p-4 overflow-y-auto">
       <h2 className="text-2xl font-semibold mb-4">Document Q&A</h2>
       <textarea
-        className="p-2 border rounded mr-2 w-full block text-sm"
+        className="p-2 border rounded mr-2 w-full block text-sm dark:bg-gray-900 dark:text-white"
         rows={10}
         placeholder="Paste a long document here"
         value={documentText}
@@ -97,7 +97,7 @@ export default function DocumentQna() {
       <div className="flex items-center">
         <button
           onClick={handleEmbedClick}
-          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 my-4"
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium my-4"
         >
           Embed
         </button>
@@ -110,14 +110,14 @@ export default function DocumentQna() {
 
       <input
         value={question}
-        className="p-2 border rounded w-full block"
+        className="p-2 border rounded w-full block dark:bg-gray-900 dark:text-white"
         onChange={(e) => setQuestion(e.target.value)}
         type="text"
         placeholder="Enter a question about the document"
       />
 
       <button
-        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 my-4"
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium my-4 "
         onClick={handleSubmitClick}
       >
         Submit

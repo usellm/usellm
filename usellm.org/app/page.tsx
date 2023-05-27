@@ -22,12 +22,12 @@ export default function IndexPage() {
         <StyleSwitcher />
         <PageHeader>
           <Link
-            href="https://usellm.substack.com/p/release-notes-usellm-v020"
+            href="https://usellm.substack.com/p/release-notes-usellm-v051"
             target="_blank"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium"
           >
-            🚀 v0.2.0 <Separator className="mx-2 h-4" orientation="vertical" />
-            Audio recording, speech to text, and more..
+            🚀 v0.5.1 <Separator className="mx-2 h-4" orientation="vertical" />
+            Voice chat, text embeddings, and more..
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
           <PageHeaderHeading>
