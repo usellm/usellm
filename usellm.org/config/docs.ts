@@ -40,13 +40,13 @@ export const docsConfig: DocsConfig = {
       title: "Step-by-Step Tutorials",
       items: [
         {
-          title: "Next.js (Pages Router)",
-          href: "/docs/examples/nextjs-pages-router",
+          title: "Next.js (App Router)",
+          href: "/docs/examples/nextjs-app-router",
           disabled: false,
         },
         {
-          title: "Next.js (App Router)",
-          href: "/docs/examples/nextjs-app-router",
+          title: "Next.js (Pages Router)",
+          href: "/docs/examples/nextjs-pages-router",
           disabled: false,
         },
         {
