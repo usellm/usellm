@@ -1,0 +1,89 @@
+---
+title: LLMProvider
+description: A React context provider for global configuration of useLLM options
+---
+
+`LLMProvider` is a context provider used to set global configurations for the `useLLM` hook. This component uses the React context API.
+
+### Syntax
+
+```jsx
+<LLMProvider serviceUrl={serviceUrl}>{/* children */}</LLMProvider>
+```
+
+### Parameters
+
+The `LLMProvider` component accepts an `options` object with the following properties:
+
+- `serviceUrl` (required): A string representing the LLM service URL. This URL will be used globally as the default service URL in all `useLLM` calls within the context of this provider.
+- `children` (required): React components that will have access to the context provided by `LLMProvider`.
+
+### Usage
+
+Place `LLMProvider` near the top level of your app, so all components within your app can have access to its context. Then, you can use the `useLLM` hook within any child component, and the `serviceUrl` will be provided automatically.
+
+### Example
+
+Here's an example of how you can use `LLMProvider` within a Next.js app:
+
+```jsx
+/* app/layout.tsx */
+
+import { LLMProvider } from "usellm";
+
+export default function RootLayout({ children }: RootLayoutProps) {
+  return (
+    <html>
+      {/* Other html and body elements */}
+      <body>
+        <LLMProvider serviceUrl="/api/llm">
+          {/* Other providers and elements */}
+          {children}
+          {/* Other providers and elements */}
+        </LLMProvider>
+        {/* Other html and body elements */}
+      </body>
+    </html>
+  );
+}
+```
+
+In this example, `LLMProvider` is wrapped around the entire application and provides a `serviceUrl` of `"/api/llm"`. This means that any `useLLM` call within the application will use this `serviceUrl` by default unless a different `serviceUrl` is specified in the `useLLM` call.
+
+This setup simplifies usage of the `useLLM` hook, as you don't need to provide the `serviceUrl` every time you use the hook within this context.
+
+Here's an example page that uses the `useLLM` hook with the above configuration:
+
+```jsx
+/* app/page.tsx */
+
+"use client";
+import useLLM from "usellm";
+import { useState } from "react";
+
+export default function LLMServiceProviderDemoPage() {
+  const llm = useLLM(); // no cohnfiguration needed
+  const [result, setResult] = useState("");
+
+  async function handleClick() {
+    const { message } = await llm.chat({
+      messages: [{ role: "user", content: "What is a language model?" }],
+      stream: true,
+      onStream: ({ message }) => setResult(message.content),
+    });
+    setResult(message.content);
+  }
+
+  return (
+    <div className="p-4">
+      <button
+        className="border p-2 bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 rounded w-20 mb-2"
+        onClick={handleClick}
+      >
+        Send
+      </button>
+      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
+    </div>
+  );
+}
+```

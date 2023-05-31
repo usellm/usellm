@@ -1,5 +1,5 @@
 "use client";
-import useLLM from "@/usellm";
+import useLLM from "usellm";
 import { useState } from "react";
 
 export default function LLMServiceProviderDemoPage() {

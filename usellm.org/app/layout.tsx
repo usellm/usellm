@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
-import { LLMProvider } from "@/usellm";
+import { LLMProvider } from "usellm";
 
 export const metadata: Metadata = {
   title: {

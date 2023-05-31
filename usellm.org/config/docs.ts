@@ -115,6 +115,10 @@ export const docsConfig: DocsConfig = {
           title: "`.cosineSimilarity`",
           href: "docs/api-reference/cosineSimilarity",
         },
+        {
+          title: "`<LLMProvider/>`",
+          href: "docs/api-reference/llm-provider",
+        },
       ],
     },
     {
