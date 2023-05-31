@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
+import { LLMProvider } from "@/usellm";
 
 export const metadata: Metadata = {
   title: {
@@ -65,14 +66,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontSans.variable
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
-            <div className="flex-1 container">{children}</div>
-            <Toaster />
-          </div>
-          <TailwindIndicator />
-        </ThemeProvider>
+        <LLMProvider serviceUrl="/api/llm" fetcher={fetch}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <div className="relative flex min-h-screen flex-col">
+              <SiteHeader />
+              <div className="flex-1 container">{children}</div>
+              <Toaster />
+            </div>
+            <TailwindIndicator />
+          </ThemeProvider>
+        </LLMProvider>
         <Analytics />
       </body>
     </html>
