@@ -6,7 +6,6 @@ import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { StyleSwitcher } from "@/components/style-switcher";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -74,7 +73,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
           <TailwindIndicator />
         </ThemeProvider>
-        <StyleSwitcher />
         <Analytics />
       </body>
     </html>

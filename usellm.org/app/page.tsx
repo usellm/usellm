@@ -8,7 +8,6 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header";
-import { StyleSwitcher } from "@/components/style-switcher";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
@@ -19,7 +18,6 @@ export default function IndexPage() {
   return (
     <>
       <div className="container relative pb-10">
-        <StyleSwitcher />
         <PageHeader>
           <Link
             href="https://usellm.substack.com/p/release-notes-usellm-v051"
