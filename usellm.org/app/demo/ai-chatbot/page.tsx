@@ -97,7 +97,6 @@ export default function AIChatBot() {
           placeholder={getInputPlaceholder(status)}
           value={inputText}
           disabled={status !== "idle"}
-          autoFocus
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
