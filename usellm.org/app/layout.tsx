@@ -66,7 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontSans.variable
         )}
       >
-        <LLMProvider serviceUrl="/api/llm" fetcher={fetch}>
+        <LLMProvider serviceUrl="/api/llm">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />

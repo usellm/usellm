@@ -1,3 +1,4 @@
+"use client";
 import useLLM from "@/usellm";
 import { useState } from "react";
 
