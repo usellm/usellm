@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import {
   OpenAIMessage,
   ChatStreamCallback,
@@ -8,6 +8,7 @@ import {
   cosineSimilarity,
   scoreEmbeddings,
 } from "./utils";
+import { LLMContext } from "./llm-provider";
 
 export interface LLMChatOptions {
   messages?: OpenAIMessage[];
@@ -65,9 +66,22 @@ export interface ImageVariationOptions {
 }
 
 export default function useLLM({
-  serviceUrl,
-  fetcher = fetch,
+  serviceUrl: argServiceUrl,
+  fetcher: argFetcher,
 }: UseLLMOptions = {}) {
+  const { serviceUrl: contextServiceUrl, fetcher: contextFetcher } =
+    useContext(LLMContext);
+
+  const serviceUrl = argServiceUrl || contextServiceUrl || "";
+
+  const fetcher = argFetcher || contextFetcher || fetch;
+
+  if (!serviceUrl) {
+    throw new Error(
+      "No serviceUrl provided. Provide one or use LLMProvider to set it globally."
+    );
+  }
+
   async function chat({
     messages = [],
     stream = false,
