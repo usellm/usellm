@@ -67,14 +67,11 @@ export interface ImageVariationOptions {
 
 export default function useLLM({
   serviceUrl: argServiceUrl,
-  fetcher: argFetcher,
+  fetcher = fetch,
 }: UseLLMOptions = {}) {
-  const { serviceUrl: contextServiceUrl, fetcher: contextFetcher } =
-    useContext(LLMContext);
+  const { serviceUrl: contextServiceUrl } = useContext(LLMContext);
 
   const serviceUrl = argServiceUrl || contextServiceUrl || "";
-
-  const fetcher = argFetcher || contextFetcher || fetch;
 
   if (!serviceUrl) {
     throw new Error(
