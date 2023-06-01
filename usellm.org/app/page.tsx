@@ -24,8 +24,8 @@ export default function IndexPage() {
             target="_blank"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium"
           >
-            🚀 v0.5.1 <Separator className="mx-2 h-4" orientation="vertical" />
-            Voice chat, text embeddings, and more..
+            🚀 v0.8.0 <Separator className="mx-2 h-4" orientation="vertical" />
+            LLMProvider, global configurations, and more..
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
           <PageHeaderHeading>
