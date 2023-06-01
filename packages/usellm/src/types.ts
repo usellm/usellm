@@ -8,10 +8,10 @@ export interface LLMProvider {
 }
 
 export type LLMTemplate =
-  | object
-  | ((options: object) => object | Promise<object>);
+  | { $action?: string; $provider?: string; [key: string]: any }
+  | ((options: LLMCallOptions) => LLMCallOptions | Promise<LLMCallOptions>);
 
-export interface LLMServiceCallOptions {
+export interface LLMCallOptions {
   $action: string;
   $provider: string;
   $template?: string;

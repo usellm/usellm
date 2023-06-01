@@ -1,9 +1,4 @@
-import {
-  LLMAction,
-  LLMProvider,
-  LLMServiceCallOptions,
-  LLMTemplate,
-} from "./types";
+import { LLMAction, LLMProvider, LLMCallOptions, LLMTemplate } from "./types";
 import { makeErrorResponse } from "./utils";
 
 export class LLMService {
@@ -11,26 +6,42 @@ export class LLMService {
   actions: { [key: string]: LLMAction } = {};
   providers: { [key: string]: LLMProvider } = {};
 
+  // perform preprocessing on request body
+  async registerTemplate(id: string, template: LLMTemplate) {
+    this.templates[id] = template;
+  }
+
   // register a provider that provides many options
-  async registerProvider() {}
+  async registerProvider(id: string, provider: LLMProvider) {
+    this.providers[id] = provider;
+  }
 
   // register a custom action
-  async registerAction() {}
-
-  // perform preprocessing on request body
-  async registerTemplate() {}
+  async registerAction(id: string, action: LLMAction) {
+    this.actions[id] = action;
+  }
 
   // apply a template to options
-  async applyTemplate(options: LLMServiceCallOptions, template?: LLMTemplate) {
+  async applyTemplate(
+    options: LLMCallOptions,
+    template?: LLMTemplate
+  ): Promise<LLMCallOptions> {
     if (!template) return options;
     if (typeof template === "function") {
       return template(options);
+    }
+    const { $action, $provider } = options;
+    if (template.$action && template.$action !== $action) {
+      return options;
+    }
+    if (template.$provider && template.$provider !== $provider) {
+      return options;
     }
     return { ...options, ...template };
   }
 
   // call a particular action and get back response
-  async call(options: LLMServiceCallOptions) {
+  async call(options: LLMCallOptions) {
     const { $template, ...otherOptions } = options;
     const revisedOptions = await this.applyTemplate(
       otherOptions,
@@ -46,7 +57,7 @@ export class LLMService {
   }
 
   // for use in API routes (return a string/stream result)
-  async handle(options: LLMServiceCallOptions) {
+  async handle(options: LLMCallOptions) {
     const result = await this.call(options);
     if (typeof result === "object") {
       return { result: JSON.stringify(result) };
