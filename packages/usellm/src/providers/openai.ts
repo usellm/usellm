@@ -15,6 +15,14 @@ export function createOpenAIProvider({
     id: "openai",
     name: "OpenAI",
     description: "Provides access to OpenAI APIs",
-    actions: {},
+    actions: {
+      async chat(options) {},
+
+      async transcribe(options) {},
+
+      async embed(options) {},
+
+      async generateImage(options) {},
+    },
   };
 }
