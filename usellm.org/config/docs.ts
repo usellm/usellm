@@ -138,6 +138,27 @@ export const docsConfig: DocsConfig = {
         },
       ],
     },
+
+    {
+      title: "useLLM for Python",
+      items:[
+        
+        {
+          title: "Installation and Sample Usage",
+          href:"/docs/useLLM-py/installation-usage" 
+        },
+        {
+          title: "Classes and Methods",
+          href: "/docs/useLLM-py/classes-methods.mdx"
+        },
+        {
+          title: "Exceptions",
+          href: "/docs/useLLM-py/"
+        }
+
+      ]
+    },
+
     {
       title: "Live Demos",
       items: [
