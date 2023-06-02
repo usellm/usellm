@@ -256,17 +256,14 @@ export default function useLLM({
   }
 
   async function voiceChat(options: LLMVoiceChatOptions) {
-    return callAction({
-      ...options,
-      $action: "voiceChat",
-    });
+    return callAction("voiceChat", options);
   }
 
-  async function callAction(options: LLMCallActionOptions) {
+  async function callAction(action: string, options: LLMCallActionOptions) {
     const response = await fetcher(serviceUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(options),
+      body: JSON.stringify({ options, $action: action }),
     });
 
     if (!response.ok) {

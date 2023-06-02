@@ -73,40 +73,40 @@ export class LLMService {
     this.customActions[id] = action;
   }
 
-  async callAction(body = {}) {
-    if (!("$action" in body) || !(typeof body.$action === "string")) {
-      throw makeErrorResponse("`call` expects a key $action in the body", 400);
+  async callAction(action: string, body = {}) {
+    if (!this.actions.includes(action) && !this.customActions[action]) {
+      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
-    const { $action, ...rest } = body;
-    if ($action === "chat") {
-      return this.chat(rest as LLMServiceChatOptions);
+
+    if (action === "chat") {
+      return this.chat(body as LLMServiceChatOptions);
     }
-    if ($action === "transcribe") {
-      return this.transcribe(rest as LLMServiceTranscribeOptions);
+    if (action === "transcribe") {
+      return this.transcribe(body as LLMServiceTranscribeOptions);
     }
-    if ($action === "embed") {
-      return this.embed(rest as LLMServiceEmbedOptions);
+    if (action === "embed") {
+      return this.embed(body as LLMServiceEmbedOptions);
     }
-    if ($action === "speak") {
-      return this.speak(rest as LLMServiceSpeakOptions);
+    if (action === "speak") {
+      return this.speak(body as LLMServiceSpeakOptions);
     }
-    if ($action === "generateImage") {
-      return this.generateImage(rest as LLMServiceGenerateImageOptions);
+    if (action === "generateImage") {
+      return this.generateImage(body as LLMServiceGenerateImageOptions);
     }
-    if ($action === "editImage") {
-      return this.editImage(rest as LLMServiceEditImageOptions);
+    if (action === "editImage") {
+      return this.editImage(body as LLMServiceEditImageOptions);
     }
-    if ($action === "imageVariation") {
-      return this.imageVariation(rest as LLMServiceImageVariationOptions);
+    if (action === "imageVariation") {
+      return this.imageVariation(body as LLMServiceImageVariationOptions);
     }
-    if ($action === "voiceChat") {
-      return this.voiceChat(rest as LLMServiceVoiceChatOptions);
+    if (action === "voiceChat") {
+      return this.voiceChat(body as LLMServiceVoiceChatOptions);
     }
-    const actionFunc = this.customActions[$action];
+    const actionFunc = this.customActions[action];
     if (!actionFunc) {
-      throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
-    return actionFunc(rest);
+    return actionFunc(body);
   }
 
   prepareChatBody(body: LLMServiceChatOptions) {
@@ -182,8 +182,8 @@ export class LLMService {
         400
       );
     }
-
-    const result = await this.callAction(body);
+    const { $action, ...rest } = body;
+    const result = await this.callAction($action as string, rest);
     if ("stream" in body && body.stream) {
       return result;
     }

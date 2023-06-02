@@ -30,7 +30,6 @@ export interface GenerateImageOptions {
 }
 
 export interface LLMCallActionOptions {
-  $action: string;
   [key: string]: any;
 }
 
