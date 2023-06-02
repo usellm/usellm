@@ -36,7 +36,7 @@ export default function VoiceChat() {
         transcribePrompt: "",
         chatMessages: history,
       });
-      console.log(messages);
+      setHistory([...history, ...messages]);
       setAudioUrl(responseAudioUrl);
       setStatus("idle");
     }
