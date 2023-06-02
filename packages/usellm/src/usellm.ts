@@ -70,6 +70,21 @@ export interface ImageVariationOptions {
   size?: "256x256" | "512x512" | "1024x1024";
 }
 
+export interface LLMVoiceChatOptions {
+  // transcribe
+  transcribeAudioUrl?: string;
+  transcribeLanguage?: string;
+  transcribePrompt?: string;
+  // chat
+  chatMessages?: OpenAIMessage[];
+  chatTemplate?: string;
+  chatInputs?: object;
+  // speak
+  speakModelId?: string;
+  speechVoideId?: string;
+  speechVoiceSettings?: { stability: number; similarity_boost: number };
+}
+
 export default function useLLM({
   serviceUrl: argServiceUrl,
   fetcher = fetch,
@@ -304,6 +319,13 @@ export default function useLLM({
     });
   }
 
+  async function voiceChat(options: LLMVoiceChatOptions) {
+    return callAction({
+      ...options,
+      $action: "voiceChat",
+    });
+  }
+
   async function callAction(options: LLMCallActionOptions) {
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
@@ -321,6 +343,7 @@ export default function useLLM({
   return {
     callAction,
     chat,
+    voiceChat,
     record,
     stopRecording,
     transcribe,

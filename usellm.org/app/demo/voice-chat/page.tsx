@@ -28,24 +28,16 @@ export default function VoiceChat() {
       await llm.record();
       setStatus("recording");
     } else if (status === "recording") {
-      setStatus("transcribing");
-      const { audioUrl } = await llm.stopRecording();
-      const { text } = await llm.transcribe({ audioUrl, language: "en" });
-      setStatus("understanding");
-      const newHistory = [...history, { role: "user", content: text }];
-      setHistory(newHistory);
-      const { message } = await llm.chat({
-        messages: newHistory,
-      });
-      setHistory([...newHistory, message]);
       setStatus("thinking");
-      const { audioUrl: responseAudioUrl } = await llm.speak({
-        text: message.content,
+      const { audioUrl } = await llm.stopRecording();
+      const { audioUrl: responseAudioUrl, messages } = await llm.voiceChat({
+        transcribeAudioUrl: audioUrl,
+        transcribeLanguage: "en",
+        transcribePrompt: "",
+        chatMessages: history,
       });
-      setStatus("speaking");
+      console.log(messages);
       setAudioUrl(responseAudioUrl);
-      const audio = new Audio(responseAudioUrl);
-      await audio.play();
       setStatus("idle");
     }
   }
@@ -64,7 +56,7 @@ export default function VoiceChat() {
       {status !== "idle" && (
         <div className="text-center mt-4 text-lg">{capitalize(status)}...</div>
       )}
-      {audioUrl && <audio className="mt-4" controls src={audioUrl} />}
+      {audioUrl && <audio autoPlay className="mt-4" controls src={audioUrl} />}
     </div>
   );
 }
