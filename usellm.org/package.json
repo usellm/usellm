@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"cpx '../packages/usellm/src/**/*.ts' './usellm' --clean --verbose --watch \" \"contentlayer dev\" \"next dev\"",
-    "build": "contentlayer build && \"cpx '../packages/usellm/src/**/*.ts' './usellm'\" && next build",
+    "build": "contentlayer build && cpx '../packages/usellm/src/**/*.ts' './usellm' && next build",
     "start": "next start",
     "lint": "next lint"
   },
