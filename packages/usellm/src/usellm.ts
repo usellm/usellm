@@ -327,7 +327,7 @@ export default function useLLM({
   }
 
   async function callAction(options: LLMCallActionOptions) {
-    const response = await fetcher(`${serviceUrl}`, {
+    const response = await fetcher(serviceUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(options),

@@ -195,6 +195,9 @@ export class LLMService {
     if ($action === "imageVariation") {
       return this.imageVariation(rest as LLMServiceImageVariationOptions);
     }
+    if ($action === "voiceChat") {
+      return this.voiceChat(rest as LLMVoiceChatOptions);
+    }
     const actionFunc = this.customActions[$action];
     if (!actionFunc) {
       throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
