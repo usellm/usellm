@@ -111,6 +111,22 @@ export interface LLMServiceImageVariationOptions {
   user?: string;
 }
 
+export interface LLMVoiceChatOptions {
+  $action?: string;
+  // transcribe
+  transcribeAudioUrl?: string;
+  transcribeLanguage?: string;
+  transcribePrompt?: string;
+  // chat
+  chatMessages?: OpenAIMessage[];
+  chatTemplate?: string;
+  chatInputs?: object;
+  // speak
+  speakModelId?: string;
+  speechVoideId?: string;
+  speechVoiceSettings?: { stability: number; similarity_boost: number };
+}
+
 export interface LLMServiceHandleResponse {
   result: ReadableStream | string;
 }
@@ -178,6 +194,9 @@ export class LLMService {
     }
     if ($action === "imageVariation") {
       return this.imageVariation(rest as LLMServiceImageVariationOptions);
+    }
+    if ($action === "voiceChat") {
+      return this.voiceChat(rest as LLMVoiceChatOptions);
     }
     const actionFunc = this.customActions[$action];
     if (!actionFunc) {
@@ -504,6 +523,39 @@ export class LLMService {
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
     return { images };
+  }
+
+  async voiceChat(options: LLMVoiceChatOptions) {
+    const { transcribeAudioUrl, transcribeLanguage, transcribePrompt } =
+      options;
+    const { text } = await this.transcribe({
+      audioUrl: transcribeAudioUrl,
+      language: transcribeLanguage,
+      prompt: transcribePrompt,
+    });
+    const { chatMessages, chatTemplate, chatInputs } = options;
+    const messages = [...(chatMessages || []), { role: "user", content: text }];
+    const chatResult = await this.chat({
+      messages,
+      template: chatTemplate,
+      inputs: chatInputs,
+    });
+    const { choices } = chatResult as any;
+    const { speakModelId, speechVoideId, speechVoiceSettings } = options;
+    const { audioUrl } = await this.speak({
+      text: choices[0].message.content,
+      model_id: speakModelId,
+      voice_id: speechVoideId,
+      voice_settings: speechVoiceSettings,
+    });
+
+    return {
+      audioUrl,
+      messages: [
+        { role: "user", content: text },
+        { role: "assistant", content: choices[0].message.content },
+      ],
+    };
   }
 }
 

@@ -7,6 +7,7 @@ const llmService = createLLMService({
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
   actions: [
     "chat",
+    "voiceChat",
     "transcribe",
     "embed",
     "speak",
