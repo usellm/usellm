@@ -263,7 +263,7 @@ export default function useLLM({
     const response = await fetcher(serviceUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ options, $action: action }),
+      body: JSON.stringify({ ...options, $action: action }),
     });
 
     if (!response.ok) {
