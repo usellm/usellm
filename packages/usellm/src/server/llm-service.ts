@@ -8,11 +8,13 @@ import {
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
   IMAGE_VARIATIONS_API_URL,
+  cosineSimilarity,
   dataURLToBlob,
   dataUrlToExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
+  scoreEmbeddings,
 } from "../shared/utils";
 import {
   CreateLLMServiceOptions,
@@ -46,6 +48,9 @@ export class LLMService {
   actions: string[];
   isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
   customActions: { [id: string]: LLMAction } = {};
+
+  cosineSimilarity = cosineSimilarity;
+  scoreEmbeddings = scoreEmbeddings;
 
   constructor({
     openaiApiKey = "",
