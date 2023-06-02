@@ -8,130 +8,36 @@ import {
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
   IMAGE_VARIATIONS_API_URL,
-  OpenAIMessage,
+  cosineSimilarity,
   dataURLToBlob,
   dataUrlToExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
-} from "./utils";
-
-export interface CreateLLMServiceOptions {
-  openaiApiKey?: string;
-  elvenLabsApiKey?: string;
-  actions?: string[];
-  fetcher?: typeof fetch;
-  templates?: { [id: string]: LLMServiceTemplate };
-  debug?: boolean;
-  isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
-}
+  scoreEmbeddings,
+} from "../shared/utils";
+import {
+  CreateLLMServiceOptions,
+  LLMAction,
+  LLMServiceChatOptions,
+  LLMServiceEditImageOptions,
+  LLMServiceEmbedOptions,
+  LLMServiceGenerateImageOptions,
+  LLMServiceHandleOptions,
+  LLMServiceHandleResponse,
+  LLMServiceImageVariationOptions,
+  LLMServiceSpeakOptions,
+  LLMServiceTemplate,
+  LLMServiceTranscribeOptions,
+  LLMServiceVoiceChatOptions,
+} from "./types";
+import { OpenAIMessage } from "../shared/types";
 
 const defaultTemplate = {
   model: "gpt-3.5-turbo",
   max_tokens: 1000,
   temperature: 0.8,
 };
-
-export interface LLMServiceTemplate {
-  id: string;
-  systemPrompt?: string;
-  userPrompt?: string;
-  model?: string;
-  temperature?: number;
-  top_p?: number;
-  n?: number;
-  max_tokens?: number;
-  presence_penalty?: number;
-  frequency_penalty?: number;
-  logit_bias?: number;
-}
-
-export interface LLMServiceChatOptions {
-  $action?: string;
-  messages?: OpenAIMessage[];
-  stream?: boolean;
-  template?: string;
-  inputs?: object;
-  user?: string;
-}
-
-export interface LLMServiceTranscribeOptions {
-  $action?: string;
-  audioUrl?: string;
-  language?: string;
-  prompt?: string;
-}
-
-export interface LLMServiceEmbedOptions {
-  $action?: string;
-  input?: string | string[];
-  user?: string;
-  model?: string;
-}
-
-export interface LLMServiceHandleOptions {
-  body: object;
-  request?: Request;
-}
-
-export interface LLMServiceSpeakOptions {
-  $action?: string;
-  text?: string;
-  model_id?: string;
-  voice_id?: string;
-  voice_settings?: { stability: number; similarity_boost: number };
-}
-
-export interface LLMServiceGenerateImageOptions {
-  $action?: string;
-  prompt: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceEditImageOptions {
-  $action?: string;
-  image: string;
-  mask?: string;
-  prompt?: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceImageVariationOptions {
-  $action?: string;
-  image: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMVoiceChatOptions {
-  $action?: string;
-  // transcribe
-  transcribeAudioUrl?: string;
-  transcribeLanguage?: string;
-  transcribePrompt?: string;
-  // chat
-  chatMessages?: OpenAIMessage[];
-  chatTemplate?: string;
-  chatInputs?: object;
-  // speak
-  speakModelId?: string;
-  speechVoideId?: string;
-  speechVoiceSettings?: { stability: number; similarity_boost: number };
-}
-
-export interface LLMServiceHandleResponse {
-  result: ReadableStream | string;
-}
-
-type LLMAction = (options: object) => Promise<ReadableStream | object>;
 
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
@@ -142,6 +48,9 @@ export class LLMService {
   actions: string[];
   isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
   customActions: { [id: string]: LLMAction } = {};
+
+  cosineSimilarity = cosineSimilarity;
+  scoreEmbeddings = scoreEmbeddings;
 
   constructor({
     openaiApiKey = "",
@@ -169,40 +78,40 @@ export class LLMService {
     this.customActions[id] = action;
   }
 
-  async callAction(body = {}) {
-    if (!("$action" in body) || !(typeof body.$action === "string")) {
-      throw makeErrorResponse("`call` expects a key $action in the body", 400);
+  async callAction(action: string, body = {}) {
+    if (!this.actions.includes(action) && !this.customActions[action]) {
+      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
-    const { $action, ...rest } = body;
-    if ($action === "chat") {
-      return this.chat(rest as LLMServiceChatOptions);
+
+    if (action === "chat") {
+      return this.chat(body as LLMServiceChatOptions);
     }
-    if ($action === "transcribe") {
-      return this.transcribe(rest as LLMServiceTranscribeOptions);
+    if (action === "transcribe") {
+      return this.transcribe(body as LLMServiceTranscribeOptions);
     }
-    if ($action === "embed") {
-      return this.embed(rest as LLMServiceEmbedOptions);
+    if (action === "embed") {
+      return this.embed(body as LLMServiceEmbedOptions);
     }
-    if ($action === "speak") {
-      return this.speak(rest as LLMServiceSpeakOptions);
+    if (action === "speak") {
+      return this.speak(body as LLMServiceSpeakOptions);
     }
-    if ($action === "generateImage") {
-      return this.generateImage(rest as LLMServiceGenerateImageOptions);
+    if (action === "generateImage") {
+      return this.generateImage(body as LLMServiceGenerateImageOptions);
     }
-    if ($action === "editImage") {
-      return this.editImage(rest as LLMServiceEditImageOptions);
+    if (action === "editImage") {
+      return this.editImage(body as LLMServiceEditImageOptions);
     }
-    if ($action === "imageVariation") {
-      return this.imageVariation(rest as LLMServiceImageVariationOptions);
+    if (action === "imageVariation") {
+      return this.imageVariation(body as LLMServiceImageVariationOptions);
     }
-    if ($action === "voiceChat") {
-      return this.voiceChat(rest as LLMVoiceChatOptions);
+    if (action === "voiceChat") {
+      return this.voiceChat(body as LLMServiceVoiceChatOptions);
     }
-    const actionFunc = this.customActions[$action];
+    const actionFunc = this.customActions[action];
     if (!actionFunc) {
-      throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
-    return actionFunc(rest);
+    return actionFunc(body);
   }
 
   prepareChatBody(body: LLMServiceChatOptions) {
@@ -278,8 +187,8 @@ export class LLMService {
         400
       );
     }
-
-    const result = await this.callAction(body);
+    const { $action, ...rest } = body;
+    const result = await this.callAction($action as string, rest);
     if ("stream" in body && body.stream) {
       return result;
     }
@@ -525,7 +434,7 @@ export class LLMService {
     return { images };
   }
 
-  async voiceChat(options: LLMVoiceChatOptions) {
+  async voiceChat(options: LLMServiceVoiceChatOptions) {
     const { transcribeAudioUrl, transcribeLanguage, transcribePrompt } =
       options;
     const { text } = await this.transcribe({
@@ -559,8 +468,6 @@ export class LLMService {
   }
 }
 
-export default function createLLMService(
-  options: CreateLLMServiceOptions = {}
-) {
+export function createLLMService(options: CreateLLMServiceOptions = {}) {
   return new LLMService(options);
 }
