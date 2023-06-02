@@ -7,13 +7,15 @@ export interface LLMProvider {
   actions: { [key: string]: LLMAction };
 }
 
-export type LLMTemplate =
-  | { $action?: string; $provider?: string; [key: string]: any }
-  | ((options: LLMCallOptions) => LLMCallOptions | Promise<LLMCallOptions>);
+export type LLMTemplate = {
+  $action?: string;
+  $provider?: string;
+  [key: string]: any;
+};
 
 export interface LLMCallOptions {
-  $action: string;
-  $provider: string;
-  $template?: string;
+  $actionId: string;
+  $providerId: string;
+  $templateId?: string;
   [key: string]: any;
 }

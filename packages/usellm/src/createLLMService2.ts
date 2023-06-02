@@ -1,4 +1,9 @@
-import { LLMAction, LLMProvider, LLMCallOptions, LLMTemplate } from "./types";
+import {
+  LLMAction,
+  LLMProvider,
+  LLMCallOptions,
+  LLMTemplate,
+} from "./server/types";
 import { makeErrorResponse } from "./utils";
 
 export class LLMService {
@@ -7,61 +12,45 @@ export class LLMService {
   providers: { [key: string]: LLMProvider } = {};
 
   // perform preprocessing on request body
-  async registerTemplate(id: string, template: LLMTemplate) {
-    this.templates[id] = template;
+  async registerTemplate(id: string, templateData: LLMTemplate) {
+    this.templates[id] = templateData;
   }
 
   // register a provider that provides many options
-  async registerProvider(id: string, provider: LLMProvider) {
-    this.providers[id] = provider;
+  async registerProvider(id: string, providerData: LLMProvider) {
+    this.providers[id] = providerData;
   }
 
   // register a custom action
-  async registerAction(id: string, action: LLMAction) {
-    this.actions[id] = action;
-  }
-
-  // apply a template to options
-  async applyTemplate(
-    options: LLMCallOptions,
-    template?: LLMTemplate
-  ): Promise<LLMCallOptions> {
-    if (!template) return options;
-    if (typeof template === "function") {
-      return template(options);
-    }
-    const { $action, $provider } = options;
-    if (template.$action && template.$action !== $action) {
-      return options;
-    }
-    if (template.$provider && template.$provider !== $provider) {
-      return options;
-    }
-    return { ...options, ...template };
+  async registerAction(id: string, actionFunc: LLMAction) {
+    this.actions[id] = actionFunc;
   }
 
   // call a particular action and get back response
   async call(options: LLMCallOptions) {
-    const { $template, ...otherOptions } = options;
-    const revisedOptions = await this.applyTemplate(
-      otherOptions,
-      $template ? this.templates[$template] : undefined
-    );
-    const { $action, $provider, ...finalOptions } = revisedOptions;
-    const provider = this.providers[$provider];
-    const action = provider ? provider.actions[$action] : this.actions[$action];
-    if (!action) {
+    const { $action, $provider, $template, ...otherOptions } = options;
+    const providerData = this.providers[$provider];
+    const actionFunc = providerData
+      ? providerData.actions[$action]
+      : this.actions[$action];
+    let $templateData = $template ? this.templates[$template] : undefined;
+    if (!actionFunc) {
       throw makeErrorResponse(`Action ${$action} not found`, 404);
     }
-    return await action(finalOptions);
+    if ($templateData && $templateData?.$action !== $action) {
+      $templateData = undefined;
+    }
+    if ($templateData && $templateData?.$provider !== $provider) {
+      $templateData = undefined;
+    }
+    return await actionFunc({ ...otherOptions, $templateData });
   }
 
   // for use in API routes (return a string/stream result)
   async handle(options: LLMCallOptions) {
     const result = await this.call(options);
-    if (typeof result === "object") {
-      return { result: JSON.stringify(result) };
-    }
-    return { result };
+    return {
+      result: typeof result === "object" ? JSON.stringify(result) : result,
+    };
   }
 }
