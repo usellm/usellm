@@ -7,6 +7,7 @@ export const siteConfig = {
   links: {
     github: "https://github.com/usellm/usellm",
     blog: "https://usellm.substack.com",
+    twitter: "https://twitter.com/usellmteam",
   },
 };
 
