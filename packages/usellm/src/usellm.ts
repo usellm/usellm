@@ -39,6 +39,11 @@ export interface GenerateImageOptions {
   size?: "256x256" | "512x512" | "1024x1024";
 }
 
+export interface LLMCallActionOptions {
+  $action: string;
+  [key: string]: any;
+}
+
 export interface UseLLMOptions {
   serviceUrl?: string;
   fetcher?: typeof fetch;
@@ -299,7 +304,22 @@ export default function useLLM({
     });
   }
 
+  async function callAction(options: LLMCallActionOptions) {
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(options),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    return response.json();
+  }
+
   return {
+    callAction,
     chat,
     record,
     stopRecording,

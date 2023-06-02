@@ -115,6 +115,8 @@ export interface LLMServiceHandleResponse {
   result: ReadableStream | string;
 }
 
+type LLMAction = (options: object) => Promise<ReadableStream | object>;
+
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
@@ -123,6 +125,7 @@ export class LLMService {
   debug: boolean;
   actions: string[];
   isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
+  customActions: { [id: string]: LLMAction } = {};
 
   constructor({
     openaiApiKey = "",
@@ -144,6 +147,43 @@ export class LLMService {
 
   registerTemplate(template: LLMServiceTemplate) {
     this.templates[template.id] = template;
+  }
+
+  registerAction(id: string, action: LLMAction) {
+    this.customActions[id] = action;
+  }
+
+  async callAction(body = {}) {
+    if (!("$action" in body) || !(typeof body.$action === "string")) {
+      throw makeErrorResponse("`call` expects a key $action in the body", 400);
+    }
+    const { $action, ...rest } = body;
+    if ($action === "chat") {
+      return this.chat(rest as LLMServiceChatOptions);
+    }
+    if ($action === "transcribe") {
+      return this.transcribe(rest as LLMServiceTranscribeOptions);
+    }
+    if ($action === "embed") {
+      return this.embed(rest as LLMServiceEmbedOptions);
+    }
+    if ($action === "speak") {
+      return this.speak(rest as LLMServiceSpeakOptions);
+    }
+    if ($action === "generateImage") {
+      return this.generateImage(rest as LLMServiceGenerateImageOptions);
+    }
+    if ($action === "editImage") {
+      return this.editImage(rest as LLMServiceEditImageOptions);
+    }
+    if ($action === "imageVariation") {
+      return this.imageVariation(rest as LLMServiceImageVariationOptions);
+    }
+    const actionFunc = this.customActions[$action];
+    if (!actionFunc) {
+      throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+    }
+    return actionFunc(rest);
   }
 
   prepareChatBody(body: LLMServiceChatOptions) {
@@ -219,34 +259,12 @@ export class LLMService {
         400
       );
     }
-    const { $action, ...rest } = body;
 
-    if (this.actions.length > 0 && !this.actions.includes($action as string)) {
-      throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+    const result = await this.callAction(body);
+    if ("stream" in body && body.stream) {
+      return result;
     }
-
-    if ($action === "chat") {
-      return this.chat(rest as LLMServiceChatOptions);
-    }
-    if ($action === "transcribe") {
-      return this.transcribe(rest as LLMServiceTranscribeOptions);
-    }
-    if ($action === "embed") {
-      return this.embed(rest as LLMServiceEmbedOptions);
-    }
-    if ($action === "speak") {
-      return this.speak(rest as LLMServiceSpeakOptions);
-    }
-    if ($action === "generateImage") {
-      return this.generateImage(rest as LLMServiceGenerateImageOptions);
-    }
-    if ($action === "editImage") {
-      return this.editImage(rest as LLMServiceEditImageOptions);
-    }
-    if ($action === "imageVariation") {
-      return this.imageVariation(rest as LLMServiceImageVariationOptions);
-    }
-    throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+    return { result: JSON.stringify(result) };
   }
 
   async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
@@ -275,8 +293,7 @@ export class LLMService {
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      const result = await response.text();
-      return { result };
+      return response.json();
     }
   }
 
@@ -327,7 +344,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const embeddings = data.map((d: any) => d.embedding);
-    return { result: JSON.stringify({ embeddings }) };
+    return { embeddings };
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {
@@ -360,8 +377,7 @@ export class LLMService {
     if (!response.ok) {
       throw new Error(await response.text());
     }
-    const result = await response.text();
-    return { result };
+    return response.json();
   }
 
   async speak(options: LLMServiceSpeakOptions) {
@@ -395,7 +411,7 @@ export class LLMService {
       ";base64," +
       responseBuffer.toString("base64");
 
-    return { result: JSON.stringify({ audioUrl }) };
+    return { audioUrl };
   }
 
   async generateImage(options: LLMServiceGenerateImageOptions) {
@@ -424,8 +440,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
+    return { images };
   }
 
   async editImage(options: LLMServiceEditImageOptions) {
@@ -460,8 +475,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
+    return { images };
   }
 
   async imageVariation(options: LLMServiceImageVariationOptions) {
@@ -489,8 +503,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
+    return { images };
   }
 }
 
