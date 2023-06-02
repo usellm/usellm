@@ -8,130 +8,34 @@ import {
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
   IMAGE_VARIATIONS_API_URL,
-  OpenAIMessage,
   dataURLToBlob,
   dataUrlToExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
-} from "./utils";
-
-export interface CreateLLMServiceOptions {
-  openaiApiKey?: string;
-  elvenLabsApiKey?: string;
-  actions?: string[];
-  fetcher?: typeof fetch;
-  templates?: { [id: string]: LLMServiceTemplate };
-  debug?: boolean;
-  isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
-}
+} from "../shared/utils";
+import {
+  CreateLLMServiceOptions,
+  LLMAction,
+  LLMServiceChatOptions,
+  LLMServiceEditImageOptions,
+  LLMServiceEmbedOptions,
+  LLMServiceGenerateImageOptions,
+  LLMServiceHandleOptions,
+  LLMServiceHandleResponse,
+  LLMServiceImageVariationOptions,
+  LLMServiceSpeakOptions,
+  LLMServiceTemplate,
+  LLMServiceTranscribeOptions,
+  LLMServiceVoiceChatOptions,
+} from "./types";
+import { OpenAIMessage } from "../shared/types";
 
 const defaultTemplate = {
   model: "gpt-3.5-turbo",
   max_tokens: 1000,
   temperature: 0.8,
 };
-
-export interface LLMServiceTemplate {
-  id: string;
-  systemPrompt?: string;
-  userPrompt?: string;
-  model?: string;
-  temperature?: number;
-  top_p?: number;
-  n?: number;
-  max_tokens?: number;
-  presence_penalty?: number;
-  frequency_penalty?: number;
-  logit_bias?: number;
-}
-
-export interface LLMServiceChatOptions {
-  $action?: string;
-  messages?: OpenAIMessage[];
-  stream?: boolean;
-  template?: string;
-  inputs?: object;
-  user?: string;
-}
-
-export interface LLMServiceTranscribeOptions {
-  $action?: string;
-  audioUrl?: string;
-  language?: string;
-  prompt?: string;
-}
-
-export interface LLMServiceEmbedOptions {
-  $action?: string;
-  input?: string | string[];
-  user?: string;
-  model?: string;
-}
-
-export interface LLMServiceHandleOptions {
-  body: object;
-  request?: Request;
-}
-
-export interface LLMServiceSpeakOptions {
-  $action?: string;
-  text?: string;
-  model_id?: string;
-  voice_id?: string;
-  voice_settings?: { stability: number; similarity_boost: number };
-}
-
-export interface LLMServiceGenerateImageOptions {
-  $action?: string;
-  prompt: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceEditImageOptions {
-  $action?: string;
-  image: string;
-  mask?: string;
-  prompt?: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceImageVariationOptions {
-  $action?: string;
-  image: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMVoiceChatOptions {
-  $action?: string;
-  // transcribe
-  transcribeAudioUrl?: string;
-  transcribeLanguage?: string;
-  transcribePrompt?: string;
-  // chat
-  chatMessages?: OpenAIMessage[];
-  chatTemplate?: string;
-  chatInputs?: object;
-  // speak
-  speakModelId?: string;
-  speechVoideId?: string;
-  speechVoiceSettings?: { stability: number; similarity_boost: number };
-}
-
-export interface LLMServiceHandleResponse {
-  result: ReadableStream | string;
-}
-
-type LLMAction = (options: object) => Promise<ReadableStream | object>;
 
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
@@ -196,7 +100,7 @@ export class LLMService {
       return this.imageVariation(rest as LLMServiceImageVariationOptions);
     }
     if ($action === "voiceChat") {
-      return this.voiceChat(rest as LLMVoiceChatOptions);
+      return this.voiceChat(rest as LLMServiceVoiceChatOptions);
     }
     const actionFunc = this.customActions[$action];
     if (!actionFunc) {
@@ -525,7 +429,7 @@ export class LLMService {
     return { images };
   }
 
-  async voiceChat(options: LLMVoiceChatOptions) {
+  async voiceChat(options: LLMServiceVoiceChatOptions) {
     const { transcribeAudioUrl, transcribeLanguage, transcribePrompt } =
       options;
     const { text } = await this.transcribe({
@@ -559,8 +463,6 @@ export class LLMService {
   }
 }
 
-export default function createLLMService(
-  options: CreateLLMServiceOptions = {}
-) {
+export function createLLMService(options: CreateLLMServiceOptions = {}) {
   return new LLMService(options);
 }
