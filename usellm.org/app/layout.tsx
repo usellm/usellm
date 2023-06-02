@@ -77,6 +77,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </ThemeProvider>
         </LLMProvider>
         <Analytics />
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
       </body>
     </html>
   );
