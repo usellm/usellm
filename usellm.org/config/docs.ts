@@ -149,11 +149,11 @@ export const docsConfig: DocsConfig = {
         },
         {
           title: "Classes and Methods",
-          href: "/docs/useLLM-py/classes-methods.mdx"
+          href: "/docs/useLLM-py/classes-methods"
         },
         {
           title: "Exceptions",
-          href: "/docs/useLLM-py/"
+          href: "/docs/useLLM-py/exception"
         }
 
       ]
