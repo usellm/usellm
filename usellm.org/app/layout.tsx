@@ -65,16 +65,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontSans.variable
         )}
       >
-        <LLMProvider serviceUrl="/api/llm">
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <div className="flex-1 container">{children}</div>
-              <Toaster />
-            </div>
-            <TailwindIndicator />
-          </ThemeProvider>
-        </LLMProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {/* <LLMProvider serviceUrl="/api/llm"> */}
+          <div className="relative flex min-h-screen flex-col">
+            <SiteHeader />
+            <div className="flex-1 container">{children}</div>
+            <Toaster />
+          </div>
+          <TailwindIndicator />
+          {/* </LLMProvider> */}
+        </ThemeProvider>
         <Analytics />
         <script async defer src="https://buttons.github.io/buttons.js"></script>
       </body>

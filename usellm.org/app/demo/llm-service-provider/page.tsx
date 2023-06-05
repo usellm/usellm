@@ -3,7 +3,7 @@ import useLLM from "usellm";
 import { useState } from "react";
 
 export default function LLMServiceProviderDemoPage() {
-  const llm = useLLM();
+  const llm = useLLM({ serviceUrl: "/api/llm" });
   const [result, setResult] = useState("");
 
   async function handleClick() {
