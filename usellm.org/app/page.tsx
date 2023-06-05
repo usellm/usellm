@@ -19,11 +19,11 @@ export default function IndexPage() {
       <div className="container relative pb-10">
         <PageHeader>
           <Link
-            href="https://usellm.substack.com/p/release-notes-usellm-v080"
+            href="https://usellm.substack.com/p/release-notes-usellm-v090"
             target="_blank"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium truncate max-w-full"
           >
-            🚀 v0.8.0 <Separator className="mx-2 h-4" orientation="vertical" />
+            🚀 v0.9.0 <Separator className="mx-2 h-4" orientation="vertical" />
             <span className="truncate">
               LLMProvider, global configurations, and more..
             </span>
