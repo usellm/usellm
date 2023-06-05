@@ -1,89 +1,25 @@
 "use client";
 import { useContext, useRef } from "react";
 import {
-  OpenAIMessage,
-  ChatStreamCallback,
   streamOpenAIResponse,
-  LLMChatResult,
   cosineSimilarity,
   scoreEmbeddings,
-} from "./utils";
+} from "../shared/utils";
 import { LLMContext } from "./llm-provider";
-
-export interface LLMChatOptions {
-  messages?: OpenAIMessage[];
-  stream?: boolean;
-  template?: string;
-  inputs?: object;
-  onStream?: ChatStreamCallback;
-}
-
-export interface LLMEmbedOptions {
-  input: string | string[];
-  user?: string;
-}
-
-export interface LLMRecordOptions {
-  deviceId?: string;
-}
-
-export interface LLMTranscribeOptions {
-  audioUrl: string;
-  language?: string;
-  prompt?: string;
-}
-
-export interface GenerateImageOptions {
-  prompt: string;
-  n?: number;
-  size?: "256x256" | "512x512" | "1024x1024";
-}
-
-export interface LLMCallActionOptions {
-  $action: string;
-  [key: string]: any;
-}
-
-export interface UseLLMOptions {
-  serviceUrl?: string;
-  fetcher?: typeof fetch;
-}
-
-export interface SpeakOptions {
-  text: string;
-  model_id?: string;
-  voice_id?: string;
-  voice_settings?: { stability: number; similarity_boost: number };
-}
-
-export interface EditImageOptions {
-  imageUrl: string;
-  maskUrl?: string;
-  prompt?: string;
-  n?: number;
-  size?: "256x256" | "512x512" | "1024x1024";
-}
-
-export interface ImageVariationOptions {
-  imageUrl: string;
-  n?: number;
-  size?: "256x256" | "512x512" | "1024x1024";
-}
-
-export interface LLMVoiceChatOptions {
-  // transcribe
-  transcribeAudioUrl?: string;
-  transcribeLanguage?: string;
-  transcribePrompt?: string;
-  // chat
-  chatMessages?: OpenAIMessage[];
-  chatTemplate?: string;
-  chatInputs?: object;
-  // speak
-  speakModelId?: string;
-  speechVoideId?: string;
-  speechVoiceSettings?: { stability: number; similarity_boost: number };
-}
+import {
+  EditImageOptions,
+  GenerateImageOptions,
+  ImageVariationOptions,
+  LLMCallActionOptions,
+  LLMChatOptions,
+  LLMEmbedOptions,
+  LLMRecordOptions,
+  LLMTranscribeOptions,
+  LLMVoiceChatOptions,
+  SpeakOptions,
+  UseLLMOptions,
+} from "./types";
+import { LLMChatResult } from "../shared/types";
 
 export default function useLLM({
   serviceUrl: argServiceUrl,
@@ -320,17 +256,14 @@ export default function useLLM({
   }
 
   async function voiceChat(options: LLMVoiceChatOptions) {
-    return callAction({
-      ...options,
-      $action: "voiceChat",
-    });
+    return callAction("voiceChat", options);
   }
 
-  async function callAction(options: LLMCallActionOptions) {
+  async function callAction(action: string, options: LLMCallActionOptions) {
     const response = await fetcher(serviceUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(options),
+      body: JSON.stringify({ ...options, $action: action }),
     });
 
     if (!response.ok) {

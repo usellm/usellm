@@ -39,7 +39,6 @@ export default function DocumentQna() {
       return;
     }
     setDocumentEmbeddings([]);
-    setQuestion("");
     setMatchedParagraphs([]);
     setAnswer("");
     const paragraphs = documentText
