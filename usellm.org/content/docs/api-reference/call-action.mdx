@@ -32,8 +32,6 @@ The structure of the returned data depends on the specific action being called.
 Here's an example of how to call a custom action. In this case, we are calling
 the `replicateText` action that was registered on the server([live demo](http://usellm.org/demo/register-action)).
 
-To know how we are registering `replicateText` action to `useLLM` check the [**llmservice.registerAction**](http://usellm.org/docs/api-reference/register-action) page.
-
 ```javascript
 "use client";
 import useLLM from "usellm";
@@ -83,6 +81,9 @@ export default function RegisterActionDemo() {
 
 In this example, the `replicateText` action is called when the 'Send' button is clicked, passing the
 input text as an option to the action. The response from the action is then set as the answer and displayed on the screen.
+
+To know how we are registering `replicateText` action to `useLLM` check
+the [**llmservice.registerAction**](http://usellm.org/docs/api-reference/register-action) page.
 
 With the `llm.callAction()` method, you can extend the functionalities of your client-side application by
 leveraging custom actions registered on the server side.

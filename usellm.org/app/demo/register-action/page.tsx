@@ -7,7 +7,7 @@ export default function RegisterActionDemo() {
   const [answer, setAnswer] = useState("");
 
   const llm = useLLM({
-    serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleGenerateClick() {
@@ -21,7 +21,7 @@ export default function RegisterActionDemo() {
 
   return (
     <div className="p-4 overflow-y-auto">
-      <h2 className="font-semibold text-2xl">Register Template Demo:</h2>
+      <h2 className="font-semibold text-2xl">Register Action Demo:</h2>
       <div className="flex my-4">
         <input
           className="p-2 border rounded mr-2 w-full dark:bg-gray-900 dark:text-white"
