@@ -24,6 +24,7 @@ export function SiteHeader() {
               href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"
+              title="GitHub"
             >
               <div
                 className={cn(
@@ -42,6 +43,7 @@ export function SiteHeader() {
               href={siteConfig.links.slack}
               target="_blank"
               rel="noreferrer"
+              title="Slack"
             >
               <div
                 className={cn(
@@ -60,6 +62,7 @@ export function SiteHeader() {
               href={siteConfig.links.twitter}
               target="_blank"
               rel="noreferrer"
+              title="Twitter"
             >
               <div
                 className={cn(
