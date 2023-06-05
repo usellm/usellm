@@ -116,6 +116,10 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/cosineSimilarity",
         },
         {
+          title: "`.callAction`",
+          href: "docs/api-reference/call-action",
+        },
+        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },
@@ -129,12 +133,16 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/create-llm-service",
         },
         {
+          title: "`.handle`",
+          href: "/docs/api-reference/llmservice-handle",
+        },
+        {
           title: "`.registerTemplate`",
           href: "/docs/api-reference/register-template",
         },
         {
-          title: "`.handle`",
-          href: "/docs/api-reference/llmservice-handle",
+          title: "`.registerAction`",
+          href: "docs/api-reference/register-action",
         },
       ],
     },
