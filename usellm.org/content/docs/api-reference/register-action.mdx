@@ -1,0 +1,103 @@
+---
+title: llmservice.registerAction
+description: Registers custom server-side actions for extended functionality.
+---
+
+`llmService.registerAction()` is a server-side method provided by the Language Learning Model (LLM) Service.
+The function adds a custom action to the `LLMService`.
+
+### Syntax
+
+```javascript
+llmService.registerAction(actionName, actionFunction);
+```
+
+### Parameters
+
+- `actionName` - A string that defines the unique name for the action.
+- `actionFunction` - A function that describes the action. This function must be async and take an options object as a parameter. It should return a Promise that resolves to either a `ReadableStream` or an object.
+
+### Example
+
+Below is an example of how to register a custom action. In this case, we are registering a `replicateText` action.
+The action makes a POST requrest to [Replicate.com](https://replicate.com/docs/reference/http#predictions.create) with a text and gets a Response with the output `"Hello" + text` ([live demo](http://usellm.org/demo/register-action)):
+
+```javascript
+import { createLLMService } from "usellm";
+import { makeErrorResponse } from "@/usellm/shared/utils";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+const llmService = createLLMService({
+  fetcher: fetch,
+  actions: ["replicateText"],
+  isAllowed: async () => {
+    // check if rate limiting has been set up using Upstash Redis REST API
+    if (
+      process.env.UPSTASH_REDIS_REST_URL &&
+      process.env.UPSTASH_REDIS_REST_TOKEN
+    ) {
+      const { success } = await ratelimit.limit("api");
+      return success;
+    }
+    return true;
+  },
+});
+
+// Register new action
+llmService.registerAction("replicateText", async (options: any) => {
+  const { text } = options;
+  if (!text) {
+    throw makeErrorResponse("'text' is required", 400);
+  }
+  const REPLICATE_API_URL = "https://api.replicate.com/v1/predictions";
+
+  // Post a text to Replicate model
+  const response1 = await fetch(REPLICATE_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+    },
+    body: JSON.stringify({
+      version: process.env.REPLICATE_MODEL_VERSION,
+      input: {
+        text: text,
+      },
+    }),
+  });
+
+  if (!response1.ok) {
+    throw new Error(await response1.text());
+  }
+  const { id: prediction_id } = await response1.json();
+
+  // Wait for 3 seconds to run the model
+  const sleep = async (milliseconds: number) => {
+    await new Promise((resolve) => {
+      return setTimeout(resolve, milliseconds);
+    });
+  };
+  await sleep(3000);
+
+  // Get the model response from Replicate
+  const link = REPLICATE_API_URL + "/" + prediction_id;
+
+  const response2 = await fetch(link, {
+    method: "GET",
+    headers: {
+      Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+    },
+  });
+
+  const data = await response2.json();
+  return { data };
+});
+```
+
+In this example, the `replicateText` action takes a `text` input, makes a POST request to a Replicate model,
+waits for the model to run, then retrieves and returns the model response. If the `text` input is not provided, an error is thrown.
+
+To know how to call the registered action check the [**llm.callAction**](http://usellm.org/docs/api-reference/call-action) page.
+
+By using `llmService.registerAction()`, you can seamlessly integrate custom actions into your LLMService, tailoring its functionality to your specific needs.

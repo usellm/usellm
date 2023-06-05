@@ -1,0 +1,89 @@
+---
+title: llm.callAction
+description: Invokes custom server-side actions with provided options.
+---
+
+`llm.callAction()` is a client-side method that is part of the `useLLM` hook.
+It allows developers to call custom actions that were registered on the server
+side using the `llmService.registerAction()` method.
+
+The `callAction()` function makes a POST request to the LLMService with a provided
+options object and returns the response.
+
+### Syntax
+
+```javascript
+const { data } = await llm.callAction(actionName, options);
+```
+
+### Parameters
+
+- `actionName` - A string that defines the name of the action to be called.
+- `options` - An object that provides the necessary options for the action.
+  The structure of this object depends on the requirements of the specific action being called.
+
+### Returns
+
+`llm.callAction()` returns a Promise that resolves to the data returned by the server-side action.
+The structure of the returned data depends on the specific action being called.
+
+## Example
+
+Here's an example of how to call a custom action. In this case, we are calling
+the `replicateText` action that was registered on the server([live demo](http://usellm.org/demo/register-action)).
+
+```javascript
+"use client";
+import useLLM from "usellm";
+import React, { useState } from "react";
+
+export default function RegisterActionDemo() {
+  const [text, setText] = useState("");
+  const [answer, setAnswer] = useState("");
+  const llm = useLLM({
+    serviceUrl: "/api/llm",
+  });
+
+  async function handleGenerateClick() {
+    setAnswer("");
+    const { data } = await llm.callAction("replicateText", {
+      text: text,
+    });
+
+    setAnswer(data["output"]);
+  }
+
+  return (
+    <div className="p-4 overflow-y-auto">
+      <h2 className="font-semibold text-2xl">Register Template Demo:</h2>
+      <div className="flex my-4">
+        <input
+          className="p-2 border rounded mr-2 w-full dark:bg-gray-900 dark:text-white"
+          type="text"
+          placeholder="Enter a text here"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2 "
+          onClick={handleGenerateClick}
+        >
+          Send
+        </button>
+      </div>
+
+      <div>Answer:</div>
+      <pre>{answer}</pre>
+    </div>
+  );
+}
+```
+
+In this example, the `replicateText` action is called when the 'Send' button is clicked, passing the
+input text as an option to the action. The response from the action is then set as the answer and displayed on the screen.
+
+To know how we are registering `replicateText` action to `useLLM` check
+the [**llmservice.registerAction**](http://usellm.org/docs/api-reference/register-action) page.
+
+With the `llm.callAction()` method, you can extend the functionalities of your client-side application by
+leveraging custom actions registered on the server side.
