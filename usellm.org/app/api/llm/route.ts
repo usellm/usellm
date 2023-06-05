@@ -1,10 +1,14 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createLLMService } from "usellm";
+import { makeErrorResponse } from "@/usellm/utils";
+
+const myFetcher = fetch;
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
+  fetcher: myFetcher,
   actions: [
     "chat",
     "voiceChat",
@@ -14,6 +18,7 @@ const llmService = createLLMService({
     "generateImage",
     "editImage",
     "imageVariation",
+    "generateSuperResImage",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
@@ -26,6 +31,58 @@ const llmService = createLLMService({
     }
     return true;
   },
+});
+
+const CREATE_PREDICTIONS_URL = "https://api.replicate.com/v1/predictions";
+const GET_PREDICTIONS_URL = "https://api.replicate.com/v1/predictions/";
+
+// Register new action
+llmService.registerAction("replicateText", async (options: any) => {
+  const { text } = options;
+  if (!text) {
+    throw makeErrorResponse("'text' is required", 400);
+  }
+
+  // Post a text to Replicate model
+  const response1 = await myFetcher(CREATE_PREDICTIONS_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+    },
+    body: JSON.stringify({
+      version: process.env.REPLICATE_MODEL_VERSION,
+      input: {
+        text: text,
+      },
+    }),
+  });
+
+  if (!response1.ok) {
+    throw new Error(await response1.text());
+  }
+  const { id: prediction_id } = await response1.json();
+
+  // Wait for 3 seconds to run the model
+  const sleep = async (milliseconds: number) => {
+    await new Promise((resolve) => {
+      return setTimeout(resolve, milliseconds);
+    });
+  };
+  await sleep(3000);
+
+  // Get the model response from Replicate
+  const link = GET_PREDICTIONS_URL + prediction_id;
+
+  const response2 = await myFetcher(link, {
+    method: "GET",
+    headers: {
+      Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+    },
+  });
+
+  const data = await response2.json();
+  return { data };
 });
 
 llmService.registerTemplate({
