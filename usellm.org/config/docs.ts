@@ -144,7 +144,7 @@ export const docsConfig: DocsConfig = {
       items:[
         
         {
-          title: "Installation and Sample Usage",
+          title: "Installation and Usage",
           href:"/docs/useLLM-py/installation-usage" 
         },
         {
