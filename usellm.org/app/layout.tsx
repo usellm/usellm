@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Aakash N S",
-      url: "https://aakashns.com",
+      url: "http://aakashns.com",
     },
   ],
   creator: "aakashns",
