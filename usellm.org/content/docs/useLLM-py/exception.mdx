@@ -1,0 +1,15 @@
+---
+title: Exceptions 
+description: Exceptions in useLLM Python App 
+---
+
+
+
+The library raises an `Exception` in the following situations:
+
+- If the `stream` option is set to `True`, because streaming is not currently supported.
+- If the HTTP response status code from the LLM service is not 200.
+- If the HTTP response from the LLM service contains an "error" field.
+- If the HTTP response from the LLM service does not contain a "choices" field.
+
+

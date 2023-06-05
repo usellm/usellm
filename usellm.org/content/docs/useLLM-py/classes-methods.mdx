@@ -1,0 +1,39 @@
+---
+title: Classes and Methods  
+description: Classes and Methods in useLLM
+---
+
+### 1. `UseLLM` class
+
+The `UseLLM` class provides the interface for interacting with the LLM service.
+
+Methods:
+- `__init__(self, service_url: str)`: Initializes a new instance of the `UseLLM` class.
+- `chat(self, options: Options) -> Message`: Interacts with the LLM using the provided `Options`, and returns a `Message` instance that represents the LLM's response.
+
+### 2. `Options` class
+
+The `Options` class represents a set of configuration options for a chat interaction with the LLM.
+
+- `messages`: A list of `Message` instances representing the conversation up to the current point.
+- `stream`: A boolean indicating if the interaction is a streaming interaction. Note: streaming is currently not supported.
+- `template`: A string representing a message template to guide the conversation.
+- `inputs`: A dictionary of additional inputs for the conversation.
+
+Methods:
+- `__init__(self, messages: Optional[List[Message]] = [], stream: Optional[bool] = None, template: Optional[str] = None, inputs: Optional[dict] = None)`: Initializes a new instance of the `Options` class.
+
+### 3. `Message` class
+
+The `Message` class represents a message in a conversation. It consists of two main attributes:
+
+- `role`: The role of the message sender. Common values could be `system`, `user`, `assistant`.
+- `content`: The content of the message.
+
+Methods:
+- `__init__(self, role: str, content: str)`: Initializes a new instance of the `Message` class.
+- `__repr__(self) -> str`: Returns a string representation of the `Message` instance.
+- `__str__(self) -> str`: Returns a string representation of the `Message` instance.
+- `to_dict(self) -> dict`: Returns a dictionary representation of the `Message` instance.
+- `to_json(self) -> str`: Returns a JSON string representation of the `Message` instance.
+

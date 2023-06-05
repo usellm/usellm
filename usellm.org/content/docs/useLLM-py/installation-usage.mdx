@@ -1,0 +1,46 @@
+---
+title: Installation and Usage of LLM in Python App 
+description: Run useLLM in Python Environment 
+---
+
+`useLLM` is a library to help you build and create applications powered by Large Language Models. 
+Follow this tutorial to implement useLLM in your Python app. 
+This part of the documentation is Python specific. You can find the version for javascript here: https://usellm.org/docs
+
+
+## Installation
+
+To get started, install `useLLM` with the following command:
+
+```shell
+pip install usellm
+```
+
+
+## Example Usage 
+
+Here is a basic usage example:
+
+```python
+from usellm import Message, Options, UseLLM
+
+# Initialize the service
+service = UseLLM(service_url="https://usellm.org/api/llm")
+
+# Prepare the conversation
+messages = [
+  Message(role="system", content="You are a helpful assistant."),
+  Message(role="user", content="What can you do for me?"),
+]
+options = Options(messages=messages)
+
+# Interact with the service
+response = service.chat(options)
+
+# Print the assistant's response
+print(response.content)
+```
+
+
+The above code will generate a response using the OpenAI ChatGPT API. The service URL "https://usellm.org/api/llm" should be used only for testing.
+
