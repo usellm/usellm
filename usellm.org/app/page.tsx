@@ -25,7 +25,7 @@ export default function IndexPage() {
           >
             🚀 v0.9.0 <Separator className="mx-2 h-4" orientation="vertical" />
             <span className="truncate">
-              LLMProvider, global configurations, and more..
+              register custom actions, usellm for Python, and more..
             </span>
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
