@@ -1,7 +1,17 @@
-/* 
-- Copy and paste this code into your Next.js applications's "app/page.tsx" file to get started 
-- Make sure to run "npm install usellm" to install the useLLM pacakge
-- Replace the `serviceUrl` below with your own service URL for production
+/* To run this demo yourself:
+
+1. Create a next Next.js app using our starter template by running the following terminal command:
+
+    npx create-next-app my-usellm-app -e https://github.com/usellm/nextjs-starter-template
+    cd my-usellm-app # enter the directory
+
+2. Copy the source code of this file & paste it in `app/page.tsx` replacing existing code.
+   You can use a code editor like VS Code (https://code.visualdudio.com) to edit the file.
+
+3. Run the development server using `npm run dev` and open http://localhost:3000 in your browser.
+   You will now be able to try out this demo. Make changes to the code to see the changes live.
+
+4. (Optional) Replace the `serviceUrl` below with your own service URL for production use.
 */
 "use client";
 import useLLM from "usellm";
