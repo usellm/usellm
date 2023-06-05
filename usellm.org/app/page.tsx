@@ -20,7 +20,7 @@ export default function IndexPage() {
       <div className="container relative pb-10">
         <PageHeader>
           <Link
-            href="https://usellm.substack.com/p/release-notes-usellm-v051"
+            href="https://usellm.substack.com/p/release-notes-usellm-v080"
             target="_blank"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium"
           >
