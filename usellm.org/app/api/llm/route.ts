@@ -16,7 +16,6 @@ const llmService = createLLMService({
     "generateImage",
     "editImage",
     "imageVariation",
-    "replicateText",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
