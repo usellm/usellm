@@ -11,7 +11,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
-import { ExamplesNav } from "@/components/examples-nav";
 import { HomePageDemo } from "@/components/home-page-demo";
 
 export default function IndexPage() {
@@ -50,8 +49,7 @@ export default function IndexPage() {
             </Link>
           </div>
         </PageHeader>
-        <div id="demo" />
-        <ExamplesNav />
+
         <HomePageDemo />
       </div>
       <div className="flex-1" />
