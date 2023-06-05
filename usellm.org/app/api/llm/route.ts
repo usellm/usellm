@@ -6,7 +6,6 @@ import { makeErrorResponse } from "@/usellm/shared/utils";
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
-  fetcher: fetch,
   actions: [
     "chat",
     "voiceChat",
