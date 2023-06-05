@@ -1,7 +1,7 @@
 "use client";
-export function GitHubButton() {
+export function GitHubStarButton() {
   return (
-    <div className="h-7 mr-1">
+    <div className="h-7">
       <a
         className="github-button"
         href="https://github.com/usellm/usellm"

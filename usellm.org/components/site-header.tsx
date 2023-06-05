@@ -1,7 +1,12 @@
 import { MainNav } from "@/components/main-nav";
 import { MobileNav } from "@/components/mobile-nav";
 import { ModeToggle } from "@/components/mode-toggle";
-import { GitHubButton } from "./github-button";
+import { GitHubStarButton } from "./github-star-button";
+import Link from "next/link";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "./ui/button";
+import { Icons } from "./icons";
 
 export function SiteHeader() {
   return (
@@ -9,9 +14,70 @@ export function SiteHeader() {
       <div className="container flex h-14 items-center">
         <MainNav />
         <MobileNav />
-        <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
+        <div className="flex flex-1 items-center space-x-2 sm:space-x-4 justify-end">
           <nav className="flex items-center space-x-1">
-            <GitHubButton />
+            <div className="hidden md:block mr-2">
+              <GitHubStarButton />
+            </div>
+            <Link
+              className="md:hidden"
+              href={siteConfig.links.github}
+              target="_blank"
+              rel="noreferrer"
+              title="GitHub"
+            >
+              <div
+                className={cn(
+                  buttonVariants({
+                    size: "sm",
+                    variant: "ghost",
+                  }),
+                  "w-9 px-0"
+                )}
+              >
+                <Icons.gitHub className="h-5 w-5" />
+                <span className="sr-only">GitHub</span>
+              </div>
+            </Link>
+            <Link
+              href={siteConfig.links.slack}
+              target="_blank"
+              rel="noreferrer"
+              title="Slack"
+            >
+              <div
+                className={cn(
+                  buttonVariants({
+                    size: "sm",
+                    variant: "ghost",
+                  }),
+                  "w-9 px-0"
+                )}
+              >
+                <Icons.slack className="h-5 w-5" />
+                <span className="sr-only">Slack</span>
+              </div>
+            </Link>
+            <Link
+              href={siteConfig.links.twitter}
+              target="_blank"
+              rel="noreferrer"
+              title="Twitter"
+            >
+              <div
+                className={cn(
+                  buttonVariants({
+                    size: "sm",
+                    variant: "ghost",
+                  }),
+                  "w-9 px-0"
+                )}
+              >
+                <Icons.twitter className="h-5 w-5" />
+                <span className="sr-only">Twitter</span>
+              </div>
+            </Link>
+
             <ModeToggle />
           </nav>
         </div>

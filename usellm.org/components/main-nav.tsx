@@ -46,7 +46,7 @@ export function MainNav() {
         <Link
           href={siteConfig.links.blog}
           className={cn(
-            "hidden text-foreground/60 transition-colors hover:text-foreground/80 lg:block"
+            "hidden text-foreground/60 transition-colors hover:text-foreground/80 md:block"
           )}
           target="_blank"
         >
