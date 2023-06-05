@@ -1,14 +1,12 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createLLMService } from "usellm";
-import { makeErrorResponse } from "@/usellm/utils";
-
-const myFetcher = fetch;
+import { makeErrorResponse } from "@/usellm/shared/utils";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
-  fetcher: myFetcher,
+  fetcher: fetch,
   actions: [
     "chat",
     "voiceChat",
@@ -18,7 +16,6 @@ const llmService = createLLMService({
     "generateImage",
     "editImage",
     "imageVariation",
-    "generateSuperResImage",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
@@ -33,18 +30,16 @@ const llmService = createLLMService({
   },
 });
 
-const CREATE_PREDICTIONS_URL = "https://api.replicate.com/v1/predictions";
-const GET_PREDICTIONS_URL = "https://api.replicate.com/v1/predictions/";
-
 // Register new action
 llmService.registerAction("replicateText", async (options: any) => {
   const { text } = options;
   if (!text) {
     throw makeErrorResponse("'text' is required", 400);
   }
+  const REPLICATE_API_URL = "https://api.replicate.com/v1/predictions";
 
   // Post a text to Replicate model
-  const response1 = await myFetcher(CREATE_PREDICTIONS_URL, {
+  const response1 = await fetch(REPLICATE_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -72,9 +67,9 @@ llmService.registerAction("replicateText", async (options: any) => {
   await sleep(3000);
 
   // Get the model response from Replicate
-  const link = GET_PREDICTIONS_URL + prediction_id;
+  const link = REPLICATE_API_URL + "/" + prediction_id;
 
-  const response2 = await myFetcher(link, {
+  const response2 = await fetch(link, {
     method: "GET",
     headers: {
       Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,

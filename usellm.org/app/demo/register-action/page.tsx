@@ -5,14 +5,14 @@ import React, { useState } from "react";
 export default function RegisterActionDemo() {
   const [text, setText] = useState("");
   const [answer, setAnswer] = useState("");
+
   const llm = useLLM({
     serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleGenerateClick() {
     setAnswer("");
-    const { data } = await llm.callAction({
-      $action: "replicateText",
+    const { data } = await llm.callAction("replicateText", {
       text: text,
     });
 
