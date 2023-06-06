@@ -3,7 +3,7 @@ title: llm.voiceChat
 description: Send voice messages to an external LLM service and receive voice responses.
 ---
 
-The `llm.voiceChat()` function is a method returned by the `useLLM` hook. This method is used to initiate a voice conversation with the external Large Language Model (LLM) service. This takes in a audio input and returns the audio LLM response to the input.
+The `llm.voiceChat()` function is a method returned by the `useLLM` hook. This method is used to initiate a voice conversation with the external Large Language Model (LLM) service. This takes in a audio input and returns the audio LLM response.
 
 ### Syntax
 
@@ -154,4 +154,4 @@ type Status =
   | "speaking";
 ```
 
-In the above example, user starts recording his voice message by clicking on record icon. Then to stop the recording, user clicks on stop icon. The spoken text can be listened to by the user as the audio URL returned by `llm.voiceChat()` method is used as the source for the `<audio>` HTML element.
+In the above example, user starts recording his voice message by clicking on record icon. Then to stop the recording, user clicks on stop icon. The response can be listened to by the user. This is because the audio URL returned by `llm.voiceChat()` method is used as the source for the `<audio>` HTML element.
