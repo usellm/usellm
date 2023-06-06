@@ -153,22 +153,20 @@ export const docsConfig: DocsConfig = {
 
     {
       title: "useLLM for Python",
-      items:[
-        
+      items: [
         {
           title: "Installation and Usage",
-          href:"/docs/useLLM-py/installation-usage" 
+          href: "/docs/useLLM-py/installation-usage",
         },
         {
           title: "Classes and Methods",
-          href: "/docs/useLLM-py/classes-methods"
+          href: "/docs/useLLM-py/classes-methods",
         },
         {
           title: "Exceptions",
-          href: "/docs/useLLM-py/exception"
-        }
-
-      ]
+          href: "/docs/useLLM-py/exception",
+        },
+      ],
     },
 
     {
@@ -176,31 +174,31 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: "AI Chatbot",
-          href: "/?demo=ai-chatbot#demo",
+          href: "/demo/ai-chatbot",
         },
         {
           title: "Document Q&A",
-          href: "/?demo=document-qna#demo",
+          href: "/demo/document-qna",
         },
         {
           title: "Prompt Engineering",
-          href: "/?demo=prompt-template#demo",
+          href: "/demo/prompt-template",
         },
         {
           title: "Speech to Text",
-          href: "/?demo=speech-to-text#demo",
+          href: "/demo/speech-to-text",
         },
         {
           title: "Text to Speech",
-          href: "/?demo=text-to-speech#demo",
+          href: "/demo/text-to-speech",
         },
         {
           title: "Voice Chat",
-          href: "/?demo=voice-chat#demo",
+          href: "/demo/voice-chat",
         },
         {
           title: "Image Generation",
-          href: "/?demo=image-generation#demo",
+          href: "/demo/image-generation",
         },
       ],
     },
