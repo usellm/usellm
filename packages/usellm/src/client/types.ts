@@ -61,7 +61,7 @@ export interface ImageVariationOptions {
 
 export interface LLMVoiceChatOptions {
   // transcribe
-  transcribeAudioUrl?: string;
+  transcribeAudioUrl: string;
   transcribeLanguage?: string;
   transcribePrompt?: string;
   // chat

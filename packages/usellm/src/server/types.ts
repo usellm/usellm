@@ -82,7 +82,7 @@ export interface LLMServiceImageVariationOptions {
 export interface LLMServiceVoiceChatOptions {
   $action?: string;
   // transcribe
-  transcribeAudioUrl?: string;
+  transcribeAudioUrl: string;
   transcribeLanguage?: string;
   transcribePrompt?: string;
   // chat

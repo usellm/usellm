@@ -96,6 +96,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/speak",
         },
         {
+          title: "`.voiceChat`",
+          href: "/docs/api-reference/voiceChat",
+        },
+        {
           title: "`.embed`",
           href: "/docs/api-reference/embed",
         },

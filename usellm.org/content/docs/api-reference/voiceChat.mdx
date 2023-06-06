@@ -15,15 +15,15 @@ const { audioUrl } = await llm.voiceChat(options: LLMVoiceChatOptions);
 
 - `options: LLMVoiceChatOptions`- An object that takes the following properties:
 
-  - `transcribeAudioUrl?: string`- A string specifying the base64 encoded audio data to transcribe.
-  - `transcribeLanguage?: string`- A string specifying the language of the audio. 
-  - `transcribePrompt?: string`- A string specifying the prompt to be provided to the language model.
-  - `chatMessages?: OpenAIMessage[]`- An array of message objects to start the conversation. Each message object should have a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string.
-  - `chatTemplate?: string`- A string defining a model's template to structure the conversation.
-  - `chatInputs?: object`- An object containing additional inputs to the model.
-  - `speakModelId?: string`- The ID of the model to be used for the TTS operation. Default is set to the latest model.
-  - `speechVoideId?: string`- The ID of the voice to be used for the TTS operation. Default is set to the latest voice.
-  - `speechVoiceSettings?: { stability: number; similarity_boost: number }`- Fine-tuning parameters for the voice. 
+  - `transcribeAudioUrl: string;` (required) - A string specifying the base64 encoded audio data to transcribe.
+  - `transcribeLanguage?: string` (optional) - A string specifying the language of the audio. 
+  - `transcribePrompt?: string` (optional) - A string specifying the prompt to be provided to the language model.
+  - `chatMessages?: OpenAIMessage[]` (optional) - An array of message objects to start the conversation. Each message object should have a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string.
+  - `chatTemplate?: string` (optional) - A string defining a model's template to structure the conversation.
+  - `chatInputs?: object` (optional) - An object containing additional inputs to the model.
+  - `speakModelId?: string` (optional) - The ID of the model to be used for the TTS operation. Default is set to the latest model.
+  - `speechVoideId?: string` (optional) - The ID of the voice to be used for the TTS operation. Default is set to the latest voice.
+  - `speechVoiceSettings?: { stability: number; similarity_boost: number }` (optional) - Fine-tuning parameters for the voice. 
 
 ### Returns
 
@@ -33,7 +33,7 @@ A Promise that resolves to an object:
 
   - `audioUrl: string`: A URL to the generated audio.
 
-  - `messages: [object]`: An array of message objects. The objects contain messages shared between user and assistant. Each message object contain a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string. An example of `messages` is
+  - `messages: [object]`: Array containing a single object, which includes one message from the user and one message from the assistant. An example could be:
 
   ```typescript
   messages: 
@@ -155,8 +155,3 @@ type Status =
 ```
 
 In the above example, user starts recording his voice message by clicking on record icon. Then to stop the recording, user clicks on stop icon. The spoken text can be listened to by the user as the audio URL returned by `llm.voiceChat()` method is used as the source for the `<audio>` HTML element.
-
-
-
-
-
