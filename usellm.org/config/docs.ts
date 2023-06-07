@@ -138,7 +138,7 @@ export const docsConfig: DocsConfig = {
         },
         {
           title: "`.handle`",
-          href: "/docs/api-reference/llmservice-handle",
+          href: "/docs/api-reference/handle",
         },
         {
           title: "`.registerTemplate`",
