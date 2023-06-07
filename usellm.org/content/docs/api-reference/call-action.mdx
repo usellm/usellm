@@ -38,49 +38,64 @@ import useLLM from "usellm";
 import React, { useState } from "react";
 
 export default function RegisterActionDemo() {
-  const [text, setText] = useState("");
-  const [answer, setAnswer] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [status, setStatus] = useState("");
+  const [image, setImage] = useState("");
+
   const llm = useLLM({
-    serviceUrl: "/api/llm",
+    serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleGenerateClick() {
-    setAnswer("");
-    const { data } = await llm.callAction("replicateText", {
-      text: text,
+    setStatus("Generating...");
+    setImage("");
+    const { data } = await llm.callAction("generateHighResImage", {
+      prompt: prompt,
     });
-
-    setAnswer(data["output"]);
+    setStatus("");
+    setImage(data["output"][0]);
   }
 
   return (
     <div className="p-4 overflow-y-auto">
-      <h2 className="font-semibold text-2xl">Register Template Demo:</h2>
+      <h2 className="font-semibold text-2xl">
+        Replicate Stable Diffusion High Resolution Image:
+      </h2>
       <div className="flex my-4">
         <input
           className="p-2 border rounded mr-2 w-full dark:bg-gray-900 dark:text-white"
           type="text"
-          placeholder="Enter a text here"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          placeholder="Enter a prompt here"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
         />
         <button
           className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2 "
           onClick={handleGenerateClick}
         >
-          Send
+          Generate Image
         </button>
       </div>
 
-      <div>Answer:</div>
-      <pre>{answer}</pre>
+      {status && <div>{status}</div>}
+
+      {image && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="mt-4 rounded"
+          src={image}
+          alt={prompt}
+          width={732}
+          height={732}
+        />
+      )}
     </div>
   );
 }
 ```
 
-In this example, the `replicateText` action is called when the 'Send' button is clicked, passing the
-input text as an option to the action. The response from the action is then set as the answer and displayed on the screen.
+In this example, the `generateHighResImage` action is called when the 'Generate Image' button is clicked, passing the
+input prompt as an option to the action. The response from the action is an image which is displayed on the screen.
 
 To know how we are registering `replicateText` action to `useLLM` check
 the [**llmservice.registerAction**](http://usellm.org/docs/api-reference/register-action) page.
