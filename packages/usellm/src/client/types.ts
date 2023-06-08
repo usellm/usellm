@@ -76,6 +76,6 @@ export interface LLMVoiceChatOptions {
 
 export interface LLMCallReplicateOptions {
   input: object;
-  modelId?: string;
-  time?: number;
+  version: string;
+  timeout: number;
 }

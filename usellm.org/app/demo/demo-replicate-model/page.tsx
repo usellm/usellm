@@ -1,9 +1,26 @@
+/* To run this demo yourself:
+
+1. Create a next Next.js app using our starter template by running the following terminal command:
+
+    npx create-next-app my-usellm-app -e https://github.com/usellm/nextjs-starter-template
+    cd my-usellm-app # enter the directory
+
+2. Copy the source code of this file & paste it in `app/page.tsx` replacing existing code.
+   You can use a code editor like VS Code (https://code.visualdudio.com) to edit the file.
+
+3. Run the development server using `npm run dev` and open http://localhost:3000 in your browser.
+   You will now be able to try out this demo. Make changes to the code to see the changes live.
+
+4. (Optional) Replace the `serviceUrl` below with your own service URL for production use.
+*/
+
+/* In this demo we will be using stability-ai/stablelm-tuned-alpha-7b model
+ https://replicate.com/stability-ai/stablelm-tuned-alpha-7b/api
+*/
+
 "use client";
 import { useState } from "react";
 import useLLM from "usellm";
-
-// In this demo we will be using stability-ai/stablelm-tuned-alpha-7b model
-// https://replicate.com/stability-ai/stablelm-tuned-alpha-7b/api
 
 export default function DemoReplicateModel() {
   const llm = useLLM({
@@ -12,17 +29,17 @@ export default function DemoReplicateModel() {
 
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
-  const [modelId, setModelId] = useState(
+  const [version, setVersion] = useState(
     "c49dae362cbaecd2ceabb5bd34fdb68413c4ff775111fea065d259d577757beb"
   );
-  const [time, setTime] = useState("10");
+  const [timeout, setTimeout] = useState("10000");
 
   async function handleClick() {
     setResult("");
     const response = await llm.callReplicate({
-      modelId: modelId,
+      version: version,
       input: { prompt: input },
-      time: parseInt(time) * 1000,
+      timeout: parseInt(timeout),
     });
     console.log(response);
     setResult(response.output);
@@ -40,18 +57,18 @@ export default function DemoReplicateModel() {
         className="p-2 border rounded mr-2 w-full mb-4 block dark:bg-gray-900 dark:text-white"
         type="text"
         placeholder="Enter Model Id Ex"
-        value={modelId}
-        onChange={(e) => setModelId(e.target.value)}
+        value={version}
+        onChange={(e) => setVersion(e.target.value)}
       />
       <label className="block mb-2">
-        <b>Waiting Time (in seconds)</b>
+        <b>Waiting Time (in Milliseconds)</b>
       </label>
       <input
         className="p-2 border rounded mr-2 w-full mb-4 block dark:bg-gray-900 dark:text-white"
         type="text"
         placeholder="Enter Time in Seconds"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
+        value={timeout}
+        onChange={(e) => setTimeout(e.target.value)}
       />
       <label className="block mb-2">
         <b>Prompt</b>

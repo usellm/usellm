@@ -6,7 +6,6 @@ import {
   REPLICATE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
-  REPLICATE_DEFAULT_MODEL_ID,
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
   IMAGE_VARIATIONS_API_URL,
@@ -477,11 +476,7 @@ export class LLMService {
   }
 
   async callReplicate(options: LLMServiceCallReplicateOptions) {
-    const {
-      modelId = REPLICATE_DEFAULT_MODEL_ID,
-      input,
-      time = 10000,
-    } = options;
+    const { version, input, timeout = 10000 } = options;
 
     if (!input) {
       throw makeErrorResponse("'input' is required", 400);
@@ -494,7 +489,7 @@ export class LLMService {
         Authorization: `Token ${this.replicateApiKey}`,
       },
       body: JSON.stringify({
-        version: modelId,
+        version: version,
         input: input,
       }),
     });
@@ -510,7 +505,7 @@ export class LLMService {
         return setTimeout(resolve, milliseconds);
       });
     };
-    await sleep(time);
+    await sleep(timeout);
 
     const statusResponse = await this.fetcher(GET_PREDICTION_URL, {
       method: "GET",

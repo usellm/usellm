@@ -19,9 +19,6 @@ export const ELVEN_LABS_DEFAULT_MODEL_ID = "eleven_monolingual_v1";
 
 export const ELVEN_LABS_DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
 
-export const REPLICATE_DEFAULT_MODEL_ID =
-  "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa";
-
 export const IMAGE_GENERATION_API_URL =
   "https://api.openai.com/v1/images/generations";
 
