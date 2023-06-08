@@ -5,6 +5,7 @@ import {
   EDIT_IMAGE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
+  REPLICATE_DEFAULT_MODEL_ID,
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
   IMAGE_VARIATIONS_API_URL,
@@ -30,6 +31,7 @@ import {
   LLMServiceTemplate,
   LLMServiceTranscribeOptions,
   LLMServiceVoiceChatOptions,
+  LLMServiceReplicateModelsOptions,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -43,6 +45,7 @@ export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   elvenLabsApiKey: string;
+  replicateApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
@@ -55,6 +58,7 @@ export class LLMService {
   constructor({
     openaiApiKey = "",
     elvenLabsApiKey = "",
+    replicateApiKey = "",
     fetcher = fetch,
     templates = {},
     debug = false,
@@ -63,6 +67,7 @@ export class LLMService {
   }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.elvenLabsApiKey = elvenLabsApiKey;
+    this.replicateApiKey = replicateApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
@@ -106,6 +111,9 @@ export class LLMService {
     }
     if (action === "voiceChat") {
       return this.voiceChat(body as LLMServiceVoiceChatOptions);
+    }
+    if (action === "replicateModels") {
+      return this.replicateModels(body as LLMServiceReplicateModelsOptions);
     }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
@@ -465,6 +473,11 @@ export class LLMService {
         { role: "assistant", content: choices[0].message.content },
       ],
     };
+  }
+
+  async replicateModels(options: LLMServiceReplicateModelsOptions) {
+    const {} = options;
+    return {};
   }
 }
 
