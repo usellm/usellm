@@ -14,6 +14,7 @@ import {
   LLMChatOptions,
   LLMEmbedOptions,
   LLMRecordOptions,
+  LLMCallReplicateOptions,
   LLMTranscribeOptions,
   LLMVoiceChatOptions,
   SpeakOptions,
@@ -273,6 +274,10 @@ export default function useLLM({
     return response.json();
   }
 
+  async function callReplicate(options: LLMCallReplicateOptions) {
+    return callAction("callReplicate", options);
+  }
+
   return {
     callAction,
     chat,
@@ -289,5 +294,6 @@ export default function useLLM({
     imageToDataURL,
     editImage,
     imageVariation,
+    callReplicate,
   };
 }

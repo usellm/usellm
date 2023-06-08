@@ -112,6 +112,7 @@ export interface CreateLLMServiceOptions {
   isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
 }
 
-export interface LLMServiceReplicateModelsOptions {
-  body?: string;
+export interface LLMServiceCallReplicateOptions {
+  input: object;
+  modelId?: string;
 }

@@ -3,6 +3,7 @@ import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
   EDIT_IMAGE_API_URL,
+  REPLICATE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   REPLICATE_DEFAULT_MODEL_ID,
@@ -31,7 +32,7 @@ import {
   LLMServiceTemplate,
   LLMServiceTranscribeOptions,
   LLMServiceVoiceChatOptions,
-  LLMServiceReplicateModelsOptions,
+  LLMServiceCallReplicateOptions,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -85,7 +86,7 @@ export class LLMService {
 
   async callAction(action: string, body = {}) {
     if (!this.actions.includes(action) && !this.customActions[action]) {
-      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
+      throw makeErrorResponse(`Action "${action}" is not allowed`, 400);
     }
 
     if (action === "chat") {
@@ -112,8 +113,8 @@ export class LLMService {
     if (action === "voiceChat") {
       return this.voiceChat(body as LLMServiceVoiceChatOptions);
     }
-    if (action === "replicateModels") {
-      return this.replicateModels(body as LLMServiceReplicateModelsOptions);
+    if (action === "callReplicate") {
+      return this.callReplicate(body as LLMServiceCallReplicateOptions);
     }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
@@ -475,9 +476,63 @@ export class LLMService {
     };
   }
 
-  async replicateModels(options: LLMServiceReplicateModelsOptions) {
-    const {} = options;
-    return {};
+  async callReplicate(options: LLMServiceCallReplicateOptions) {
+    const { modelId = REPLICATE_DEFAULT_MODEL_ID, input } = options;
+
+    if (!input) {
+      throw makeErrorResponse("'input' is required", 400);
+    }
+    // Create Prediction Model
+    const createPredictionResponse = await this.fetcher(REPLICATE_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${this.replicateApiKey}`,
+      },
+      body: JSON.stringify({
+        version: modelId,
+        input: input,
+      }),
+    });
+    if (!createPredictionResponse.ok) {
+      throw makeErrorResponse(await createPredictionResponse.text());
+    }
+    const { id: prediction_id } = await createPredictionResponse.json();
+    const GET_PREDICTION_URL = REPLICATE_API_URL + "/" + prediction_id;
+
+    // Wait for 30 seconds to run the model
+    const sleep = async (milliseconds: number) => {
+      await new Promise((resolve) => {
+        return setTimeout(resolve, milliseconds);
+      });
+    };
+    await sleep(10000);
+
+    const statusResponse = await this.fetcher(GET_PREDICTION_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${this.replicateApiKey}`,
+      },
+    });
+
+    if (!statusResponse.ok) {
+      throw new Error(await statusResponse.text());
+    }
+
+    const getResponse = await statusResponse.json();
+
+    if (getResponse && getResponse.status === "succeeded") {
+      return {
+        id: getResponse.id,
+        urls: getResponse.urls,
+        status: getResponse.status,
+        output: getResponse.output,
+        metrics: getResponse.metrics,
+      };
+    } else {
+      return "Training Not Completed";
+    }
   }
 }
 
