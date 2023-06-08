@@ -115,4 +115,5 @@ export interface CreateLLMServiceOptions {
 export interface LLMServiceCallReplicateOptions {
   input: object;
   modelId?: string;
+  time?: number;
 }

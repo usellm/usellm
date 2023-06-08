@@ -477,7 +477,11 @@ export class LLMService {
   }
 
   async callReplicate(options: LLMServiceCallReplicateOptions) {
-    const { modelId = REPLICATE_DEFAULT_MODEL_ID, input } = options;
+    const {
+      modelId = REPLICATE_DEFAULT_MODEL_ID,
+      input,
+      time = 10000,
+    } = options;
 
     if (!input) {
       throw makeErrorResponse("'input' is required", 400);
@@ -500,13 +504,13 @@ export class LLMService {
     const { id: prediction_id } = await createPredictionResponse.json();
     const GET_PREDICTION_URL = REPLICATE_API_URL + "/" + prediction_id;
 
-    // Wait for 30 seconds to run the model
+    // Wait for 10 seconds(by default) to run the model
     const sleep = async (milliseconds: number) => {
       await new Promise((resolve) => {
         return setTimeout(resolve, milliseconds);
       });
     };
-    await sleep(10000);
+    await sleep(time);
 
     const statusResponse = await this.fetcher(GET_PREDICTION_URL, {
       method: "GET",
