@@ -124,6 +124,10 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/call-action",
         },
         {
+          title: "`.callReplicate`",
+          href: "docs/api-reference/call-replicate",
+        },
+        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },

@@ -530,7 +530,10 @@ export class LLMService {
         metrics: getResponse.metrics,
       };
     } else {
-      return "Training Not Completed";
+      return {
+        output:
+          "Training Not Completed! Please increase the value of timeout and try again.",
+      };
     }
   }
 }
