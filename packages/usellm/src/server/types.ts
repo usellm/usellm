@@ -104,9 +104,16 @@ export type LLMAction = (options: object) => Promise<ReadableStream | object>;
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
   elvenLabsApiKey?: string;
+  replicateApiKey?: string;
   actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
   isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
+}
+
+export interface LLMServiceCallReplicateOptions {
+  input: object;
+  version: string;
+  timeout?: number;
 }

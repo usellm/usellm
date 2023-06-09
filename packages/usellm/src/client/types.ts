@@ -73,3 +73,9 @@ export interface LLMVoiceChatOptions {
   speechVoideId?: string;
   speechVoiceSettings?: { stability: number; similarity_boost: number };
 }
+
+export interface LLMCallReplicateOptions {
+  input: object;
+  version: string;
+  timeout: number;
+}

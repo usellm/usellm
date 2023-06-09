@@ -8,7 +8,7 @@ export default function RegisterActionDemo() {
   const [image, setImage] = useState("");
 
   const llm = useLLM({
-    serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleGenerateClick() {
