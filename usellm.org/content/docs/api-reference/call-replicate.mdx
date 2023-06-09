@@ -67,6 +67,13 @@ If there is an error during the API call, an error message will be thrown.
 For larger models or complex inputs, generating predictions can take longer. Make sure to set
 the `timeout` parameter according to your needs to avoid premature termination.
 
+### Requirements
+
+You can use the usellm `"https://usellm.org/api/llm"` service URL for testing. But if you're working
+on your personal project you'll need to use your own Replicate API. Go to the [Replicate API page](https://replicate.com/account/api-tokens),
+create your own API token and paste the API Key in `.env.local` file (check .env.example). You'll also have to
+pass the API key saved in `.env.local` file while defining [`CreateLLMService`](https://usellm.org/docs/api-reference/create-llm-service).
+
 ### Example
 
 Below is an example of how to use `llm.callReplicate()` function.
