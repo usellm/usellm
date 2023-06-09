@@ -1,0 +1,75 @@
+---
+title: llmService.voiceChat
+description: Performs a voice chat conversation with the OpenAI model
+---
+
+`llmService.voiceChat()` is a server-side function in the useLLM framework that performs a voice chat conversation with the OpenAI model. It transcribes the audio, generates chat messages, and retrieves the response audio.
+
+### Syntax:
+
+```typescript
+const result = await llmService.voiceChat(options);
+```
+
+### Parameters:
+
+`llmService.voiceChat()` accepts an object of type LLMServiceVoiceChatOptions with the following properties:
+
+- **transcribeAudioUrl**: A string representing the URL of the audio file to be transcribed.
+- **transcribeLanguage** (optional): A string indicating the language of the audio for transcription.
+- **transcribePrompt** (optional): A string representing the prompt to be used during transcription.
+- **chatMessages** (optional): An array of `OpenAIMessage` objects representing the chat messages. Additional chat messages can be included along with the transcribed text.
+- **chatTemplate** (optional): The name of the template to be used for the chat.
+- **chatInputs** (optional): Additional inputs to be passed along with the chat request.
+- **speakModelId** (optional): A string indicating the model ID to be used for generating speech audio.
+- **speechVoiceId** (optional): A string representing the voice ID to be used for speech synthesis.
+- **speechVoiceSettings** (optional): An object containing the stability and similarity boost settings for speech synthesis.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following properties:
+
+- **audioUrl**: A string representing the URL of the generated speech audio.
+- **messages**: An array of `OpenAIMessage` objects representing the chat messages, including the user input and the assistant's response.
+
+### Error Handling:
+
+`llmService.voiceChat()` may throw an error if:
+
+- The `transcribeAudioUrl` parameter is missing or invalid.
+- An error occurs during the transcription, chat, or speech synthesis processes.
+
+### Example
+
+Below is an example of how to use `llmService.voiceChat()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed", "speak"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+  console.log(body);
+
+  try {
+    const result = await llmService.voiceChat(body);
+    console.log(result);
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+
+```
+
+In this example, the `llmService.voiceChat()` method is used to perform a voice chat conversation with the LLM service. It transcribes the audio, generates chat messages, and retrieves the response audio. The options object is passed to the `llmService.voiceChat()` method call. You can modify the options based on your requirements, including the audio URL, language, prompt, chat messages, templates, and speech synthesis settings. The response, including the generated speech audio URL and chat messages, is returned as the result. If an error occurs, an appropriate error response is returned.

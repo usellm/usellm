@@ -1,0 +1,76 @@
+---
+title: llmService.speak
+description: Converts text to speech using the LLM service
+---
+
+`llmService.speak()` is a server-side function in the useLLM framework that converts text to speech using the LLM (Language Model as a Service) service. It sends a request to the Eleven Labs API with the provided text and voice settings, retrieves the generated audio, and returns the audio URL.
+
+### Syntax:
+
+```typescript
+const { audioUrl } = await llmService.speak(options);
+```
+
+### Parameters:
+
+`llmService.speak()` accepts an object of type LLMServiceSpeakOptions with the following properties:
+
+- **text**: A string representing the text to be converted to speech.
+- **model_id** (optional): A string representing the ID of the LLM model to be used. If not provided, the default model ID is used.
+- **voice_id** (optional): A string representing the ID of the voice to be used for speech synthesis. If not provided, the default voice ID is used.
+- **voice_settings** (optional): An object specifying voice settings such as stability and similarity boost.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following property:
+
+- **audioUrl**: A string representing the URL of the generated audio.
+
+### Error Handling:
+
+`llmService.speak()` may throw an error if:
+
+- An error occurs during the API request to the Eleven Labs service.
+
+### Example
+
+Below is an example of how to use `llmService.speak()` within a server-side function:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "speak"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const options = {
+      text: body.text,
+      model_id: "your_model_id",
+      voice_id: "your_voice_id",
+      voice_settings: {
+        stability: 0.8,
+        similarity_boost: 0.5,
+      },
+    };
+
+    const { audioUrl } = await llmService.speak(options);
+    return new Response(JSON.stringify({ audioUrl }), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+
+```
+
+In this example, the `llmService.speak()` method is used to convert text to speech using the LLM service. The `options` object is constructed with the desired text, model ID, voice ID, and voice settings. The `llmService.speak()` method is then called with the options object, and the resulting `audioUrl` is returned as the response. If an error occurs, an appropriate error response is returned.

@@ -157,8 +157,32 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/llmservice-chat",
         },
         {
+          title: "`.transcribe`",
+          href: "docs/api-reference/llmservice-transcribe",
+        },
+        {
+          title: "`.speak`",
+          href: "docs/api-reference/llmservice-speak",
+        },
+        {
+          title: "`.voiceChat`",
+          href: "docs/api-reference/llmservice-voiceChat",
+        },
+        {
           title: "`.embed`",
           href: "docs/api-reference/llmservice-embed",
+        },
+        {
+          title: "`.generateImage`",
+          href: "docs/api-reference/llmservice-generateImage",
+        },
+        {
+          title: "`.editImage`",
+          href: "docs/api-reference/llmservice-editImage",
+        },
+        {
+          title: "`.imageVariation`",
+          href: "docs/api-reference/llmservice-imageVariation",
         },
       ],
     },

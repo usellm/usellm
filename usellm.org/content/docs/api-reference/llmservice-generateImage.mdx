@@ -1,0 +1,67 @@
+---
+title: llmService.generateImage
+description: Generates an image using the OpenAI model
+---
+
+`llmService.generateImage()` is a server-side function in the useLLM framework that generates an image using the OpenAI model. It prepares the request body, sends the request to the OpenAI API, and returns the generated image.
+
+### Syntax:
+
+```typescript
+const { images } = await llmService.generateImage(options);
+```
+
+### Parameters:
+
+`llmService.generateImage()` accepts an object of type LLMServiceGenerateImageOptions with the following properties:
+
+- **prompt**: A string representing the prompt for generating the image. (Required)
+- **n** (optional): An integer representing the number of images to generate. The default value is 1.
+- **size** (optional): A string representing the size of the generated images. The default value is "256x256". 
+- **response_format** (optional): A string representing the format of the response. The default value is "url".
+- **user** (optional): A string representing the user identifier associated with the image generation.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following properties:
+
+- **images**: An array of strings representing the URLs or base64-encoded image data of the generated images.
+
+### Error Handling:
+
+`llmService.generateImage()` may throw an error if:
+
+- The prompt parameter is missing. It is a required parameter (400 error).
+- An error occurs during the image generation request to the OpenAI API.
+
+### Example
+
+Below is an example of how to use `llmService.generateImage()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed", "generateImage"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const result = await llmService.generateImage(body);
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.generateImage()` method is used to generate an image using the LLM service. It prepares the request body based on the provided options and makes a request to the OpenAI API for image generation. The generated images are then returned as the result. If an error occurs, an appropriate error response is returned. You can modify the options and handle the response according to your specific use case.
