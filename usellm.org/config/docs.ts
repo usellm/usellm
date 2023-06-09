@@ -128,6 +128,10 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/call-replicate",
         },
         {
+          title: "`.callHuggingFace`",
+          href: "docs/api-reference/call-huggingface",
+        },
+        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },
