@@ -8,7 +8,17 @@ description: Performs a voice chat conversation with the OpenAI model
 ### Syntax:
 
 ```typescript
-const result = await llmService.voiceChat(body);
+const result = await llmService.voiceChat({
+  transcribeAudioUrl: string,
+  transcribeLanguage?: string,
+  transcribePrompt?: string,
+  chatMessages?: OpenAIMessage[],
+  chatTemplate?: string,
+  chatInputs?: object,
+  speakModelId?: string,
+  speechVoideId?: string,
+  speechVoiceSettings?: { stability: number; similarity_boost: number }
+});
 ```
 
 ### Parameters:

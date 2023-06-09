@@ -8,7 +8,13 @@ description: Generates image variations using the OpenAI Image Variations API
 ### Syntax:
 
 ```typescript
-const { images } = await llmService.imageVariation(body);
+const { images } = await llmService.imageVariation({
+  image: string,
+  n?: number,
+  size?: string,
+  response_format?: string,
+  user?: string
+});
 ```
 
 ### Parameters:

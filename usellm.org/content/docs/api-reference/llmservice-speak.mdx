@@ -8,7 +8,12 @@ description: Converts text to speech using the LLM service
 ### Syntax:
 
 ```typescript
-const { audioUrl } = await llmService.speak(body);
+const { audioUrl } = await llmService.speak({
+  text: string,
+  model_id?: string,
+  voice_id?: string,
+  voice_settings?: { stability: number; similarity_boost: number }
+});
 ```
 
 ### Parameters:

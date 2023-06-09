@@ -8,7 +8,11 @@ description: Embeds text or a list of texts using the OpenAI model
 ### Syntax:
 
 ```typescript
-const { embeddings } = await llmService.embed(body);
+const { embeddings } = await llmService.embed({
+  input: string | string[],
+  user?: string,
+  model?: string
+});
 ```
 
 ### Parameters:

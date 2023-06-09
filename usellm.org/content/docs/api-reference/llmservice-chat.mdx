@@ -8,7 +8,13 @@ description: Performs a chat conversation with the OpenAI model
 ### Syntax:
 
 ```typescript
-const { result } = await llmService.chat(body);
+const { result } = await llmService.chat({
+  messages: OpenAIMessage[],
+  stream?: boolean,
+  template?: string,
+  inputs?: object,
+  user?: string
+});
 ```
 
 ### Parameters:

@@ -8,7 +8,15 @@ description: Edits an image using the OpenAI model
 ### Syntax:
 
 ```typescript
-const { images } = await llmService.editImage(body);
+const { images } = await llmService.editImage({
+  image: string,
+  mask?: string,
+  prompt?: string,
+  n?: number,
+  size?: string,
+  response_format?: string,
+  user?: string
+});
 ```
 
 ### Parameters:

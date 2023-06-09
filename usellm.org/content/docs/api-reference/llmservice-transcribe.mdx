@@ -8,7 +8,11 @@ description: Transcribes audio using the OpenAI Whisper ASR model
 ### Syntax:
 
 ```typescript
-const result = await llmService.transcribe(body);
+const result = await llmService.transcribe({
+  audioUrl: string,
+  language?: string,
+  prompt?: string
+});
 ```
 
 ### Parameters:

@@ -8,7 +8,13 @@ description: Generates an image using the OpenAI model
 ### Syntax:
 
 ```typescript
-const { images } = await llmService.generateImage(body);
+const { images } = await llmService.generateImage({
+  prompt: string,
+  n?: number,
+  size?: string,
+  response_format?: string,
+  user?: string
+});
 ```
 
 ### Parameters:
