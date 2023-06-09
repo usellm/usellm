@@ -152,6 +152,14 @@ export const docsConfig: DocsConfig = {
           title: "`.registerAction`",
           href: "docs/api-reference/register-action",
         },
+        {
+          title: "`.chat`",
+          href: "docs/api-reference/llmservice-chat",
+        },
+        {
+          title: "`.embed`",
+          href: "docs/api-reference/llmservice-embed",
+        },
       ],
     },
 

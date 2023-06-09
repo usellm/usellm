@@ -1,0 +1,65 @@
+---
+title: llmService.chat
+description: Performs a chat conversation with the OpenAI model
+---
+
+`llmService.chat()` is a server-side function in the useLLM framework that performs a chat conversation with the OpenAI model. It prepares the chat body, sends the request to the OpenAI API, and returns the response.
+
+### Syntax:
+
+```typescript
+const { result } = await llmService.chat(body);
+```
+
+### Parameters:
+
+`llmService.chat()` accepts an object of type LLMServiceChatOptions with the following properties:
+
+- **messages**: An array of `OpenAIMessage` objects representing the chat messages. Atleast one message should be provided.
+- **stream** (optional): A boolean value indicating whether the response should be streamed or not.
+- **template** (optional): The name of the template to be used for the chat.
+- **inputs** (optional): Additional inputs to be passed along with the chat request.
+- **user** (optional): The user identifier associated with the chat.
+
+### Returns:
+
+This method returns a Promise that resolves to an `LLMServiceHandleResponse` object. The response object includes the result of the openAI response to the API request in the `json` format.
+
+### Error Handling:
+
+`llmService.chat()` may throw an error if:
+
+- The message list is empty. At least one message must be provided (400 error).
+- An error occurs during the chat request to the OpenAI API.
+
+### Example
+
+Below is an example of how to use `llmService.chat()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const result:any = await llmService.chat(body);
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.chat()` method is used to send chat messages to the LLM service. It prepares the chat body based on the provided options and makes a request to the OpenAI API for generating a chat completion. The response is then returned as the result. If an error occurs, an appropriate error response is returned.
