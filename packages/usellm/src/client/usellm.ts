@@ -20,6 +20,7 @@ import {
   UseLLMOptions,
 } from "./types";
 import { LLMChatResult } from "../shared/types";
+import { LLMCloneVoiceOptions } from "./types";
 
 export default function useLLM({
   serviceUrl: argServiceUrl,
@@ -95,7 +96,7 @@ export default function useLLM({
       const { mediaRecorder, audioChunks, audioStream } = recordingRef.current;
       mediaRecorder.addEventListener("stop", () => {
         const audioBlob = new Blob(audioChunks, {
-          type: "audio/ogg; codecs=opus",
+          type: "audio/wav; codecs=opus",
         });
 
         const reader = new FileReader();
@@ -273,6 +274,25 @@ export default function useLLM({
     return response.json();
   }
 
+  async function cloneVoice({audioUrl, voice_name, text}: LLMCloneVoiceOptions){
+    const response = await fetcher(`${serviceUrl}`, {
+      method: "POST",
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        audioUrl,
+        voice_name,
+        text,
+        $action: "cloneVoice",
+      })
+    })
+    if(!response.ok){
+      throw new Error(await response.text());
+    }
+    return response.json();
+  }
+
   return {
     callAction,
     chat,
@@ -289,5 +309,6 @@ export default function useLLM({
     imageToDataURL,
     editImage,
     imageVariation,
+    cloneVoice
   };
 }

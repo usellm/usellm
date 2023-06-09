@@ -6,6 +6,8 @@ import { makeErrorResponse } from "@/usellm/shared/utils";
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
+  playHtApiKey: process.env.CLONE_VOICE_API,
+  playHtUserId: process.env.USER_ID,
   actions: [
     "chat",
     "voiceChat",
@@ -16,6 +18,7 @@ const llmService = createLLMService({
     "editImage",
     "imageVariation",
     "replicateText",
+    "cloneVoice",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API

@@ -5,6 +5,7 @@ import PromptTemplate from "@/app/demo/prompt-template/page";
 import SpeechToText from "@/app/demo/speech-to-text/page";
 import TextToSpeech from "@/app/demo/text-to-speech/page";
 import VoiceChat from "@/app/demo/voice-chat/page";
+import CloneVoice from "@/app/demo/clone-voice/page"
 
 export const HOME_PAGE_DEMOS = [
   {
@@ -55,5 +56,12 @@ export const HOME_PAGE_DEMOS = [
     component: ImageGeneration,
     sourceUrl:
       "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/image-generation/page.tsx",
+  },
+  {
+    name: "Voice Cloning",
+    id: "voice-cloning",
+    component: CloneVoice,
+    sourceUrl:
+      "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/clone-voice/page.tsx"
   },
 ];

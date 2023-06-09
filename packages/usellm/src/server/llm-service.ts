@@ -15,6 +15,8 @@ import {
   getTextToSpeechApiUrl,
   makeErrorResponse,
   scoreEmbeddings,
+  GENERATE_CLONE_VOICE_URL,
+  MESSAGE_TO_VOICE_URL,
 } from "../shared/utils";
 import {
   CreateLLMServiceOptions,
@@ -30,6 +32,7 @@ import {
   LLMServiceTemplate,
   LLMServiceTranscribeOptions,
   LLMServiceVoiceChatOptions,
+  LLMCloneVoiceOptions,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -43,6 +46,8 @@ export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   elvenLabsApiKey: string;
+  playHtApiKey: string;
+  playHtUserId: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
@@ -55,6 +60,8 @@ export class LLMService {
   constructor({
     openaiApiKey = "",
     elvenLabsApiKey = "",
+    playHtApiKey = "",
+    playHtUserId = "",
     fetcher = fetch,
     templates = {},
     debug = false,
@@ -68,6 +75,8 @@ export class LLMService {
     this.debug = debug;
     this.isAllowed = isAllowed;
     this.actions = actions;
+    this.playHtApiKey = playHtApiKey;
+    this.playHtUserId = playHtUserId;
   }
 
   registerTemplate(template: LLMServiceTemplate) {
@@ -106,6 +115,10 @@ export class LLMService {
     }
     if (action === "voiceChat") {
       return this.voiceChat(body as LLMServiceVoiceChatOptions);
+    }
+    if (action === "cloneVoice") {
+      console.log("cloneVoice")
+      return this.cloneVoice(body as LLMCloneVoiceOptions)
     }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
@@ -465,6 +478,67 @@ export class LLMService {
         { role: "assistant", content: choices[0].message.content },
       ],
     };
+  }
+
+  async cloneVoice(options: LLMCloneVoiceOptions) {
+    const { audioUrl, voice_name, quality = "medium", output_format = "mp3", speed = 1, sample_rate = 24000, text } = options;
+
+    if (!audioUrl) {
+      throw makeErrorResponse("'audioUrl' is required", 400);
+    }
+
+    if (!voice_name) {
+      throw makeErrorResponse("'voice_name is required'", 400);
+    }
+    console.log(audioUrl)
+    const audioBlob = dataURLToBlob(audioUrl);
+    const formData = new FormData();
+    formData.append("sample_file", audioBlob);
+    formData.append("voice_name", voice_name);
+
+    const response1 = await this.fetcher(GENERATE_CLONE_VOICE_URL, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        AUTHORIZATION: `Bearer ${this.playHtApiKey}`,
+        'X-USER-ID': this.playHtUserId,
+      },
+      body: formData,
+    });
+
+    // console.log(response1)
+
+    const responseText1 = await response1.text();
+
+    const parts: string[] = responseText1.split('"');
+    const voiceID: string | undefined = parts[3];
+
+    const response2 = await this.fetcher(MESSAGE_TO_VOICE_URL, {
+      method: 'POST',
+      headers: {
+        "accept": 'application/json',
+        'content-type': 'application/json',
+        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
+        'X-USER-ID': this.playHtUserId,
+      },
+      body: JSON.stringify({
+        quality,
+        output_format,
+        speed,
+        sample_rate,
+        text,
+        voice: voiceID,
+      })
+    })
+
+    const urlPattern = /"url":"(.*?)"/;
+    const responseText2 = await response2.text();
+    const matches = responseText2.match(urlPattern);
+
+    if (matches) {
+      const url = matches[1];
+      return { url };
+    }
   }
 }
 
