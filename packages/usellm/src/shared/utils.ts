@@ -24,6 +24,9 @@ export const IMAGE_GENERATION_API_URL =
 
 export const REPLICATE_API_URL = "https://api.replicate.com/v1/predictions";
 
+export const HUGGING_FACE_API_URL =
+  "https://api-inference.huggingface.co/models/";
+
 export const EDIT_IMAGE_API_URL = "https://api.openai.com/v1/images/edits";
 
 export const IMAGE_VARIATIONS_API_URL =

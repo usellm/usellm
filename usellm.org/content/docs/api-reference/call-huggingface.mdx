@@ -1,0 +1,102 @@
+---
+title: llm.callHuggingFace
+description: Interacts with Hugging Face models using API calls
+---
+
+The `llm.callHuggingFace` method allows users to interact with Hugging Face models. The method makes a POST request to the Hugging Face API and returns the model's output.
+
+### Syntax
+
+```jsx
+const response = await llm.callHuggingFace({
+  data: { inputs: input },
+  model: model,
+});
+```
+
+### Parameters
+
+- `options`: An object containing the following properties:
+  - `data`: This can be either an object with `inputs` as the required key or a string representing of a binary file path. The binary file can then be converted to binary format and passed to data.
+  - `model`: The name of the Hugging Face model that you want to use.
+
+Both `data` and `model` are required properties.
+
+### Return Value
+
+The `callHuggingFace` method returns a Promise that resolves to the output of the Hugging Face model. It can have multiple properties depending upon the model you're using.
+Check the output format at the respective model page.
+
+### Error Handling
+
+If the response from the Hugging Face API is not ok (i.e., the status is not a success status), the method will throw an error with the response text as the message.
+
+### Requirements
+
+You can use the usellm `"https://usellm.org/api/llm"` service URL for testing but if you're working on your personal project you'll need to use your own Hugging Face API token.
+Go to the Hugging Face [Access Tokens page](https://huggingface.co/settings/tokens), create your own API token, copy the API key and paste it in `.env.local` file (check .env.example).
+You'll also have to pass the API key saved in `.env.local` file while defining [`CreateLLMService`](https://usellm.org/docs/api-reference/create-llm-service).
+
+### Example
+
+Here is an example of how to use the `callHuggingFace` method:
+
+```jsx
+"use client";
+import { useState } from "react";
+import useLLM from "usellm";
+
+export default function HuggingFaceGPT2() {
+  const llm = useLLM({
+    serviceUrl: "https://usellm.org/api/llm",
+  });
+
+  const [input, setInput] = useState("");
+  const [result, setResult] = useState("");
+  const [model, setModel] = useState("gpt2");
+
+  async function handleClick() {
+    setResult("");
+    const response = await llm.callHuggingFace({
+      data: { inputs: input },
+      model: model,
+    });
+    console.log(response[0]);
+    setResult(response[0].generated_text);
+  }
+
+  return (
+    <div className="p-4 overflow-y-scroll">
+      <h2 className="text-2xl font-semibold mb-4">
+        Hugging Face GPT2 Model Demo
+      </h2>
+      <input
+        className="p-2 border rounded mr-2 w-full mb-4 block dark:bg-gray-900 dark:text-white"
+        type="text"
+        placeholder="Enter the Model Name"
+        value={model}
+        onChange={(e) => setModel(e.target.value)}
+      />
+      <input
+        className="p-2 border rounded mr-2 w-full mb-4 block dark:bg-gray-900 dark:text-white"
+        type="text"
+        placeholder="Enter Text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+
+      <button
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium"
+        onClick={handleClick}
+      >
+        Generate
+      </button>
+      <div className="whitespace-pre-wrap my-4">{result}</div>
+    </div>
+  );
+}
+```
+
+In the example, a React component is created to interface with a Hugging Face GPT-2 model. An input field captures user's text input and another input
+field allows for specifying the model. On pressing the "Generate" button, the `handleClick` function sends the user input and model name to the Hugging
+Face API via the `callHuggingFace` method. The resulting output, which is the generated text, is displayed on the screen.

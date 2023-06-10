@@ -7,6 +7,7 @@ const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
   replicateApiKey: process.env.REPLICATE_API_TOKEN,
+  huggingFaceApiKey: process.env.HUGGING_FACE_API_TOKEN,
   actions: [
     "chat",
     "voiceChat",
@@ -18,6 +19,7 @@ const llmService = createLLMService({
     "imageVariation",
     "generateHighResImage",
     "callReplicate",
+    "callHuggingFace",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
