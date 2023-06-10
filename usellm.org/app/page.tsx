@@ -25,8 +25,7 @@ export default function IndexPage() {
           >
             🚀 v0.11.0 <Separator className="mx-2 h-4" orientation="vertical" />
             <span className="truncate">
-              Hugging Face & Replicate API Integration and Server-side Methods
-              Documentation
+              Connect to Replicate & HuggingFace models
             </span>
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
