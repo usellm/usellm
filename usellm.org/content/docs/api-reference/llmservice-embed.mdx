@@ -1,0 +1,70 @@
+---
+title: llmService.embed
+description: Embeds text or a list of texts using the OpenAI model
+---
+
+`llmService.embed()` is a server-side function in the useLLM framework that embeds text or a list of texts using the OpenAI model. It prepares the input, sends the request to the OpenAI API, and returns the embeddings.
+
+### Syntax:
+
+```typescript
+const { embeddings } = await llmService.embed({
+  input: string | string[],
+  user?: string,
+  model?: string
+});
+```
+
+### Parameters:
+
+`llmService.embed()` accepts an object of type LLMServiceEmbedOptions with the following properties:
+
+- **input**: A string or an array of strings representing the text(s) to be embedded.
+- **user** (optional): The user identifier associated with the chat.
+- **model** (optional): The name of the model to be used for embedding. If not specified, the default model "text-embedding-ada-002" is used.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the embeddings property. The embeddings property contains an array of embeddings corresponding to the input text(s).
+
+### Error Handling:
+
+`llmService.embed()` may throw an error if:
+
+- The `input` parameter is missing (400 error).
+- The `input` is neither a string nor an array of strings (400 error).
+- An empty string is present in the `input` array (400 error).
+- An error occurs during the embed request to the OpenAI API.
+
+### Example
+
+Below is an example of how to use `llmService.embed()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const result = await llmService.embed(body);
+    console.log(result)
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the llmService.embed() method is used to embed text using the LLM service. It prepares the input based on the provided options and makes a request to the OpenAI API for text embedding. The response includes the embeddings, which are then returned as the result. If an error occurs, an appropriate error response is returned.

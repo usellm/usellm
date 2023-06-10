@@ -1,0 +1,68 @@
+---
+title: llmService.transcribe
+description: Transcribes audio using the OpenAI Whisper ASR model
+---
+
+`llmService.transcribe()` is a server-side function in the useLLM framework that transcribes audio using the OpenAI Whisper ASR model. It prepares the audio data, sends the request to the OpenAI API, and returns the transcription response.
+
+### Syntax:
+
+```typescript
+const result = await llmService.transcribe({
+  audioUrl: string,
+  language?: string,
+  prompt?: string
+});
+```
+
+### Parameters:
+
+`llmService.transcribe()` accepts an object of type LLMServiceTranscribeOptions with the following properties:
+
+- **audioUrl**: A string representing the URL of the audio file to transcribe.
+- **language** (optional): A string representing the language code of the audio file (e.g., "en-US", "es-ES").
+- **prompt** (optional): A string representing a prompt to provide additional context or instructions for the transcription.
+
+### Returns:
+
+This method returns a Promise that resolves to the transcription response in JSON format.
+
+### Error Handling:
+
+`llmService.transcribe()` may throw an error if:
+
+- The `audioUrl` parameter is not provided (400 error).
+- An error occurs during the transcription request to the OpenAI API.
+
+### Example
+
+Below is an example of how to use `llmService.transcribe()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const result = await llmService.embed(body);
+    console.log(result)
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.transcribe()` method is used to transcribe audio using the OpenAI Whisper ASR model. It prepares the audio data based on the provided options, makes a request to the OpenAI API for audio transcription, and returns the transcription response. The response is then returned as the result. If an error occurs, an appropriate error response is returned.
