@@ -1,13 +1,40 @@
-import createLLMService from "./createLLMService";
-import useLLM from "./usellm";
-import { LLMProvider } from "./llm-provider";
-export type { OpenAIMessage, ChatStreamCallback, LLMChatResult } from "./utils";
-export type { LLMChatOptions, UseLLMOptions } from "./usellm";
+import { createLLMService } from "./server/llm-service";
+import useLLM from "./client/usellm";
+import { LLMProvider } from "./client/llm-provider";
 export type {
-  CreateLLMServiceOptions,
-  LLMServiceChatOptions,
+  OpenAIMessage,
+  ChatStreamCallback,
+  LLMChatResult,
+  ScoreEmbeddingsOptions,
+} from "./shared/types";
+export type {
+  LLMChatOptions,
+  LLMEmbedOptions,
+  LLMRecordOptions,
+  LLMTranscribeOptions,
+  GenerateImageOptions,
+  LLMCallActionOptions,
+  UseLLMOptions,
+  SpeakOptions,
+  EditImageOptions,
+  ImageVariationOptions,
+  LLMVoiceChatOptions,
+} from "./client/types";
+export type {
   LLMServiceTemplate,
-} from "./createLLMService";
+  LLMServiceChatOptions,
+  LLMServiceTranscribeOptions,
+  LLMServiceEmbedOptions,
+  LLMServiceHandleOptions,
+  LLMServiceSpeakOptions,
+  LLMServiceGenerateImageOptions,
+  LLMServiceEditImageOptions,
+  LLMServiceImageVariationOptions,
+  LLMServiceVoiceChatOptions,
+  LLMServiceHandleResponse,
+  LLMAction,
+  CreateLLMServiceOptions,
+} from "./server/types";
 
 export default useLLM;
 

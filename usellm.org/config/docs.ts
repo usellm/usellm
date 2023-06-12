@@ -96,6 +96,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/speak",
         },
         {
+          title: "`.voiceChat`",
+          href: "/docs/api-reference/voiceChat",
+        },
+        {
           title: "`.embed`",
           href: "/docs/api-reference/embed",
         },
@@ -116,6 +120,18 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/cosineSimilarity",
         },
         {
+          title: "`.callAction`",
+          href: "docs/api-reference/call-action",
+        },
+        {
+          title: "`.callReplicate`",
+          href: "docs/api-reference/call-replicate",
+        },
+        {
+          title: "`.callHuggingFace`",
+          href: "docs/api-reference/call-huggingface",
+        },
+        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },
@@ -129,12 +145,48 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/create-llm-service",
         },
         {
+          title: "`.handle`",
+          href: "/docs/api-reference/handle",
+        },
+        {
           title: "`.registerTemplate`",
           href: "/docs/api-reference/register-template",
         },
         {
-          title: "`.handle`",
-          href: "/docs/api-reference/llmservice-handle",
+          title: "`.registerAction`",
+          href: "docs/api-reference/register-action",
+        },
+        {
+          title: "`.chat`",
+          href: "docs/api-reference/llmservice-chat",
+        },
+        {
+          title: "`.transcribe`",
+          href: "docs/api-reference/llmservice-transcribe",
+        },
+        {
+          title: "`.speak`",
+          href: "docs/api-reference/llmservice-speak",
+        },
+        {
+          title: "`.voiceChat`",
+          href: "docs/api-reference/llmservice-voiceChat",
+        },
+        {
+          title: "`.embed`",
+          href: "docs/api-reference/llmservice-embed",
+        },
+        {
+          title: "`.generateImage`",
+          href: "docs/api-reference/llmservice-generateImage",
+        },
+        {
+          title: "`.editImage`",
+          href: "docs/api-reference/llmservice-editImage",
+        },
+        {
+          title: "`.imageVariation`",
+          href: "docs/api-reference/llmservice-imageVariation",
         },
       ],
     },
@@ -157,10 +209,10 @@ export const docsConfig: DocsConfig = {
         },
         {
           title: "Chat",
-          href: "/docs/useLLM-py/py-chat"
-        }
-
-      ]
+          href: "/docs/useLLM-py/py-chat",
+        },
+      ],
+      
     },
 
     {
@@ -168,31 +220,31 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: "AI Chatbot",
-          href: "/?demo=ai-chatbot#demo",
+          href: "/demo/ai-chatbot",
         },
         {
           title: "Document Q&A",
-          href: "/?demo=document-qna#demo",
+          href: "/demo/document-qna",
         },
         {
           title: "Prompt Engineering",
-          href: "/?demo=prompt-template#demo",
+          href: "/demo/prompt-template",
         },
         {
           title: "Speech to Text",
-          href: "/?demo=speech-to-text#demo",
+          href: "/demo/speech-to-text",
         },
         {
           title: "Text to Speech",
-          href: "/?demo=text-to-speech#demo",
+          href: "/demo/text-to-speech",
         },
         {
           title: "Voice Chat",
-          href: "/?demo=voice-chat#demo",
+          href: "/demo/voice-chat",
         },
         {
           title: "Image Generation",
-          href: "/?demo=image-generation#demo",
+          href: "/demo/image-generation",
         },
       ],
     },

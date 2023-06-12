@@ -3,28 +3,39 @@ import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
   EDIT_IMAGE_API_URL,
+  REPLICATE_API_URL,
+  HUGGING_FACE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
   IMAGE_GENERATION_API_URL,
   IMAGE_VARIATIONS_API_URL,
-  OpenAIMessage,
+  cosineSimilarity,
   dataURLToBlob,
   dataUrlToExtension,
   fillPrompt,
   getTextToSpeechApiUrl,
   makeErrorResponse,
-} from "./utils";
-
-export interface CreateLLMServiceOptions {
-  openaiApiKey?: string;
-  elvenLabsApiKey?: string;
-  actions?: string[];
-  fetcher?: typeof fetch;
-  templates?: { [id: string]: LLMServiceTemplate };
-  debug?: boolean;
-  isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
-}
+  scoreEmbeddings,
+} from "../shared/utils";
+import {
+  CreateLLMServiceOptions,
+  LLMAction,
+  LLMServiceChatOptions,
+  LLMServiceEditImageOptions,
+  LLMServiceEmbedOptions,
+  LLMServiceGenerateImageOptions,
+  LLMServiceHandleOptions,
+  LLMServiceHandleResponse,
+  LLMServiceImageVariationOptions,
+  LLMServiceSpeakOptions,
+  LLMServiceTemplate,
+  LLMServiceTranscribeOptions,
+  LLMServiceVoiceChatOptions,
+  LLMServiceCallReplicateOptions,
+  LLMServiceCallHuggingFace,
+} from "./types";
+import { OpenAIMessage } from "../shared/types";
 
 const defaultTemplate = {
   model: "gpt-3.5-turbo",
@@ -32,101 +43,26 @@ const defaultTemplate = {
   temperature: 0.8,
 };
 
-export interface LLMServiceTemplate {
-  id: string;
-  systemPrompt?: string;
-  userPrompt?: string;
-  model?: string;
-  temperature?: number;
-  top_p?: number;
-  n?: number;
-  max_tokens?: number;
-  presence_penalty?: number;
-  frequency_penalty?: number;
-  logit_bias?: number;
-}
-
-export interface LLMServiceChatOptions {
-  $action?: string;
-  messages?: OpenAIMessage[];
-  stream?: boolean;
-  template?: string;
-  inputs?: object;
-  user?: string;
-}
-
-export interface LLMServiceTranscribeOptions {
-  $action?: string;
-  audioUrl?: string;
-  language?: string;
-  prompt?: string;
-}
-
-export interface LLMServiceEmbedOptions {
-  $action?: string;
-  input?: string | string[];
-  user?: string;
-  model?: string;
-}
-
-export interface LLMServiceHandleOptions {
-  body: object;
-  request?: Request;
-}
-
-export interface LLMServiceSpeakOptions {
-  $action?: string;
-  text?: string;
-  model_id?: string;
-  voice_id?: string;
-  voice_settings?: { stability: number; similarity_boost: number };
-}
-
-export interface LLMServiceGenerateImageOptions {
-  $action?: string;
-  prompt: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceEditImageOptions {
-  $action?: string;
-  image: string;
-  mask?: string;
-  prompt?: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceImageVariationOptions {
-  $action?: string;
-  image: string;
-  n?: number;
-  size?: string;
-  response_format?: string;
-  user?: string;
-}
-
-export interface LLMServiceHandleResponse {
-  result: ReadableStream | string;
-}
-
 export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   elvenLabsApiKey: string;
+  replicateApiKey: string;
+  huggingFaceApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
   isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
+  customActions: { [id: string]: LLMAction } = {};
+
+  cosineSimilarity = cosineSimilarity;
+  scoreEmbeddings = scoreEmbeddings;
 
   constructor({
     openaiApiKey = "",
     elvenLabsApiKey = "",
+    replicateApiKey = "",
+    huggingFaceApiKey = "",
     fetcher = fetch,
     templates = {},
     debug = false,
@@ -135,6 +71,8 @@ export class LLMService {
   }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.elvenLabsApiKey = elvenLabsApiKey;
+    this.replicateApiKey = replicateApiKey;
+    this.huggingFaceApiKey = huggingFaceApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
@@ -144,6 +82,52 @@ export class LLMService {
 
   registerTemplate(template: LLMServiceTemplate) {
     this.templates[template.id] = template;
+  }
+
+  registerAction(id: string, action: LLMAction) {
+    this.customActions[id] = action;
+  }
+
+  async callAction(action: string, body = {}) {
+    if (!this.actions.includes(action) && !this.customActions[action]) {
+      throw makeErrorResponse(`Action "${action}" is not allowed`, 400);
+    }
+
+    if (action === "chat") {
+      return this.chat(body as LLMServiceChatOptions);
+    }
+    if (action === "transcribe") {
+      return this.transcribe(body as LLMServiceTranscribeOptions);
+    }
+    if (action === "embed") {
+      return this.embed(body as LLMServiceEmbedOptions);
+    }
+    if (action === "speak") {
+      return this.speak(body as LLMServiceSpeakOptions);
+    }
+    if (action === "generateImage") {
+      return this.generateImage(body as LLMServiceGenerateImageOptions);
+    }
+    if (action === "editImage") {
+      return this.editImage(body as LLMServiceEditImageOptions);
+    }
+    if (action === "imageVariation") {
+      return this.imageVariation(body as LLMServiceImageVariationOptions);
+    }
+    if (action === "voiceChat") {
+      return this.voiceChat(body as LLMServiceVoiceChatOptions);
+    }
+    if (action === "callReplicate") {
+      return this.callReplicate(body as LLMServiceCallReplicateOptions);
+    }
+    if (action === "callHuggingFace") {
+      return this.callHuggingFace(body as LLMServiceCallHuggingFace);
+    }
+    const actionFunc = this.customActions[action];
+    if (!actionFunc) {
+      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
+    }
+    return actionFunc(body);
   }
 
   prepareChatBody(body: LLMServiceChatOptions) {
@@ -220,33 +204,11 @@ export class LLMService {
       );
     }
     const { $action, ...rest } = body;
-
-    if (this.actions.length > 0 && !this.actions.includes($action as string)) {
-      throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+    const result = await this.callAction($action as string, rest);
+    if ("stream" in body && body.stream) {
+      return result;
     }
-
-    if ($action === "chat") {
-      return this.chat(rest as LLMServiceChatOptions);
-    }
-    if ($action === "transcribe") {
-      return this.transcribe(rest as LLMServiceTranscribeOptions);
-    }
-    if ($action === "embed") {
-      return this.embed(rest as LLMServiceEmbedOptions);
-    }
-    if ($action === "speak") {
-      return this.speak(rest as LLMServiceSpeakOptions);
-    }
-    if ($action === "generateImage") {
-      return this.generateImage(rest as LLMServiceGenerateImageOptions);
-    }
-    if ($action === "editImage") {
-      return this.editImage(rest as LLMServiceEditImageOptions);
-    }
-    if ($action === "imageVariation") {
-      return this.imageVariation(rest as LLMServiceImageVariationOptions);
-    }
-    throw makeErrorResponse(`Action "${$action}" is not supported`, 400);
+    return { result: JSON.stringify(result) };
   }
 
   async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
@@ -275,8 +237,7 @@ export class LLMService {
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      const result = await response.text();
-      return { result };
+      return response.json();
     }
   }
 
@@ -327,7 +288,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const embeddings = data.map((d: any) => d.embedding);
-    return { result: JSON.stringify({ embeddings }) };
+    return { embeddings };
   }
 
   async transcribe(options: LLMServiceTranscribeOptions) {
@@ -360,8 +321,7 @@ export class LLMService {
     if (!response.ok) {
       throw new Error(await response.text());
     }
-    const result = await response.text();
-    return { result };
+    return response.json();
   }
 
   async speak(options: LLMServiceSpeakOptions) {
@@ -395,7 +355,7 @@ export class LLMService {
       ";base64," +
       responseBuffer.toString("base64");
 
-    return { result: JSON.stringify({ audioUrl }) };
+    return { audioUrl };
   }
 
   async generateImage(options: LLMServiceGenerateImageOptions) {
@@ -424,8 +384,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
+    return { images };
   }
 
   async editImage(options: LLMServiceEditImageOptions) {
@@ -460,8 +419,7 @@ export class LLMService {
     }
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
+    return { images };
   }
 
   async imageVariation(options: LLMServiceImageVariationOptions) {
@@ -489,13 +447,124 @@ export class LLMService {
     }
     const { data } = await response.json();
     const images = data.map((d: any) => d.url || d.b64_json);
-    const result = JSON.stringify({ images });
-    return { result };
+    return { images };
+  }
+
+  async voiceChat(options: LLMServiceVoiceChatOptions) {
+    const { transcribeAudioUrl, transcribeLanguage, transcribePrompt } =
+      options;
+    const { text } = await this.transcribe({
+      audioUrl: transcribeAudioUrl,
+      language: transcribeLanguage,
+      prompt: transcribePrompt,
+    });
+    const { chatMessages, chatTemplate, chatInputs } = options;
+    const messages = [...(chatMessages || []), { role: "user", content: text }];
+    const chatResult = await this.chat({
+      messages,
+      template: chatTemplate,
+      inputs: chatInputs,
+    });
+    const { choices } = chatResult as any;
+    const { speakModelId, speechVoideId, speechVoiceSettings } = options;
+    const { audioUrl } = await this.speak({
+      text: choices[0].message.content,
+      model_id: speakModelId,
+      voice_id: speechVoideId,
+      voice_settings: speechVoiceSettings,
+    });
+
+    return {
+      audioUrl,
+      messages: [
+        { role: "user", content: text },
+        { role: "assistant", content: choices[0].message.content },
+      ],
+    };
+  }
+
+  async callReplicate(options: LLMServiceCallReplicateOptions) {
+    const { version, input, timeout = 10000 } = options;
+
+    if (!input) {
+      throw makeErrorResponse("'input' is required", 400);
+    }
+    // Create Prediction Model
+    const createPredictionResponse = await this.fetcher(REPLICATE_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${this.replicateApiKey}`,
+      },
+      body: JSON.stringify({
+        version: version,
+        input: input,
+      }),
+    });
+    if (!createPredictionResponse.ok) {
+      throw makeErrorResponse(await createPredictionResponse.text());
+    }
+    const { id: prediction_id } = await createPredictionResponse.json();
+    const GET_PREDICTION_URL = REPLICATE_API_URL + "/" + prediction_id;
+
+    // Wait for 10 seconds(by default) to run the model
+    const sleep = async (milliseconds: number) => {
+      await new Promise((resolve) => {
+        return setTimeout(resolve, milliseconds);
+      });
+    };
+    await sleep(timeout);
+
+    const statusResponse = await this.fetcher(GET_PREDICTION_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${this.replicateApiKey}`,
+      },
+    });
+
+    if (!statusResponse.ok) {
+      throw new Error(await statusResponse.text());
+    }
+
+    const getResponse = await statusResponse.json();
+
+    if (getResponse && getResponse.status === "succeeded") {
+      return {
+        id: getResponse.id,
+        urls: getResponse.urls,
+        status: getResponse.status,
+        output: getResponse.output,
+        metrics: getResponse.metrics,
+      };
+    } else {
+      return {
+        output:
+          "Training Not Completed! Please increase the value of timeout and try again.",
+      };
+    }
+  }
+
+  async callHuggingFace(options: LLMServiceCallHuggingFace) {
+    const { data, model } = options;
+    /* data can be a object with input as the required key or 
+    a string represneting a binary file path, the binary file can then 
+    be converted to binary format and passed to data
+    */
+    const link = HUGGING_FACE_API_URL + model;
+    const response = await this.fetcher(link, {
+      method: "POST",
+      headers: { Authourization: `Bearer ${this.huggingFaceApiKey}` },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw makeErrorResponse(await response.text());
+    }
+    const result = await response.json();
+    return result;
   }
 }
 
-export default function createLLMService(
-  options: CreateLLMServiceOptions = {}
-) {
+export function createLLMService(options: CreateLLMServiceOptions = {}) {
   return new LLMService(options);
 }

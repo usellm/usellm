@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Icons } from "@/components/icons";
+import Image from "next/image";
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false);
@@ -33,7 +34,13 @@ export function MobileNav() {
           className="flex items-center"
           onOpenChange={setOpen}
         >
-          <Icons.logo className="mr-2 h-4 w-4" />
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            className="h-6 w-6 mr-2"
+            width={30}
+            height={30}
+          />
           <span className="font-bold">{siteConfig.name}</span>
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">

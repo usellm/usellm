@@ -50,6 +50,13 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} - React Hooks for Large Language Models`,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+    creator: "@usellmteam",
+  },
 };
 
 interface RootLayoutProps {
@@ -59,7 +66,6 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <head />
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
@@ -70,13 +76,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
-              <div className="flex-1 container">{children}</div>
+              <div className="flex-1">{children}</div>
               <Toaster />
             </div>
             <TailwindIndicator />
           </ThemeProvider>
         </LLMProvider>
         <Analytics />
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
       </body>
     </html>
   );

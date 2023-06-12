@@ -1,0 +1,72 @@
+---
+title: llmService.imageVariation
+description: Generates image variations using the OpenAI Image Variations API
+---
+
+`llmService.imageVariation()` is a server-side function in the useLLM framework that generates image variations using the OpenAI Image Variations API. It prepares the image and options, sends the request to the API, and returns the generated image variations.
+
+### Syntax:
+
+```typescript
+const { images } = await llmService.imageVariation({
+  image: string,
+  n?: number,
+  size?: string,
+  response_format?: string,
+  user?: string
+});
+```
+
+### Parameters:
+
+`llmService.imageVariation()` accepts an object of type `LLMServiceImageVariationOptions` with the following properties:
+
+- **image**: A string representing the base64-encoded image data or the URL of the image to generate variations from.
+- **n** (optional): A number specifying the number of variations to generate. If not provided, a default value of 4 will be used.
+- **size** (optional): A string specifying the size of the generated variations. If not provided, the default size will be used.
+- **response_format** (optional): A string indicating the format of the response (default: "json").
+- **user** (optional): A string representing the user identifier associated with the image variations.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following properties:
+
+- **images**: An array of strings representing the URLs or base64-encoded image data of the generated image variations.
+
+### Error Handling:
+
+`llmService.imageVariation()` may throw an error if:
+
+- The request to the OpenAI Image Variations API fails.
+
+### Example
+
+Below is an example of how to use `llmService.imageVariation()` within a server-side API route:
+
+```typescript
+/* pages/api/imageVariation.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed", "imageVariation"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+  
+  try {
+    const result = await llmService.imageVariation(body);
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.imageVariation()` method is used to generate image variations using the OpenAI Image Variations API. It prepares the image and options based on the provided `LLMServiceImageVariationOptions`, and makes a request to the OpenAI API. The generated image variations are returned in the `images` property of the result object. If an error occurs, an appropriate error response is returned. You can modify the `imageVariation` API route code as per your requirements, such as handling additional parameters or customizing the response format.

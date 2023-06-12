@@ -3,7 +3,7 @@ import {
   ParsedEvent,
   ReconnectInterval,
 } from "./eventsource-parser";
-import { CHAT_COMPLETIONS_API_URL } from "./utils";
+import { CHAT_COMPLETIONS_API_URL } from "../shared/utils";
 
 export interface OpenAIStreamOptions {
   body: object;

@@ -11,7 +11,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
-import { ExamplesNav } from "@/components/examples-nav";
 import { HomePageDemo } from "@/components/home-page-demo";
 
 export default function IndexPage() {
@@ -20,12 +19,14 @@ export default function IndexPage() {
       <div className="container relative pb-10">
         <PageHeader>
           <Link
-            href="https://usellm.substack.com/p/release-notes-usellm-v051"
+            href="https://usellm.substack.com/p/release-notes-usellm-v0110"
             target="_blank"
-            className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium"
+            className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium truncate max-w-full"
           >
-            🚀 v0.8.0 <Separator className="mx-2 h-4" orientation="vertical" />
-            LLMProvider, global configurations, and more..
+            🚀 v0.11.0 <Separator className="mx-2 h-4" orientation="vertical" />
+            <span className="truncate">
+              Connect to Replicate & HuggingFace models
+            </span>
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
           <PageHeaderHeading>
@@ -50,8 +51,7 @@ export default function IndexPage() {
             </Link>
           </div>
         </PageHeader>
-        <div id="demo" />
-        <ExamplesNav />
+
         <HomePageDemo />
       </div>
       <div className="flex-1" />

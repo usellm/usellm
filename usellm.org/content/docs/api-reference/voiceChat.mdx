@@ -1,18 +1,53 @@
-/* To run this demo yourself:
+---
+title: llm.voiceChat
+description: Send voice messages to an external LLM service and receive voice responses.
+---
 
-1. Create a next Next.js app using our starter template by running the following terminal command:
+The `llm.voiceChat()` function is a method returned by the `useLLM` hook. This method is used to initiate a voice conversation with the external Large Language Model (LLM) service. This takes in a audio input and returns the audio LLM response.
 
-    npx create-next-app my-usellm-app -e https://github.com/usellm/nextjs-starter-template
-    cd my-usellm-app # enter the directory
+### Syntax
 
-2. Copy the source code of this file & paste it in `app/page.tsx` replacing existing code.
-   You can use a code editor like VS Code (https://code.visualdudio.com) to edit the file.
+```typescript
+const { audioUrl } = await llm.voiceChat(options: LLMVoiceChatOptions);
+```
 
-3. Run the development server using `npm run dev` and open http://localhost:3000 in your browser.
-   You will now be able to try out this demo. Make changes to the code to see the changes live.
+### Parameters
 
-4. (Optional) Replace the `serviceUrl` below with your own service URL for production use.
-*/
+- `options: LLMVoiceChatOptions`- An object that takes the following properties:
+
+  - `transcribeAudioUrl: string;` (required) - A string specifying the base64 encoded audio data to transcribe.
+  - `transcribeLanguage?: string` (optional) - A string specifying the language of the audio. 
+  - `transcribePrompt?: string` (optional) - A string specifying the prompt to be provided to the language model.
+  - `chatMessages?: OpenAIMessage[]` (optional) - An array of message objects to start the conversation. Each message object should have a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string.
+  - `chatTemplate?: string` (optional) - A string defining a model's template to structure the conversation.
+  - `chatInputs?: object` (optional) - An object containing additional inputs to the model.
+  - `speakModelId?: string` (optional) - The ID of the model to be used for the TTS operation. Default is set to the latest model.
+  - `speechVoideId?: string` (optional) - The ID of the voice to be used for the TTS operation. Default is set to the latest voice.
+  - `speechVoiceSettings?: { stability: number; similarity_boost: number }` (optional) - Fine-tuning parameters for the voice. 
+
+### Returns
+
+A Promise that resolves to an object:
+
+- `{ audioUrl: string, messages: [object] }`
+
+  - `audioUrl: string`: A URL to the generated audio.
+
+  - `messages: [object]`: Array containing a single object, which includes one message from the user and one message from the assistant. An example could be:
+
+  ```typescript
+  messages: 
+        [
+          { role: "user", content: "Hello"},
+          { role: "assistant", content: "Hello! How can I assist you today?" },
+        ]
+  ```
+
+### Example
+
+Here's an example of how to use `llm.voiceChat()` in a React component ([live demo](https://usellm.org/demo/voice-chat)):
+
+```jsx
 "use client";
 
 import useLLM, { OpenAIMessage } from "usellm";
@@ -117,3 +152,6 @@ type Status =
   | "understanding"
   | "thinking"
   | "speaking";
+```
+
+In the above example, user starts recording his voice message by clicking on record icon. Then to stop the recording, user clicks on stop icon. The response can be listened to by the user. This is because the audio URL returned by `llm.voiceChat()` method is used as the source for the `<audio>` HTML element.

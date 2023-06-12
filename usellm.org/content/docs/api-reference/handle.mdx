@@ -1,0 +1,68 @@
+---
+title: llmService.handle
+description: Manages requests and directs them to appropriate actions
+---
+
+`llmService.handle()` is a server-side function in the useLLM framework that manages incoming requests
+and directs them to the appropriate action. It performs initial validations and then calls the registered
+action with provided options.
+
+### Syntax:
+
+```typescript
+const { result } = await llmService.handle({ body, request });
+```
+
+### Parameters:
+
+`llmService.handle()` accepts an object with the following properties:
+
+- **body**: The body of the request. It should be an object.
+- **request**: The request itself. It can be used for authentication, rate limiting etc. This parameter is optional.
+
+### Returns:
+
+This method returns a Promise that resolves to an `LLMServiceHandleResponse` object.
+The response object includes the result("ReadableStream" or "string") of the called action.
+
+### Error Handling:
+
+`llmService.handle()` will throw an error if:
+
+- The request is not allowed (405 error).
+- The OpenAI API key is not provided (400 error).
+- The `$action` key is missing in the body (400 error).
+
+### Example:
+
+Below is an example of how to use `llmService.handle()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.handle()` method is used to handle requests coming to the `/api/llm`
+route. It extracts the request body, calls the corresponding action, and sends back the result. If
+an error occurs, it returns an appropriate error response.
