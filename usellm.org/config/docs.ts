@@ -154,6 +154,10 @@ export const docsConfig: DocsConfig = {
         {
           title: "Exceptions",
           href: "/docs/useLLM-py/exception"
+        },
+        {
+          title: "Chat",
+          href: "/docs/useLLM-py/py-chat"
         }
 
       ]
