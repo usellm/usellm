@@ -106,6 +106,7 @@ export interface CreateLLMServiceOptions {
   elvenLabsApiKey?: string;
   playHtApiKey?: string;
   playHtUserId?: string;
+  replicateApiKey?: string;
   actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
@@ -124,4 +125,9 @@ export interface LLMCloneVoiceOptions {
   speed?: number;
   sample_rate?: number;
   text: string;
+}
+export interface LLMServiceCallReplicateOptions {
+  input: object;
+  version: string;
+  timeout?: number;
 }

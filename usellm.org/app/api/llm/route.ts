@@ -8,6 +8,7 @@ const llmService = createLLMService({
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
   playHtApiKey: process.env.CLONE_VOICE_API,
   playHtUserId: process.env.USER_ID,
+  replicateApiKey: process.env.REPLICATE_API_TOKEN,
   actions: [
     "chat",
     "voiceChat",
@@ -19,6 +20,8 @@ const llmService = createLLMService({
     "imageVariation",
     "replicateText",
     "cloneVoice",
+    "generateHighResImage",
+    "callReplicate",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
@@ -34,14 +37,16 @@ const llmService = createLLMService({
 });
 
 // Register new action
-llmService.registerAction("replicateText", async (options: any) => {
-  const { text } = options;
-  if (!text) {
-    throw makeErrorResponse("'text' is required", 400);
+llmService.registerAction("generateHighResImage", async (options: any) => {
+  const { prompt } = options;
+  if (!prompt) {
+    throw makeErrorResponse("'prompt' is required", 400);
   }
-  const REPLICATE_API_URL = "https://api.replicate.com/v1/predictions";
 
-  // Post a text to Replicate model
+  const REPLICATE_API_URL = "https://api.replicate.com/v1/predictions";
+  const STABLE_DIFFUSION_MODEL_ID =
+    "db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf";
+
   const response1 = await fetch(REPLICATE_API_URL, {
     method: "POST",
     headers: {
@@ -49,9 +54,9 @@ llmService.registerAction("replicateText", async (options: any) => {
       Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
     },
     body: JSON.stringify({
-      version: process.env.REPLICATE_MODEL_VERSION,
+      version: STABLE_DIFFUSION_MODEL_ID,
       input: {
-        text: text,
+        prompt: prompt,
       },
     }),
   });
@@ -61,13 +66,13 @@ llmService.registerAction("replicateText", async (options: any) => {
   }
   const { id: prediction_id } = await response1.json();
 
-  // Wait for 3 seconds to run the model
+  // Wait for 30 seconds to run the model
   const sleep = async (milliseconds: number) => {
     await new Promise((resolve) => {
       return setTimeout(resolve, milliseconds);
     });
   };
-  await sleep(3000);
+  await sleep(30000);
 
   // Get the model response from Replicate
   const link = REPLICATE_API_URL + "/" + prediction_id;

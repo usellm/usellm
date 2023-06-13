@@ -3,6 +3,7 @@ import {
   AUDIO_TRANSCRIPTIONS_API_URL,
   CHAT_COMPLETIONS_API_URL,
   EDIT_IMAGE_API_URL,
+  REPLICATE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
@@ -33,6 +34,7 @@ import {
   LLMServiceTranscribeOptions,
   LLMServiceVoiceChatOptions,
   LLMCloneVoiceOptions,
+  LLMServiceCallReplicateOptions,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -48,6 +50,7 @@ export class LLMService {
   elvenLabsApiKey: string;
   playHtApiKey: string;
   playHtUserId: string;
+  replicateApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
@@ -62,6 +65,7 @@ export class LLMService {
     elvenLabsApiKey = "",
     playHtApiKey = "",
     playHtUserId = "",
+    replicateApiKey = "",
     fetcher = fetch,
     templates = {},
     debug = false,
@@ -70,6 +74,7 @@ export class LLMService {
   }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.elvenLabsApiKey = elvenLabsApiKey;
+    this.replicateApiKey = replicateApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
@@ -89,7 +94,7 @@ export class LLMService {
 
   async callAction(action: string, body = {}) {
     if (!this.actions.includes(action) && !this.customActions[action]) {
-      throw makeErrorResponse(`Action "${action}" is not supported`, 400);
+      throw makeErrorResponse(`Action "${action}" is not allowed`, 400);
     }
 
     if (action === "chat") {
@@ -119,12 +124,16 @@ export class LLMService {
     if (action === "cloneVoice") {
       return this.cloneVoice(body as LLMCloneVoiceOptions)
     }
+    if (action === "callReplicate") {
+      return this.callReplicate(body as LLMServiceCallReplicateOptions);
+    }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
       throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
     return actionFunc(body);
   }
+  
 
   prepareChatBody(body: LLMServiceChatOptions) {
     const template = {
@@ -546,6 +555,68 @@ export class LLMService {
       responseBuffer.toString("base64");
 
     return { audioUrlReturn };
+  }
+  
+  async callReplicate(options: LLMServiceCallReplicateOptions) {
+    const { version, input, timeout = 10000 } = options;
+
+    if (!input) {
+      throw makeErrorResponse("'input' is required", 400);
+    }
+    // Create Prediction Model
+    const createPredictionResponse = await this.fetcher(REPLICATE_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${this.replicateApiKey}`,
+      },
+      body: JSON.stringify({
+        version: version,
+        input: input,
+      }),
+    });
+    if (!createPredictionResponse.ok) {
+      throw makeErrorResponse(await createPredictionResponse.text());
+    }
+    const { id: prediction_id } = await createPredictionResponse.json();
+    const GET_PREDICTION_URL = REPLICATE_API_URL + "/" + prediction_id;
+
+    // Wait for 10 seconds(by default) to run the model
+    const sleep = async (milliseconds: number) => {
+      await new Promise((resolve) => {
+        return setTimeout(resolve, milliseconds);
+      });
+    };
+    await sleep(timeout);
+
+    const statusResponse = await this.fetcher(GET_PREDICTION_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${this.replicateApiKey}`,
+      },
+    });
+
+    if (!statusResponse.ok) {
+      throw new Error(await statusResponse.text());
+    }
+
+    const getResponse = await statusResponse.json();
+
+    if (getResponse && getResponse.status === "succeeded") {
+      return {
+        id: getResponse.id,
+        urls: getResponse.urls,
+        status: getResponse.status,
+        output: getResponse.output,
+        metrics: getResponse.metrics,
+      };
+    } else {
+      return {
+        output:
+          "Training Not Completed! Please increase the value of timeout and try again.",
+      };
+    }
   }
 }
 

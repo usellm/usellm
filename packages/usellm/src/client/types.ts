@@ -85,3 +85,9 @@ export interface LLMCloneVoiceOptions {
   sample_rate?: number;
   text: string;
 }
+
+export interface LLMCallReplicateOptions {
+  input: object;
+  version: string;
+  timeout: number;
+}
