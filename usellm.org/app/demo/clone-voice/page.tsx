@@ -5,26 +5,26 @@ import { useState } from "react";
 
 export default function CloneVoice() {
   const [status, setStatus] = useState<Status>("idle");
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [text, setText] = useState<string>("");
+  const [audioUrlReturn, setAudioUrlReturn] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const llm = useLLM({
     serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleClick() {
     if (status === "idle") {
-      setAudioUrl(null);
       await llm.record();
       setStatus("recording");
     } else if (status === "recording") {
-      setStatus("thinking");
+      setStatus("cloning");
       const { audioUrl } = await llm.stopRecording();
-      const response = await llm.cloneVoice({
+      const {audioUrlReturn} = await llm.cloneVoice({
         audioUrl: audioUrl,
-        voice_name: "myVoice",
-        text: "Hello, I am Harshit! I am a student."
+        voice_name: name,
+        text: text,
       });
-      console.log("I am Harshit!");
-      console.log(response)
+      setAudioUrlReturn(audioUrlReturn);
       setStatus("idle");
     }
   }
@@ -38,12 +38,26 @@ export default function CloneVoice() {
         className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4"
         onClick={handleClick}
       >
-        <Icon />
+      <Icon />
       </button>
       {status !== "idle" && (
         <div className="text-center mt-4 text-lg">{capitalize(status)}...</div>
       )}
-      {/* {audioUrl && <audio autoPlay className="mt-4" controls src={audioUrl} />} */}
+      <textarea
+        className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
+        placeholder="Enter the voice Name"
+        rows={1}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <textarea
+        className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
+        placeholder="Enter some text here"
+        rows={5}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      {audioUrlReturn && <audio autoPlay className="mt-4" controls src={audioUrlReturn} />}
     </div>
   );
 }
@@ -93,4 +107,5 @@ type Status =
   | "transcribing"
   | "understanding"
   | "thinking"
+  | "cloning"
   | "speaking";

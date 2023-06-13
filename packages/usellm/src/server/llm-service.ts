@@ -490,28 +490,24 @@ export class LLMService {
     if (!voice_name) {
       throw makeErrorResponse("'voice_name is required'", 400);
     }
-    console.log(audioUrl)
+
     const audioBlob = dataURLToBlob(audioUrl);
-    const formData = new FormData();
-    formData.append("sample_file", audioBlob);
-    formData.append("voice_name", voice_name);
+    const form = new FormData();
+    form.append('voice_name', voice_name);
+    form.append("sample_file", audioBlob);
 
     const response1 = await this.fetcher(GENERATE_CLONE_VOICE_URL, {
       method: 'POST',
+      body: form,
       headers: {
-        accept: 'application/json',
-        AUTHORIZATION: `Bearer ${this.playHtApiKey}`,
+        "accept": 'application/json',
+        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
         'X-USER-ID': this.playHtUserId,
       },
-      body: formData,
     });
 
-    // console.log(response1)
-
-    const responseText1 = await response1.text();
-
-    const parts: string[] = responseText1.split('"');
-    const voiceID: string | undefined = parts[3];
+    const json = await response1.json();
+    const voiceID = json.id;
 
     const response2 = await this.fetcher(MESSAGE_TO_VOICE_URL, {
       method: 'POST',
@@ -531,14 +527,26 @@ export class LLMService {
       })
     })
 
-    const urlPattern = /"url":"(.*?)"/;
-    const responseText2 = await response2.text();
-    const matches = responseText2.match(urlPattern);
+    const json1 = await response2.json();
+    const href = json1["_links"][2].href;
 
-    if (matches) {
-      const url = matches[1];
-      return { url };
-    }
+    const response3 = await this.fetcher(href, {
+      method: 'GET',
+      headers: {
+        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
+        'X-USER-ID': this.playHtUserId,
+      }
+    })
+    const responseBlob = await response3.blob();
+
+    const responseBuffer = Buffer.from(await responseBlob.arrayBuffer());
+    const audioUrlReturn =
+      "data:" +
+      responseBlob.type +
+      ";base64," +
+      responseBuffer.toString("base64");
+
+    return { audioUrlReturn };
   }
 }
 
