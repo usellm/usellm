@@ -2,9 +2,11 @@
 
 import useLLM, { OpenAIMessage } from "usellm";
 import { useState } from "react";
+import { stat } from "fs";
 
 export default function CloneVoice() {
   const [status, setStatus] = useState<Status>("idle");
+  const [audioUrl, setAudioUrl] = useState<string>("");
   const [text, setText] = useState<string>("");
   const [audioUrlReturn, setAudioUrlReturn] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -19,6 +21,14 @@ export default function CloneVoice() {
     } else if (status === "recording") {
       setStatus("cloning");
       const { audioUrl } = await llm.stopRecording();
+      setAudioUrl(audioUrl);
+      setStatus("idle");
+    }
+  }
+
+  async function handleSubmit(){
+    if(status==="idle"){
+      setStatus("Generating Voice");
       const {audioUrlReturn} = await llm.cloneVoice({
         audioUrl: audioUrl,
         voice_name: name,
@@ -35,7 +45,7 @@ export default function CloneVoice() {
     <div className="p-4 flex flex-col items-start overflow-y-scroll">
       <h2 className="font-semibold text-2xl">AI Voice Cloning</h2>
       <button
-        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4"
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 "
         onClick={handleClick}
       >
       <Icon />
@@ -57,6 +67,11 @@ export default function CloneVoice() {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
+      <button 
+      type="submit" 
+      onClick={handleSubmit} 
+      className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 "
+      >Generate Voice</button>
       {audioUrlReturn && <audio autoPlay className="mt-4" controls src={audioUrlReturn} />}
     </div>
   );
@@ -108,4 +123,5 @@ type Status =
   | "understanding"
   | "thinking"
   | "cloning"
+  | "Generating Voice"
   | "speaking";

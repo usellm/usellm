@@ -117,7 +117,6 @@ export class LLMService {
       return this.voiceChat(body as LLMServiceVoiceChatOptions);
     }
     if (action === "cloneVoice") {
-      console.log("cloneVoice")
       return this.cloneVoice(body as LLMCloneVoiceOptions)
     }
     const actionFunc = this.customActions[action];
