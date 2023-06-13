@@ -211,7 +211,7 @@ export class LLMService {
     return { result: JSON.stringify(result) };
   }
 
-  async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
+  async chat(body: LLMServiceChatOptions) {
     const preparedBody = this.prepareChatBody(body);
     if (this.debug) {
       console.log("[LLMService] preparedBody", preparedBody);
