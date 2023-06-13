@@ -1,0 +1,80 @@
+---
+title: llmService.editImage
+description: Edits an image using the OpenAI model
+---
+
+`llmService.editImage()` is a server-side function in the useLLM framework that allows you to edit an image using the OpenAI model. It accepts various options for image editing and returns the edited image(s).
+
+### Syntax:
+
+```typescript
+const { images } = await llmService.editImage({
+  image: string,
+  mask?: string,
+  prompt?: string,
+  n?: number,
+  size?: string,
+  response_format?: string,
+  user?: string
+});
+```
+
+### Parameters:
+
+`llmService.editImage()` accepts an object of type `LLMServiceEditImageOptions` with the following properties:
+
+- **image**: A string representing the base64-encoded image data to be edited.
+- **prompt**: A string representing the prompt for the image editing.
+- **mask** (optional): A string representing the base64-encoded image mask data.
+- **n** (optional): A number indicating the number of image edits to be generated (default: 4).
+- **size** (optional): A string indicating the desired size of the edited image.
+- **response_format** (optional): A string indicating the format of the response (default: "json").
+- **user** (optional): A string representing the user identifier associated with the image edit.
+
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following property:
+
+- **images**: An array of strings representing the URLs or base64-encoded data of the edited images.
+
+### Error Handling:
+
+`llmService.editImage()` may throw an error if:
+
+- The image parameter is missing or invalid.
+- An error occurs during the image editing request to the OpenAI API.
+
+### Example
+
+Below is an example of how to use `llmService.editImage()` within a server-side API route:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "transcribe", "embed", "editImage"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+  console.log(body);
+
+  try {
+    const result = await llmService.editImage(body);
+    console.log(result);
+    return new Response(JSON.stringify(result), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.editImage()` method is used to edit an image using the LLM service. It prepares the options based on the provided parameters and makes a request to the LLM API for editing the image. The edited images are then returned as the result. If an error occurs, an appropriate error response is returned. You can modify the options and handle the response according to your specific requirements.

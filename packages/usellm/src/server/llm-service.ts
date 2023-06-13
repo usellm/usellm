@@ -4,6 +4,7 @@ import {
   CHAT_COMPLETIONS_API_URL,
   EDIT_IMAGE_API_URL,
   REPLICATE_API_URL,
+  HUGGING_FACE_API_URL,
   ELVEN_LABS_DEFAULT_MODEL_ID,
   ELVEN_LABS_DEFAULT_VOICE_ID,
   EMBEDDINGS_API_URL,
@@ -35,6 +36,7 @@ import {
   LLMServiceVoiceChatOptions,
   LLMCloneVoiceOptions,
   LLMServiceCallReplicateOptions,
+  LLMServiceCallHuggingFace,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -51,6 +53,7 @@ export class LLMService {
   playHtApiKey: string;
   playHtUserId: string;
   replicateApiKey: string;
+  huggingFaceApiKey: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
@@ -66,6 +69,7 @@ export class LLMService {
     playHtApiKey = "",
     playHtUserId = "",
     replicateApiKey = "",
+    huggingFaceApiKey = "",
     fetcher = fetch,
     templates = {},
     debug = false,
@@ -75,6 +79,7 @@ export class LLMService {
     this.openaiApiKey = openaiApiKey;
     this.elvenLabsApiKey = elvenLabsApiKey;
     this.replicateApiKey = replicateApiKey;
+    this.huggingFaceApiKey = huggingFaceApiKey;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;
@@ -126,6 +131,9 @@ export class LLMService {
     }
     if (action === "callReplicate") {
       return this.callReplicate(body as LLMServiceCallReplicateOptions);
+    }
+    if (action === "callHuggingFace") {
+      return this.callHuggingFace(body as LLMServiceCallHuggingFace);
     }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
@@ -216,7 +224,7 @@ export class LLMService {
     return { result: JSON.stringify(result) };
   }
 
-  async chat(body: LLMServiceChatOptions): Promise<LLMServiceHandleResponse> {
+  async chat(body: LLMServiceChatOptions) {
     const preparedBody = this.prepareChatBody(body);
     if (this.debug) {
       console.log("[LLMService] preparedBody", preparedBody);
@@ -617,6 +625,25 @@ export class LLMService {
           "Training Not Completed! Please increase the value of timeout and try again.",
       };
     }
+  }
+
+  async callHuggingFace(options: LLMServiceCallHuggingFace) {
+    const { data, model } = options;
+    /* data can be a object with input as the required key or 
+    a string represneting a binary file path, the binary file can then 
+    be converted to binary format and passed to data
+    */
+    const link = HUGGING_FACE_API_URL + model;
+    const response = await this.fetcher(link, {
+      method: "POST",
+      headers: { Authourization: `Bearer ${this.huggingFaceApiKey}` },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw makeErrorResponse(await response.text());
+    }
+    const result = await response.json();
+    return result;
   }
 }
 

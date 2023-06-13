@@ -15,6 +15,7 @@ import {
   LLMEmbedOptions,
   LLMRecordOptions,
   LLMCallReplicateOptions,
+  LLMCallHuggingFaceOptions,
   LLMTranscribeOptions,
   LLMVoiceChatOptions,
   SpeakOptions,
@@ -298,6 +299,10 @@ export default function useLLM({
     return callAction("callReplicate", options);
   }
 
+  async function callHuggingFace(options: LLMCallHuggingFaceOptions) {
+    return callAction("callHuggingFace", options);
+  }
+
   return {
     callAction,
     chat,
@@ -316,5 +321,6 @@ export default function useLLM({
     imageVariation,
     cloneVoice,
     callReplicate,
+    callHuggingFace,
   };
 }

@@ -107,6 +107,7 @@ export interface CreateLLMServiceOptions {
   playHtApiKey?: string;
   playHtUserId?: string;
   replicateApiKey?: string;
+  huggingFaceApiKey?: string;
   actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate };
@@ -130,4 +131,9 @@ export interface LLMServiceCallReplicateOptions {
   input: object;
   version: string;
   timeout?: number;
+}
+
+export interface LLMServiceCallHuggingFace {
+  data: { inputs: string | object; [key: string]: any } | string;
+  model: string;
 }

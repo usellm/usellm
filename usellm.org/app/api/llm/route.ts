@@ -9,6 +9,7 @@ const llmService = createLLMService({
   playHtApiKey: process.env.CLONE_VOICE_API,
   playHtUserId: process.env.USER_ID,
   replicateApiKey: process.env.REPLICATE_API_TOKEN,
+  huggingFaceApiKey: process.env.HUGGING_FACE_API_TOKEN,
   actions: [
     "chat",
     "voiceChat",
@@ -22,6 +23,7 @@ const llmService = createLLMService({
     "cloneVoice",
     "generateHighResImage",
     "callReplicate",
+    "callHuggingFace",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API

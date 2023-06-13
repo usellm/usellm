@@ -91,3 +91,8 @@ export interface LLMCallReplicateOptions {
   version: string;
   timeout: number;
 }
+
+export interface LLMCallHuggingFaceOptions {
+  data: { inputs: string | object; [key: string]: any } | string;
+  model: string;
+}
