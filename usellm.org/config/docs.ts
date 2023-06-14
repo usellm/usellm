@@ -132,10 +132,6 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/call-huggingface",
         },
         {
-          title: "`.cloneVoice`",
-          href: "docs/api-reference/cloneVoice",
-        },
-        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },
@@ -191,10 +187,6 @@ export const docsConfig: DocsConfig = {
         {
           title: "`.imageVariation`",
           href: "docs/api-reference/llmservice-imageVariation",
-        },
-        {
-          title: "`.cloneVoice`",
-          href: "docs/api-reference/llmservice-cloneVoice",
         },
       ],
     },

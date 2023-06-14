@@ -8,8 +8,10 @@ export default function CloneVoice() {
   const [status, setStatus] = useState<Status>("idle");
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [text, setText] = useState<string>("");
+  const [voiceID, setVoiceID] = useState<string>("");
   const [audioUrlReturn, setAudioUrlReturn] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [clonedVoiceID, setClonedVoiceId] = useState<string>("");
   const llm = useLLM({
     serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
@@ -19,7 +21,7 @@ export default function CloneVoice() {
       await llm.record();
       setStatus("recording");
     } else if (status === "recording") {
-      setStatus("cloning");
+      setStatus("thinking");
       const { audioUrl } = await llm.stopRecording();
       setAudioUrl(audioUrl);
       setStatus("idle");
@@ -28,13 +30,25 @@ export default function CloneVoice() {
 
   async function handleSubmit(){
     if(status==="idle"){
-      setStatus("Generating Voice");
-      const {audioUrlReturn} = await llm.cloneVoice({
+      setStatus("Generating Audio");
+      const {audioUrlReturn} = await llm.generateClonedAudio({
+        voiceID,
+        text,
+      })
+      setAudioUrlReturn(audioUrlReturn);
+      setStatus("idle");
+    }
+  }
+
+  async function handleCloneVoice(){
+    if(status === "idle"){
+      setStatus("cloning");
+      const {voiceID} = await llm.cloneVoice({
         audioUrl: audioUrl,
         voice_name: name,
-        text: text,
       });
-      setAudioUrlReturn(audioUrlReturn);
+      setClonedVoiceId(voiceID);
+      setVoiceID(voiceID);
       setStatus("idle");
     }
   }
@@ -42,7 +56,7 @@ export default function CloneVoice() {
   const Icon = status === "recording" ? Square : Mic;
 
   return (
-    <div className="p-4 flex flex-col items-start overflow-y-scroll">
+    <div className="p-4 items-start overflow-y-auto">
       <h2 className="font-semibold text-2xl">AI Voice Cloning</h2>
       <button
         className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 "
@@ -50,15 +64,28 @@ export default function CloneVoice() {
       >
       <Icon />
       </button>
+    
       {status !== "idle" && (
-        <div className="text-center mt-4 text-lg">{capitalize(status)}...</div>
+        <div className="mt-4 text-lg">{capitalize(status)}...</div>
       )}
-      <textarea
+
+      <input
         className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
         placeholder="Enter the voice Name"
-        rows={1}
         value={name}
         onChange={(e) => setName(e.target.value)}
+      />
+      <button type="submit" onClick={handleCloneVoice} className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 ">Clone Voice</button>
+      {
+        clonedVoiceID && (
+          <div className="mt-2 text-md">Your unique voice ID is {voiceID}</div>
+        )
+      }
+      <input
+        className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
+        placeholder="Enter your voice ID"
+        value={voiceID}
+        onChange={(e) => setVoiceID(e.target.value)}
       />
       <textarea
         className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
@@ -67,9 +94,10 @@ export default function CloneVoice() {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
+      
       <button 
       type="submit" 
-      onClick={handleSubmit} 
+      onClick={handleSubmit}
       className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 "
       >Generate Voice</button>
       {audioUrlReturn && <audio autoPlay className="mt-4" controls src={audioUrlReturn} />}
@@ -123,5 +151,6 @@ type Status =
   | "understanding"
   | "thinking"
   | "cloning"
-  | "Generating Voice"
+  | "clonedAudio"
+  | "Generating Audio"
   | "speaking";

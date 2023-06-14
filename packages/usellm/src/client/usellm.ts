@@ -18,11 +18,12 @@ import {
   LLMCallHuggingFaceOptions,
   LLMTranscribeOptions,
   LLMVoiceChatOptions,
+  LLMCloneVoiceOptions,
+  LLMGenerateClonedAudioOptions,
   SpeakOptions,
   UseLLMOptions,
 } from "./types";
 import { LLMChatResult } from "../shared/types";
-import { LLMCloneVoiceOptions } from "./types";
 
 export default function useLLM({
   serviceUrl: argServiceUrl,
@@ -276,23 +277,12 @@ export default function useLLM({
     return response.json();
   }
 
-  async function cloneVoice({audioUrl, voice_name, text}: LLMCloneVoiceOptions){
-    const response = await fetcher(`${serviceUrl}`, {
-      method: "POST",
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        audioUrl,
-        voice_name,
-        text,
-        $action: "cloneVoice",
-      })
-    })
-    if(!response.ok){
-      throw new Error(await response.text());
-    }
-    return response.json();
+  async function cloneVoice(options: LLMCloneVoiceOptions){
+    return callAction("cloneVoice", options);
+  }
+
+  async function generateClonedAudio(options: LLMGenerateClonedAudioOptions){
+    return callAction("generateClonedAudio", options);
   }
   
   async function callReplicate(options: LLMCallReplicateOptions) {
@@ -320,6 +310,7 @@ export default function useLLM({
     editImage,
     imageVariation,
     cloneVoice,
+    generateClonedAudio,
     callReplicate,
     callHuggingFace,
   };

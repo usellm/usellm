@@ -120,13 +120,19 @@ export interface LLMCloneVoiceOptions {
   //for cloning voice
   audioUrl: string;
   voice_name: string;
+}
+
+export interface LLMGenerateClonedAudioOptions {
+  $action: string;
   //for message to voice
   quality?: string;
   output_format?: string;
   speed?: number;
   sample_rate?: number;
   text: string;
+  voiceID: string;
 }
+
 export interface LLMServiceCallReplicateOptions {
   input: object;
   version: string;
