@@ -209,8 +209,12 @@ export const docsConfig: DocsConfig = {
         },
         {
           title: "Chat",
-          href: "/docs/useLLM-py/py-chat",
+          href: "/docs/useLLM-py/py-chat"
         },
+        {
+          title: "Image Generation",
+          href: "/docs/useLLM-py/py-generate_image"
+        }        
       ],
       
     },
