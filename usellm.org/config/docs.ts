@@ -214,6 +214,14 @@ export const docsConfig: DocsConfig = {
         {
           title: "Image Generation",
           href: "/docs/useLLM-py/py-generate_image"
+        },
+        {
+          title: "Speak",
+          href: "/docs/useLLM-py/speak-py"
+        },
+        {
+          title: "Embed",
+          href: "/docs/useLLM-py/embed-py"
         }        
       ],
       
