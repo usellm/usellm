@@ -24,7 +24,7 @@ import {
 import { LLMChatResult } from "../shared/types";
 
 export default function useLLM({
-  serviceUrl: argServiceUrl,
+  serviceUrl: argServiceUrl = "/api/llm",
   fetcher = fetch,
 }: UseLLMOptions = {}) {
   const { serviceUrl: contextServiceUrl } = useContext(LLMContext);
