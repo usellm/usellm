@@ -57,7 +57,8 @@ export default function CloneVoice() {
 
   return (
     <div className="p-4 items-start overflow-y-auto">
-      <h2 className="font-semibold text-2xl">AI Voice Cloning</h2>
+      <h2 className="font-semibold text-2xl mb-2">AI Voice Cloning</h2>
+      <h4 className="font-semibold text-lg">Clone Voice</h4>
       <button
         className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 "
         onClick={handleClick}
@@ -75,12 +76,13 @@ export default function CloneVoice() {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <button type="submit" onClick={handleCloneVoice} className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 ">Clone Voice</button>
+      <button type="submit" onClick={handleCloneVoice} className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 mb-2">Clone Voice</button>
       {
         clonedVoiceID && (
-          <div className="mt-2 text-md">Your unique voice ID is {voiceID}</div>
+          <div className="mt-2 text-md mb-2">Your unique voice ID is {voiceID}</div>
         )
       }
+      <h4 className="font-semibold text-lg">Generate Cloned Audio</h4>
       <input
         className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
         placeholder="Enter your voice ID"
