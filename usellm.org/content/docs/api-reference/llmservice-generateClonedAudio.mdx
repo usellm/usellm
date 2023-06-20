@@ -1,0 +1,85 @@
+---
+title: llm.generateClonedAudio
+description: Generates cloned audio using the LLM service
+---
+
+`llm.generateClonedAudio()` is a server-side function in the useLLM framework that generates cloned audio using the LLM (Language Model as a Service) service. It sends a request to the Play.ht API with the provided text and voice settings, retrieves the generated audio, and returns the audio URL.
+
+### Syntax
+
+```typescript
+const { audioUrlReturn } = await llm.generateClonedAudio({
+  text: string,
+  voiceID: string
+  quality?: string,
+  output_format?: string,
+  speed?: number,
+  sample_rate?: number,
+});
+```
+
+### Parameters:
+
+`llm.generateClonedAudio()` accepts an object of type LLMGenerateClonedAudioOptions with the following properties:
+
+- **text** (required): A string representing the text to be converted to cloned audio.
+- **voiceID** (required): A string representing the ID of the cloned voice to be used for audio generation.
+- **quality** (optional): A string representing the quality of the generated audio. Default value is "medium".
+- **output_format** (optional):A string representing the output format of the generated audio. Default value is "mp3".
+- **speed** (optional): A number representing the speed of the generated audio. Default value is 1.
+- **sample_rate** (optional): A number representing the sample rate of the generated audio. Default value is 24000.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following property:
+
+- **audioUrlReturn**: A string representing the base64 encoded data of the generated cloned audio.
+
+### Error Handling:
+
+`llm.generateClonedAudio()` may throw an error if:
+
+- The required parameters, such as `text` or `voiceID`, are not provided.
+- An error occurs during the API request to the play.ht service.
+
+### Example
+
+Below is an example of how to use `llm.generateClonedAudio()` within a server-side function:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  playHtApiKey: process.env.PLAY_HT_API_KEY,
+  playHtUserId: process.env.PLAY_HT_USER_ID,
+  actions: ["chat", "transcribe", "speak", "generateClonedAudio"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const options = {
+      text: body.text,
+      voiceID: "your_voiceID",
+      quality: "high",
+      output_format: "wav",
+      speed: 1.2,
+      sample_rate: 44100,
+    };
+
+    const { audioUrlReturn } = await llmService.generateClonedAudio(options);
+    return new Response(JSON.stringify({ audioUrlReturn }), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llm.generateClonedAudio()` method is used to generate cloned audio using the LLM service. The `options` object is constructed with the desired text, voice ID, quality, output format, speed, and sample rate. The `llm.generateClonedAudio()` method is then called with the options object, and the resulting `audioUrlReturn` is returned as the response. If an error occurs, an appropriate error response is returned.

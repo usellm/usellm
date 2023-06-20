@@ -132,6 +132,14 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/call-huggingface",
         },
         {
+          title: "`.cloneVoice`",
+          href: "docs/api-reference/clone-voice",
+        },
+        {
+          title: "`.generateClonedAudio`",
+          href: "docs/api-reference/generate-cloned-audio",
+        },
+        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },
@@ -188,6 +196,14 @@ export const docsConfig: DocsConfig = {
           title: "`.imageVariation`",
           href: "docs/api-reference/llmservice-imageVariation",
         },
+        {
+          title: "`.cloneVoice`",
+          href: "docs/api-reference/llmservice-cloneVoice",
+        },
+        {
+          title: "`.generateClonedAudio`",
+          href: "docs/api-reference/llmservice-generateClonedAudio",
+        },
       ],
     },
 
@@ -239,6 +255,10 @@ export const docsConfig: DocsConfig = {
         {
           title: "Image Generation",
           href: "/demo/image-generation",
+        },
+        {
+          title: "Voice Cloning",
+          href: "/demo/clone-voice",
         },
       ],
     },

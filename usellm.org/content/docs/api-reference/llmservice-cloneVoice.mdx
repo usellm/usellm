@@ -1,0 +1,76 @@
+---
+title: llmService.cloneVoice
+description: Clones a voice using the LLM service
+---
+
+`llmService.cloneVoice()` is a server-side function in the useLLM framework that clones a voice using the LLM (Language Model as a Service) service and play.ht API. It allows users to provide an audio URL of their recorded voice and a voice name, and it returns a unique voice ID that can be used to generate audio in the cloned voice.
+
+### Syntax
+
+```typescript
+const { voiceID } = await llmService.cloneVoice({
+  audioUrl: string,
+  voice_name: string,
+});
+```
+
+### Parameters:
+
+`llmService.cloneVoice()` accepts an object of type LLMCloneVoiceOptions with the following properties:
+
+- **audioUrl** (required): A string representing the URL of the user-recorded voice audio.
+- **voice_name** (required): A string representing the name of the cloned voice.
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following property:
+
+- **voiceID**: A string representing the unique ID of the cloned voice.
+
+### Error Handling:
+
+`llmService.cloneVoice()` may throw an error if:
+
+- The `audioUrl` parameter is missing or undefined.
+- The `voice_name` parameter is missing or undefined.
+- An error occurs during the API request to the play.ht service.
+
+### Example
+
+Below is an example of how to use `llmService.speak()` within a server-side function:
+
+```typescript
+/* pages/api/clone-voice.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  playHtApiKey: process.env.PLAYHT_API_KEY,
+  playHtUserId: process.env.PLAYHT_USER_ID,
+  actions: ["cloneVoice", "generateClonedAudio"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const options = {
+      audioUrl: body.audioUrl,
+      voice_name: body.voiceName,
+    };
+
+    const { voiceID } = await llmService.cloneVoice(options);
+    return new Response(JSON.stringify({ voiceID }), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.cloneVoice()` method is used to clone a voice using the LLM service and play.ht API. The `options` object is constructed with the user's audio URL and voice name. The `llmService.cloneVoice()` method is then called with the options object, and the resulting `voiceID` is returned as the response. If an error occurs, an appropriate error response is returned.
+
+Make sure to replace `clone-voice.ts` with the appropriate endpoint name and customize the implementation as per your requirements.
