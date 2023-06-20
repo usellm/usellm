@@ -6,6 +6,8 @@ import { makeErrorResponse } from "@/usellm/shared/utils";
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
   elvenLabsApiKey: process.env.ELVEN_LABS_API_KEY,
+  playHtApiKey: process.env.CLONE_VOICE_API,
+  playHtUserId: process.env.USER_ID,
   replicateApiKey: process.env.REPLICATE_API_TOKEN,
   huggingFaceApiKey: process.env.HUGGING_FACE_API_TOKEN,
   actions: [
@@ -17,6 +19,8 @@ const llmService = createLLMService({
     "generateImage",
     "editImage",
     "imageVariation",
+    "cloneVoice",
+    "generateClonedAudio",
     "generateHighResImage",
     "callReplicate",
     "callHuggingFace",

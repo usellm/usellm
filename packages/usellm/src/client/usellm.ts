@@ -18,6 +18,8 @@ import {
   LLMCallHuggingFaceOptions,
   LLMTranscribeOptions,
   LLMVoiceChatOptions,
+  LLMCloneVoiceOptions,
+  LLMGenerateClonedAudioOptions,
   SpeakOptions,
   UseLLMOptions,
 } from "./types";
@@ -97,7 +99,7 @@ export default function useLLM({
       const { mediaRecorder, audioChunks, audioStream } = recordingRef.current;
       mediaRecorder.addEventListener("stop", () => {
         const audioBlob = new Blob(audioChunks, {
-          type: "audio/ogg; codecs=opus",
+          type: "audio/wav; codecs=opus",
         });
 
         const reader = new FileReader();
@@ -275,6 +277,14 @@ export default function useLLM({
     return response.json();
   }
 
+  async function cloneVoice(options: LLMCloneVoiceOptions){
+    return callAction("cloneVoice", options);
+  }
+
+  async function generateClonedAudio(options: LLMGenerateClonedAudioOptions){
+    return callAction("generateClonedAudio", options);
+  }
+  
   async function callReplicate(options: LLMCallReplicateOptions) {
     return callAction("callReplicate", options);
   }
@@ -299,6 +309,8 @@ export default function useLLM({
     imageToDataURL,
     editImage,
     imageVariation,
+    cloneVoice,
+    generateClonedAudio,
     callReplicate,
     callHuggingFace,
   };

@@ -104,6 +104,8 @@ export type LLMAction = (options: object) => Promise<ReadableStream | object>;
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
   elvenLabsApiKey?: string;
+  playHtApiKey?: string;
+  playHtUserId?: string;
   replicateApiKey?: string;
   huggingFaceApiKey?: string;
   actions?: string[];
@@ -111,6 +113,24 @@ export interface CreateLLMServiceOptions {
   templates?: { [id: string]: LLMServiceTemplate };
   debug?: boolean;
   isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
+}
+
+export interface LLMCloneVoiceOptions {
+  $action: string;
+  //for cloning voice
+  audioUrl: string;
+  voice_name: string;
+}
+
+export interface LLMGenerateClonedAudioOptions {
+  $action: string;
+  //for message to voice
+  quality?: string;
+  output_format?: string;
+  speed?: number;
+  sample_rate?: number;
+  text: string;
+  voiceID: string;
 }
 
 export interface LLMServiceCallReplicateOptions {

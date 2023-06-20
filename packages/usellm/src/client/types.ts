@@ -74,6 +74,22 @@ export interface LLMVoiceChatOptions {
   speechVoiceSettings?: { stability: number; similarity_boost: number };
 }
 
+export interface LLMCloneVoiceOptions {
+  //for cloning voice
+  audioUrl: string;
+  voice_name: string;
+}
+
+export interface LLMGenerateClonedAudioOptions{
+  //for message to voice
+  quality?: string;
+  output_format?: string;
+  speed?: number;
+  sample_rate?: number;
+  text: string;
+  voiceID: string;
+}
+
 export interface LLMCallReplicateOptions {
   input: object;
   version: string;

@@ -17,6 +17,8 @@ import {
   getTextToSpeechApiUrl,
   makeErrorResponse,
   scoreEmbeddings,
+  GENERATE_CLONE_VOICE_URL,
+  MESSAGE_TO_VOICE_URL,
 } from "../shared/utils";
 import {
   CreateLLMServiceOptions,
@@ -32,8 +34,10 @@ import {
   LLMServiceTemplate,
   LLMServiceTranscribeOptions,
   LLMServiceVoiceChatOptions,
+  LLMCloneVoiceOptions,
   LLMServiceCallReplicateOptions,
   LLMServiceCallHuggingFace,
+  LLMGenerateClonedAudioOptions,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -47,6 +51,8 @@ export class LLMService {
   templates: { [id: string]: LLMServiceTemplate };
   openaiApiKey: string;
   elvenLabsApiKey: string;
+  playHtApiKey: string;
+  playHtUserId: string;
   replicateApiKey: string;
   huggingFaceApiKey: string;
   fetcher: typeof fetch;
@@ -61,6 +67,8 @@ export class LLMService {
   constructor({
     openaiApiKey = "",
     elvenLabsApiKey = "",
+    playHtApiKey = "",
+    playHtUserId = "",
     replicateApiKey = "",
     huggingFaceApiKey = "",
     fetcher = fetch,
@@ -78,6 +86,8 @@ export class LLMService {
     this.debug = debug;
     this.isAllowed = isAllowed;
     this.actions = actions;
+    this.playHtApiKey = playHtApiKey;
+    this.playHtUserId = playHtUserId;
   }
 
   registerTemplate(template: LLMServiceTemplate) {
@@ -117,6 +127,12 @@ export class LLMService {
     if (action === "voiceChat") {
       return this.voiceChat(body as LLMServiceVoiceChatOptions);
     }
+    if (action === "cloneVoice") {
+      return this.cloneVoice(body as LLMCloneVoiceOptions);
+    }
+    if (action === "generateClonedAudio") {
+      return this.generateClonedAudio(body as LLMGenerateClonedAudioOptions);
+    }
     if (action === "callReplicate") {
       return this.callReplicate(body as LLMServiceCallReplicateOptions);
     }
@@ -129,6 +145,7 @@ export class LLMService {
     }
     return actionFunc(body);
   }
+  
 
   prepareChatBody(body: LLMServiceChatOptions) {
     const template = {
@@ -483,6 +500,86 @@ export class LLMService {
     };
   }
 
+  async cloneVoice(options: LLMCloneVoiceOptions) {
+    const { audioUrl, voice_name } = options;
+
+    if (!audioUrl) {
+      throw makeErrorResponse("'audioUrl' is required", 400);
+    }
+
+    if (!voice_name) {
+      throw makeErrorResponse("'voice_name' is required", 400);
+    }
+
+    const audioBlob = dataURLToBlob(audioUrl);
+    const form = new FormData();
+    form.append('voice_name', voice_name);
+    form.append("sample_file", audioBlob);
+
+    const response1 = await this.fetcher(GENERATE_CLONE_VOICE_URL, {
+      method: 'POST',
+      body: form,
+      headers: {
+        "accept": 'application/json',
+        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
+        'X-USER-ID': this.playHtUserId,
+      },
+    });
+
+    const json = await response1.json();
+    const voiceID = json.id;
+
+    return { voiceID };
+  }
+
+  async generateClonedAudio(options: LLMGenerateClonedAudioOptions){
+    const { quality = "medium", output_format = "mp3", voiceID, speed = 1, sample_rate = 24000, text } = options;
+    if (!text) {
+      throw makeErrorResponse("'text' is required'", 400);
+    }
+    if (!voiceID) {
+      throw makeErrorResponse("'voiceID' is required'", 400);
+    }
+    const response1 = await this.fetcher(MESSAGE_TO_VOICE_URL, {
+      method: 'POST',
+      headers: {
+        "accept": 'application/json',
+        'content-type': 'application/json',
+        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
+        'X-USER-ID': this.playHtUserId,
+      },
+      body: JSON.stringify({
+        quality,
+        output_format,
+        speed,
+        sample_rate,
+        text,
+        voice: voiceID,
+      })
+    })
+
+    const json1 = await response1.json();
+    const href = json1["_links"][2].href;
+
+    const response2 = await this.fetcher(href, {
+      method: 'GET',
+      headers: {
+        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
+        'X-USER-ID': this.playHtUserId,
+      }
+    })
+    const responseBlob = await response2.blob();
+
+    const responseBuffer = Buffer.from(await responseBlob.arrayBuffer());
+    const audioUrlReturn =
+      "data:" +
+      responseBlob.type +
+      ";base64," +
+      responseBuffer.toString("base64");
+
+    return {audioUrlReturn};
+  }
+  
   async callReplicate(options: LLMServiceCallReplicateOptions) {
     const { version, input, timeout = 10000 } = options;
 
