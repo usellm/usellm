@@ -51,11 +51,10 @@ export default function CloneVoice() {
     if(status === "idle"){
       setStatus("cloning");
       try{
-        const response = await llm.cloneVoice({
+        const {voiceID} = await llm.cloneVoice({
           audioUrl: audioUrl,
           voice_name: name,
         });
-        const {voiceID} = await response.json();
         setClonedVoiceId(voiceID);
         setVoiceID(voiceID);
       }catch{

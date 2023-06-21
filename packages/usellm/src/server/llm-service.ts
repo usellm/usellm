@@ -526,7 +526,7 @@ export class LLMService {
       },
     });
 
-    if (!response1.ok) {
+    if (!response1.ok && !(response1.status === 201)) {
       throw makeErrorResponse("Failed to generate cloned voice", 500);
     }
 
