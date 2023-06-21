@@ -3,6 +3,7 @@
 import useLLM, { OpenAIMessage } from "usellm";
 import { useState } from "react";
 import { stat } from "fs";
+import { set } from "zod";
 
 export default function CloneVoice() {
   const [status, setStatus] = useState<Status>("idle");
@@ -12,6 +13,8 @@ export default function CloneVoice() {
   const [audioUrlReturn, setAudioUrlReturn] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [clonedVoiceID, setClonedVoiceId] = useState<string>("");
+  const [errorCloneVoice, setErrorCloneVoice] = useState<string>("");
+  const [errorGenerateAudio, setErrorGenerateAudio] = useState<string>("");
   const llm = useLLM({
     serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
@@ -31,11 +34,15 @@ export default function CloneVoice() {
   async function handleSubmit(){
     if(status==="idle"){
       setStatus("Generating Audio");
-      const {audioUrlReturn} = await llm.generateClonedAudio({
-        voiceID,
-        text,
-      })
-      setAudioUrlReturn(audioUrlReturn);
+      try{
+        const {audioUrlReturn} = await llm.generateClonedAudio({
+          voiceID,
+          text,
+        })
+        setAudioUrlReturn(audioUrlReturn);
+      }catch{
+        setErrorGenerateAudio("Error while generating audio. This can be due to the unspecified API Key or the audio generation limit of API key has been exceeded.");
+      }
       setStatus("idle");
     }
   }
@@ -43,12 +50,16 @@ export default function CloneVoice() {
   async function handleCloneVoice(){
     if(status === "idle"){
       setStatus("cloning");
-      const {voiceID} = await llm.cloneVoice({
-        audioUrl: audioUrl,
-        voice_name: name,
-      });
-      setClonedVoiceId(voiceID);
-      setVoiceID(voiceID);
+      try{
+        const {voiceID} = await llm.cloneVoice({
+          audioUrl: audioUrl,
+          voice_name: name,
+        });
+        setClonedVoiceId(voiceID);
+        setVoiceID(voiceID);
+      }catch{
+        setErrorCloneVoice("Error while cloning voice. This can be due to the unspecified API Key or the voice cloning limit of API key has been exceeded.");
+      }
       setStatus("idle");
     }
   }
@@ -82,6 +93,11 @@ export default function CloneVoice() {
           <div className="mt-2 text-md mb-2">Your unique voice ID is {voiceID}</div>
         )
       }
+      {
+        errorCloneVoice && (
+          <div className="mt-2 text-md mb-2">{errorCloneVoice}</div>
+        )
+      }
       <h4 className="font-semibold text-lg">Generate Cloned Audio</h4>
       <input
         className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
@@ -102,6 +118,9 @@ export default function CloneVoice() {
       onClick={handleSubmit}
       className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium mt-4 "
       >Generate Voice</button>
+      {errorGenerateAudio && (
+        <div className="mt-2 text-md mb-2">{errorGenerateAudio}</div>
+      )}
       {audioUrlReturn && <audio autoPlay className="mt-4" controls src={audioUrlReturn} />}
     </div>
   );

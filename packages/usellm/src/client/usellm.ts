@@ -277,14 +277,14 @@ export default function useLLM({
     return response.json();
   }
 
-  async function cloneVoice(options: LLMCloneVoiceOptions){
+  async function cloneVoice(options: LLMCloneVoiceOptions) {
     return callAction("cloneVoice", options);
   }
 
-  async function generateClonedAudio(options: LLMGenerateClonedAudioOptions){
+  async function generateClonedAudio(options: LLMGenerateClonedAudioOptions) {
     return callAction("generateClonedAudio", options);
   }
-  
+
   async function callReplicate(options: LLMCallReplicateOptions) {
     return callAction("callReplicate", options);
   }
