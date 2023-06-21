@@ -526,6 +526,10 @@ export class LLMService {
       },
     });
 
+    if (!response1.ok) {
+      throw makeErrorResponse("Failed to generate cloned voice", 500);
+    }
+
     const json = await response1.json();
     const voiceID = json.id;
 
@@ -557,6 +561,10 @@ export class LLMService {
         voice: voiceID,
       })
     })
+
+    if (!response1.ok) {
+      throw makeErrorResponse("Failed to generate audio", 500);
+    }
 
     const json1 = await response1.json();
     const href = json1["_links"][2].href;
