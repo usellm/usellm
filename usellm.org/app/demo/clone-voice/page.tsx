@@ -16,7 +16,7 @@ export default function CloneVoice() {
   const [errorCloneVoice, setErrorCloneVoice] = useState<string>("");
   const [errorGenerateAudio, setErrorGenerateAudio] = useState<string>("");
   const llm = useLLM({
-    serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleClick() {

@@ -19,13 +19,13 @@ export default function IndexPage() {
       <div className="container relative pb-10">
         <PageHeader>
           <Link
-            href="https://usellm.substack.com/p/release-notes-usellm-v0110"
+            href="https://usellm.substack.com/p/release-notes-usellm-v0120"
             target="_blank"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium truncate max-w-full"
           >
-            🚀 v0.11.0 <Separator className="mx-2 h-4" orientation="vertical" />
+            🚀 v0.12.0 <Separator className="mx-2 h-4" orientation="vertical" />
             <span className="truncate">
-              Connect to Replicate & HuggingFace models
+              Voice Cloning and Audio Generation from Cloned Voice
             </span>
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
