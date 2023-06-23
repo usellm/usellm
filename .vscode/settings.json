@@ -17,7 +17,7 @@
     "usellm.org/usellm": true
   },
   "files.readonlyInclude": {
-    "packages/usellm/dist": true,
-    "usellm.org/usellm": true
+    "packages/usellm/dist/**/*": true,
+    "usellm.org/usellm/**/*": true
   }
 }
