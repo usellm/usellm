@@ -10,7 +10,7 @@ export default function FunctionCallingDemo() {
     {
       role: "assistant",
       content:
-        "I'm a chatbot powered by the ChatGPT API and developed using useLLM. Ask me anything!",
+        "I'm an AI chatbot than can connect to the GitHub API. Ask me question about a GitHub user!",
     },
   ]);
 
@@ -120,11 +120,19 @@ function ChatMessage({ message, callFunction }: ChatMessageProps) {
         {capitalize(role)}
       </div>
       {role === "function" ? (
-        <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap my-1 bg-gray-50 dark:bg-gray-950 p-2 rounded">
-          <pre>
-            <b>Result:</b> {content}
-          </pre>
-        </div>
+        <>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            {"Here's the result of the function call:"}
+          </div>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap my-1 bg-gray-50 dark:bg-gray-950 p-2 rounded">
+            <pre>
+              <b>Result:</b> {content}
+            </pre>
+          </div>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            {"I'll process it now and reply to your message..."}
+          </div>
+        </>
       ) : (
         <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
           {content}
@@ -132,6 +140,10 @@ function ChatMessage({ message, callFunction }: ChatMessageProps) {
       )}
       {function_call && (
         <>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            I need to call a function! Please review & approve the function call
+            to proceed:
+          </div>
           <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap my-1 bg-gray-50 dark:bg-gray-950 p-2 rounded">
             <pre>
               <b>Function:</b> {function_call.name}

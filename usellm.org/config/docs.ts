@@ -233,6 +233,10 @@ export const docsConfig: DocsConfig = {
           href: "/demo/ai-chatbot",
         },
         {
+          title: "Function Calling",
+          href: "/demo/function-calling",
+        },
+        {
           title: "Document Q&A",
           href: "/demo/document-qna",
         },
