@@ -3,7 +3,7 @@
 import useLLM, { OpenAIMessage } from "usellm";
 import { useEffect, useRef, useState } from "react";
 
-export default function FunctionCallingDemo() {
+export default function FunctionCalling() {
   const [status, setStatus] = useState<string>("idle");
   const [inputText, setInputText] = useState("");
   const [history, setHistory] = useState<OpenAIMessage[]>([
