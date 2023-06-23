@@ -58,6 +58,7 @@ export default function useLLM({
         $action: "chat",
         template,
         inputs,
+        agent,
       }),
     });
 
