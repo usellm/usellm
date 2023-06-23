@@ -1,0 +1,221 @@
+---
+title: Travel Guide AI (Streamlit)
+description: An example usecase of usellm built with Streamlit
+---
+
+# StreamLit Travel Guide App Documentation
+
+This documentation guide will walk you through the steps to setup and run a simple [StreamLit](https://streamlit.io/)
+application named "Travel Guide App". This application uses the [usellm](https://usellm.org) Python library for
+Language Learning Models (LLMs) to interact with a tour guide assistant and a trip planner assistant.
+
+This tutorial is designed to be beginner-friendly and easy to follow.
+
+By the end of this tutorial, you will have a fully functional tour advisor/trip planner bot that utilizes the advanced
+natural language processing capabilities of `ChatGPT` to provide intelligent and interactive conversations.
+
+Get the source code [here](https://github.com/BirajCoder/travel-guide-ai).
+
+## Setup Development Environment
+
+### Create Github Repository
+
+Follow the steps to create a GitHub repository:
+
+1. Sign in to your GitHub account. If you don't have an account, you can create one for free at https://github.com/join.
+
+2. Once you're signed in, click on the "+" sign at the top right corner of the GitHub interface. Then, select "New repository" from the dropdown menu.
+
+3. On the "Create a new repository" page, you'll need to provide some information:
+
+   - **Repository name:** Enter a name for your repository. Choose a descriptive name that reflects the purpose of your project.
+   - **Description (optional):** Add a brief description to provide an overview of your project.
+   - **Public or Private:** Choose whether you want your repository to be public (visible to everyone) or private (accessible only to you or collaborators).
+   - **Initialize this repository with a README:** Select this option to create an initial README file for your repository. It's a good practice to include a README to provide information about your project.
+   - **Choose a license (optional):** If you want to specify a license for your project, you can choose one from the provided list. Otherwise, you can skip this step.
+
+4. Once you've filled in the necessary details, click on the "Create repository" button.
+
+5. Congratulations! You have successfully created a GitHub repository. You'll be redirected to the repository page, where you can find various options and settings for managing your repository.
+
+<img src="https://i.imgur.com/yYVLPhc.png" />
+
+### Using GitHub Codespaces
+
+We will be using GitHub Codespaces to run the code.
+GitHub Codespaces is a cloud-based development environment provided by GitHub.
+It allows developers to write, build, test, and debug code directly in the browser, without the need for local development setups.
+With GitHub Codespaces, you can quickly set up and access a fully configured development environment for your projects.
+
+To run code in GitHub Codespaces, follow these steps:
+
+1. Open your GitHub repository.
+
+2. If Codespaces is already enabled for your repository, you will see a green "Code" button at the top right corner of the repository page. Click on the arrow next to it, and select "Open with Codespaces" from the dropdown menu.
+
+   If you haven't set up Codespaces for your repository, you can click on the "Code" button and select "Open with Codespaces" from the dropdown menu. This will prompt you to configure and set up Codespaces for your repository.
+
+3. Once you click on "Open with Codespaces," GitHub will create a new Codespace based on your repository's configuration. It will set up the necessary development environment, including the required dependencies and tools.
+
+4. After the Codespace is set up, you will be redirected to the Codespaces interface, which provides an integrated development environment (IDE) within your browser.
+
+5. In the Codespaces IDE, you can view and edit the files in your repository. You can navigate through the file structure, make changes to the code, and create new files as needed.
+
+**Note**: In case GitHub Codespaces doesn't work for you, clone the code locally to your machine.
+
+<img src="https://i.imgur.com/tPAQMKf.png" />
+
+## Configure a Conda Environment
+
+Before we proceed with the application, it's recommended to set up a separate Python environment using Anaconda. Anaconda is a distribution of Python that comes with tools like Conda that let you easily create separate environments for your projects.
+
+Here's how you can setup a new Conda environment for this project:
+
+1. Create a new Conda environment named "streamlit-app":
+
+   ```bash
+   conda create -n streamlit-app python
+   ```
+
+   This command creates a new Conda environment named "streamlit-app" and installs the latest version of Python in it.
+
+   <img src="https://i.imgur.com/oC1HHZF.png" />
+
+2. Activate the newly created Conda environment:
+
+   ```bash
+   conda activate streamlit-app
+   ```
+
+   When the environment is activated, the name of the current environment appears in parentheses at the beginning of your command prompt to indicate the active environment.
+
+3. Install necessary Python packages:
+
+   After the Conda environment is activated, you can install the necessary Python packages. We'll be using `usellm` and `streamlit` in this project:
+
+   ```bash
+   pip install usellm streamlit
+   ```
+
+   <img src="https://i.imgur.com/MCUiVxO.png" />
+
+Now, you're all set to proceed with the development in an isolated Python environment! This helps ensure that the dependencies of the project do not interfere with the dependencies of your other Python projects.
+
+## Create StreamLit App
+
+You can create your Streamlit app by creating a new Python file. You can name it anything but in this case, we'll name it `app.py`.
+
+## Project Folder Structure
+
+Your project should have the following structure:
+
+```
+my-streamlit-app/
+│
+├── app.py
+├── utils.py
+├── .gitignore              # Ignore some files from Git.
+└── README.md               # Readme file for the project.
+```
+
+The `app.py` file will contain the main application code. The `utils.py` file will contain helper functions or constants used in your application.
+
+<img src="https://i.imgur.com/AIe2XGV.png" />
+
+## Integrating the usellm Service
+
+First, import the `usellm` library and other necessary libraries at the top of the `app.py` file:
+
+```python
+import streamlit as st
+from usellm import UseLLM, Message, Options
+from utils import TOUR_GUIDE_SYSTEM, TRIP_PLANNER_SYSTEM
+```
+
+Next, initialize the `usellm` service:
+
+```python
+service = UseLLM(service_url="https://usellm.org/api/llm")
+```
+
+## Creating Tour Guide and Trip Planner Sections
+
+In the app, there are two sections: "Tour Guide" and "Trip Planner". They both take user inputs and return responses from the corresponding LLM service. The function `tour_guide_section` and `trip_planner_section` handle the user interactions for these sections.
+
+```python
+def tour_guide_section():
+    st.title("Tour Guide Assistant")
+    user_input = st.text_input("Enter the Place You Want to Visit", key="input1")
+    if st.button("Send", key="button1"):
+        if user_input:
+            return get_response(TOUR_GUIDE_SYSTEM, user_input)
+        else:
+            return "NULL"
+
+def trip_planner_section():
+    ...
+```
+
+## Adding Functions to Get Response and Print
+
+When the "Send" button is pressed, the function `get_response` is called to get a response from the corresponding LLM service.
+
+```python
+def get_response(system_message, user_input):
+    messages = [
+        Message(role="system", content=system_message, ),
+        Message(role="user", content=user_input)
+    ]
+    options = Options(messages=messages)
+    output = service.chat(options)
+    return output
+```
+
+The response from the LLM service is stored and displayed using the function `show`.
+
+```python
+def show(output):
+    if output:
+        st.markdown(output.content)
+    elif output=="NULL":
+        st.markdown("Please Enter Some Text")
+```
+
+## Main File
+
+The `main` function in the given code snippet creates two tabs in the Streamlit app, named "Tour Guide" and "Trip Planner". When the "Tour Guide" tab is active, the function `tour_guide_section` is called, which manages user interactions and displays the output for this tab. Similarly, when the "Trip Planner" tab is active, the function `trip_planner_section` is invoked to manage its user interactions and to display the respective output.
+
+```python
+def main():
+    tab1, tab2 = st.tabs(["Tour Guide", "Trip Planner"])
+
+    with tab1:
+        output = tour_guide_section()
+        show(output)
+
+    with tab2:
+        output = trip_planner_section()
+        show(output)
+```
+
+## System Prompts
+
+Both "Tour Guide" and "Trip Planner" have some system prompts which is stored in the `utils.py` file.
+You can modify the prompt according to your own need.
+
+## Conclusion
+
+The StreamLit Travel Guide App provides an example of how you can create an interactive web application using StreamLit and the `usellm` library for LLMs.
+This example can be extended and adapted to create more complex applications.
+
+To run your Streamlit app, navigate to your project directory in the terminal and enter the following command:
+
+```bash
+streamlit run app.py
+```
+
+<img src="https://i.imgur.com/kQSV2h8.png" />
+
+This command starts the Streamlit server and will give you a URL that you can open in your web browser to view your app.
+
+[Source Code](https://github.com/BirajCoder/travel-guide-ai).

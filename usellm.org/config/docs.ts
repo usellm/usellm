@@ -58,6 +58,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/examples/chrome-extension",
         },
         {
+          title: "AI Travel Guide (Streamlit)",
+          href: "/docs/examples/streamlit-app",
+        },
+        {
           title: "Slack Bot",
           href: "/docs/examples/slack-bot",
           label: "Soon",
@@ -209,38 +213,36 @@ export const docsConfig: DocsConfig = {
 
     {
       title: "useLLM for Python",
-      items:[
-        
+      items: [
         {
           title: "Installation and Usage",
-          href:"/docs/useLLM-py/installation-usage" 
+          href: "/docs/useLLM-py/installation-usage",
         },
         {
           title: "Classes and Methods",
-          href: "/docs/useLLM-py/classes-methods"
+          href: "/docs/useLLM-py/classes-methods",
         },
         {
           title: "Exceptions",
-          href: "/docs/useLLM-py/exception"
+          href: "/docs/useLLM-py/exception",
         },
         {
           title: "Chat",
-          href: "/docs/useLLM-py/py-chat"
+          href: "/docs/useLLM-py/py-chat",
         },
         {
           title: "Image Generation",
-          href: "/docs/useLLM-py/py-generate_image"
+          href: "/docs/useLLM-py/py-generate_image",
         },
         {
           title: "Speak",
-          href: "/docs/useLLM-py/speak-py"
+          href: "/docs/useLLM-py/speak-py",
         },
         {
           title: "Embed",
-          href: "/docs/useLLM-py/embed-py"
-        }        
+          href: "/docs/useLLM-py/embed-py",
+        },
       ],
-      
     },
 
     {
