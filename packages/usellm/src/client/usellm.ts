@@ -22,6 +22,7 @@ import {
   LLMGenerateClonedAudioOptions,
   SpeakOptions,
   UseLLMOptions,
+  LLMCallAgentFunctionOptions,
 } from "./types";
 import { LLMChatResult } from "../shared/types";
 
@@ -42,10 +43,12 @@ export default function useLLM({
   async function chat({
     messages = [],
     stream = false,
-    template,
-    inputs,
+    agent,
+    function_call,
     onStream,
+    ...rest
   }: LLMChatOptions): Promise<LLMChatResult> {
+    const { template, inputs } = rest;
     const response = await fetcher(`${serviceUrl}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -293,6 +296,10 @@ export default function useLLM({
     return callAction("callHuggingFace", options);
   }
 
+  async function callAgentFunction(options: LLMCallAgentFunctionOptions) {
+    return callAction("callAgentFunction", options);
+  }
+
   return {
     callAction,
     chat,
@@ -313,5 +320,6 @@ export default function useLLM({
     generateClonedAudio,
     callReplicate,
     callHuggingFace,
+    callAgentFunction,
   };
 }

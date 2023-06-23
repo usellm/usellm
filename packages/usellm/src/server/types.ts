@@ -17,7 +17,9 @@ export interface LLMServiceTemplate {
 export interface LLMServiceChatOptions {
   $action?: string;
   messages?: OpenAIMessage[];
+  function_call?: string;
   stream?: boolean;
+  agent?: string;
   template?: string;
   inputs?: object;
   user?: string;
@@ -101,6 +103,41 @@ export interface LLMServiceHandleResponse {
 
 export type LLMAction = (options: object) => Promise<ReadableStream | object>;
 
+export interface OpenAIFunction {
+  call: (...args: any[]) => any;
+  schema: {
+    name: string;
+    description: string;
+    parameters: {
+      type: string;
+      properties: {
+        [key: string]: {
+          type: string;
+          description: string;
+        };
+      };
+      required: string[];
+    };
+  };
+}
+
+export interface LLMAgent {
+  model: string;
+  messages?: OpenAIMessage[];
+  functions?: OpenAIFunction[];
+  function_call?: string;
+  temperature?: number;
+  top_p?: number;
+  n?: number;
+  stream?: boolean;
+  stop?: string | string[];
+  max_tokens?: number;
+  presence_penalty?: number;
+  frequency_penalty?: number;
+  logit_bias?: object;
+  user?: string;
+}
+
 export interface CreateLLMServiceOptions {
   openaiApiKey?: string;
   elvenLabsApiKey?: string;
@@ -110,7 +147,8 @@ export interface CreateLLMServiceOptions {
   huggingFaceApiKey?: string;
   actions?: string[];
   fetcher?: typeof fetch;
-  templates?: { [id: string]: LLMServiceTemplate };
+  templates?: { [id: string]: LLMServiceTemplate }; // deprecated
+  agents?: { [id: string]: LLMAgent };
   debug?: boolean;
   isAllowed?: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
 }

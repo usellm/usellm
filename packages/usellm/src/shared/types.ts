@@ -1,7 +1,11 @@
 export interface OpenAIMessage {
   content: string;
   role: string;
-  user?: string;
+  name?: string;
+  function_call?: {
+    name: string;
+    arguments: any;
+  };
 }
 
 export type ChatStreamCallback = (result: {

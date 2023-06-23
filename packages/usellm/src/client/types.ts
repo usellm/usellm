@@ -3,9 +3,10 @@ import { OpenAIMessage, ChatStreamCallback } from "../shared/types";
 export interface LLMChatOptions {
   messages?: OpenAIMessage[];
   stream?: boolean;
-  template?: string;
-  inputs?: object;
+  agent?: string;
+  function_call?: string;
   onStream?: ChatStreamCallback;
+  [key: string]: any;
 }
 
 export interface LLMEmbedOptions {
@@ -80,7 +81,7 @@ export interface LLMCloneVoiceOptions {
   voice_name: string;
 }
 
-export interface LLMGenerateClonedAudioOptions{
+export interface LLMGenerateClonedAudioOptions {
   //for message to voice
   quality?: string;
   output_format?: string;
@@ -99,4 +100,10 @@ export interface LLMCallReplicateOptions {
 export interface LLMCallHuggingFaceOptions {
   data: { inputs: string | object; [key: string]: any } | string;
   model: string;
+}
+
+export interface LLMCallAgentFunctionOptions {
+  agent: string;
+  function: string;
+  arguments: any;
 }
