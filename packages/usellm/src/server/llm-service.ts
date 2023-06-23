@@ -19,6 +19,7 @@ import {
   scoreEmbeddings,
   GENERATE_CLONE_VOICE_URL,
   MESSAGE_TO_VOICE_URL,
+  removeUndefined,
 } from "../shared/utils";
 import {
   CreateLLMServiceOptions,
@@ -38,6 +39,7 @@ import {
   LLMServiceCallReplicateOptions,
   LLMServiceCallHuggingFace,
   LLMGenerateClonedAudioOptions,
+  LLMAgent,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -60,6 +62,7 @@ export class LLMService {
   actions: string[];
   isAllowed: (options: LLMServiceHandleOptions) => boolean | Promise<boolean>;
   customActions: { [id: string]: LLMAction } = {};
+  agents: { [id: string]: LLMAgent } = {};
 
   cosineSimilarity = cosineSimilarity;
   scoreEmbeddings = scoreEmbeddings;
@@ -72,10 +75,11 @@ export class LLMService {
     replicateApiKey = "",
     huggingFaceApiKey = "",
     fetcher = fetch,
-    templates = {},
+    templates = {}, // deprecated
     debug = false,
     isAllowed = () => true,
     actions = [],
+    agents = {},
   }: CreateLLMServiceOptions) {
     this.openaiApiKey = openaiApiKey;
     this.elvenLabsApiKey = elvenLabsApiKey;
@@ -88,6 +92,7 @@ export class LLMService {
     this.actions = actions;
     this.playHtApiKey = playHtApiKey;
     this.playHtUserId = playHtUserId;
+    this.agents = agents;
   }
 
   registerTemplate(template: LLMServiceTemplate) {
@@ -100,7 +105,10 @@ export class LLMService {
 
   async callAction(action: string, body = {}) {
     if (!this.actions.includes(action) && !this.customActions[action]) {
-      throw makeErrorResponse(`Action "${action}" is not allowed`, 400);
+      throw makeErrorResponse(
+        `Action "${action}" is not allowed. Add it to the list of allowed actions in "createLLMService".`,
+        400
+      );
     }
 
     if (action === "chat") {
@@ -139,18 +147,21 @@ export class LLMService {
     if (action === "callHuggingFace") {
       return this.callHuggingFace(body as LLMServiceCallHuggingFace);
     }
+    if (action === "callAgentFunction") {
+      return this.callAgentFunction(body as CallAgentFunctionOptions);
+    }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
       throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
     return actionFunc(body);
   }
-  
 
   prepareChatBody(body: LLMServiceChatOptions) {
     const template = {
       ...defaultTemplate,
       ...(this.templates[body.template || ""] || {}),
+      ...(this.agents[body.agent || ""] || {}),
     };
 
     let filledMessages: OpenAIMessage[] = [];
@@ -169,12 +180,24 @@ export class LLMService {
       });
     }
 
+    if (template.messages) {
+      template.messages.forEach((message) => {
+        filledMessages.push({
+          role: message.role,
+          content: message.content,
+          name: message.name,
+          function_call: message.function_call,
+        });
+      });
+    }
+
     if (body.messages) {
       body.messages.forEach((message) => {
         filledMessages.push({
           role: message.role,
           content: message.content,
-          user: message.user,
+          name: message.name,
+          function_call: message.function_call,
         });
       });
     }
@@ -186,19 +209,22 @@ export class LLMService {
       );
     }
 
-    const preparedBody = {
-      messages: filledMessages,
-      stream: body.stream,
-      user: body.user,
+    const preparedBody = removeUndefined({
       model: template.model,
+      messages: filledMessages,
+      functions: template.functions?.map((f) => f.schema) || undefined,
+      function_call: body.function_call ?? template.function_call,
       temperature: template.temperature,
       top_p: template.top_p,
       n: template.n,
+      stream: body.stream ?? template.stream,
+      stop: template.stop,
       max_tokens: template.max_tokens,
       presence_penalty: template.presence_penalty,
       frequency_penalty: template.frequency_penalty,
       logit_bias: template.logit_bias,
-    };
+      user: body.user ?? template.user,
+    });
 
     return preparedBody;
   }
@@ -513,16 +539,16 @@ export class LLMService {
 
     const audioBlob = dataURLToBlob(audioUrl);
     const form = new FormData();
-    form.append('voice_name', voice_name);
+    form.append("voice_name", voice_name);
     form.append("sample_file", audioBlob);
 
     const response1 = await this.fetcher(GENERATE_CLONE_VOICE_URL, {
-      method: 'POST',
+      method: "POST",
       body: form,
       headers: {
-        "accept": 'application/json',
-        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
-        'X-USER-ID': this.playHtUserId,
+        accept: "application/json",
+        AUTHORIZATION: `Bearer ${this.playHtApiKey}`,
+        "X-USER-ID": this.playHtUserId,
       },
     });
 
@@ -536,8 +562,15 @@ export class LLMService {
     return { voiceID };
   }
 
-  async generateClonedAudio(options: LLMGenerateClonedAudioOptions){
-    const { quality = "medium", output_format = "mp3", voiceID, speed = 1, sample_rate = 24000, text } = options;
+  async generateClonedAudio(options: LLMGenerateClonedAudioOptions) {
+    const {
+      quality = "medium",
+      output_format = "mp3",
+      voiceID,
+      speed = 1,
+      sample_rate = 24000,
+      text,
+    } = options;
     if (!text) {
       throw makeErrorResponse("'text' is required'", 400);
     }
@@ -545,12 +578,12 @@ export class LLMService {
       throw makeErrorResponse("'voiceID' is required'", 400);
     }
     const response1 = await this.fetcher(MESSAGE_TO_VOICE_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "accept": 'application/json',
-        'content-type': 'application/json',
-        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
-        'X-USER-ID': this.playHtUserId,
+        accept: "application/json",
+        "content-type": "application/json",
+        AUTHORIZATION: `Bearer ${this.playHtApiKey}`,
+        "X-USER-ID": this.playHtUserId,
       },
       body: JSON.stringify({
         quality,
@@ -559,8 +592,8 @@ export class LLMService {
         sample_rate,
         text,
         voice: voiceID,
-      })
-    })
+      }),
+    });
 
     if (!response1.ok) {
       throw makeErrorResponse("Failed to generate audio", 500);
@@ -570,12 +603,12 @@ export class LLMService {
     const href = json1["_links"][2].href;
 
     const response2 = await this.fetcher(href, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        "AUTHORIZATION": `Bearer ${this.playHtApiKey}`,
-        'X-USER-ID': this.playHtUserId,
-      }
-    })
+        AUTHORIZATION: `Bearer ${this.playHtApiKey}`,
+        "X-USER-ID": this.playHtUserId,
+      },
+    });
     const responseBlob = await response2.blob();
 
     const responseBuffer = Buffer.from(await responseBlob.arrayBuffer());
@@ -585,9 +618,9 @@ export class LLMService {
       ";base64," +
       responseBuffer.toString("base64");
 
-    return {audioUrlReturn};
+    return { audioUrlReturn };
   }
-  
+
   async callReplicate(options: LLMServiceCallReplicateOptions) {
     const { version, input, timeout = 10000 } = options;
 
@@ -668,6 +701,33 @@ export class LLMService {
     const result = await response.json();
     return result;
   }
+
+  async registerAgent(id: string, agent: LLMAgent) {
+    this.agents[id] = agent;
+  }
+
+  async callAgentFunction({
+    agent,
+    function: func,
+    arguments: args,
+  }: CallAgentFunctionOptions) {
+    if (!this.agents[agent]) {
+      throw makeErrorResponse(`Agent "${agent}" is not registered`, 400);
+    }
+    const agentFunc = this.agents[agent]?.functions?.find(
+      (f) => f.schema.name === func
+    );
+    if (!agentFunc) {
+      throw makeErrorResponse(`Function "${func}" is not supported`, 400);
+    }
+    return agentFunc.call(args);
+  }
+}
+
+interface CallAgentFunctionOptions {
+  agent: string;
+  function: string;
+  arguments: object;
 }
 
 export function createLLMService(options: CreateLLMServiceOptions = {}) {

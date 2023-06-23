@@ -32,14 +32,6 @@ export default function AIChatBot() {
     serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
-  let messagesWindow = useRef<Element | null>(null);
-
-  useEffect(() => {
-    if (messagesWindow?.current) {
-      messagesWindow.current.scrollTop = messagesWindow.current.scrollHeight;
-    }
-  }, [history]);
-
   async function handleSend() {
     if (!inputText) {
       return;
@@ -92,28 +84,14 @@ export default function AIChatBot() {
 
   return (
     <div className="flex flex-col h-full max-h-[600px] overflow-y-hidden">
-      <div
-        className="w-full flex-1 overflow-y-auto px-4"
-        ref={(el) => (messagesWindow.current = el)}
-      >
-        {history.map((message, idx) => (
-          <Message {...message} key={idx} />
-        ))}
-      </div>
+      <ChatMessages messages={history} />
       <div className="w-full pb-4 flex px-4">
-        <input
-          className="p-2 border rounded w-full block dark:bg-gray-900 dark:text-white"
-          type="text"
+        <ChatInput
           placeholder={getInputPlaceholder(status)}
-          value={inputText}
+          text={inputText}
+          setText={setInputText}
+          sendMessage={handleSend}
           disabled={status !== "idle"}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
-              event.preventDefault();
-              handleSend();
-            }
-          }}
         />
         <button
           className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2"
@@ -186,15 +164,67 @@ function getInputPlaceholder(status: Status) {
   }
 }
 
-function Message({ role, content }: OpenAIMessage) {
+interface ChatMessagesProps {
+  messages: OpenAIMessage[];
+}
+
+function ChatMessages({ messages }: ChatMessagesProps) {
+  let messagesWindow = useRef<Element | null>(null);
+
+  useEffect(() => {
+    if (messagesWindow?.current) {
+      messagesWindow.current.scrollTop = messagesWindow.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="my-4">
-      <div className="font-semibold text-gray-800 dark:text-white">
-        {capitalize(role)}
-      </div>
-      <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
-        {content}
-      </div>
+    <div
+      className="w-full flex-1 overflow-y-auto px-4"
+      ref={(el) => (messagesWindow.current = el)}
+    >
+      {messages.map((message, idx) => (
+        <div className="my-4" key={idx}>
+          <div className="font-semibold text-gray-800 dark:text-white">
+            {capitalize(message.role)}
+          </div>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            {message.content}
+          </div>
+        </div>
+      ))}
     </div>
+  );
+}
+
+interface ChatInputProps {
+  placeholder: string;
+  text: string;
+  setText: (text: string) => void;
+  sendMessage: () => void;
+  disabled: boolean;
+}
+
+function ChatInput({
+  placeholder,
+  text,
+  setText,
+  sendMessage,
+  disabled,
+}: ChatInputProps) {
+  return (
+    <input
+      className="p-2 border rounded w-full block dark:bg-gray-900 dark:text-white"
+      type="text"
+      placeholder={placeholder}
+      value={text}
+      disabled={disabled}
+      onChange={(e) => setText(e.target.value)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      }}
+    />
   );
 }
