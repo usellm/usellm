@@ -15,5 +15,9 @@
   "files.exclude": {
     "packages/usellm/dist": true,
     "usellm.org/usellm": true
+  },
+  "files.readonlyInclude": {
+    "packages/usellm/dist": true,
+    "usellm.org/usellm": true
   }
 }
