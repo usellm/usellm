@@ -209,20 +209,38 @@ export const docsConfig: DocsConfig = {
 
     {
       title: "useLLM for Python",
-      items: [
+      items:[
+        
         {
           title: "Installation and Usage",
-          href: "/docs/useLLM-py/installation-usage",
+          href:"/docs/useLLM-py/installation-usage" 
         },
         {
           title: "Classes and Methods",
-          href: "/docs/useLLM-py/classes-methods",
+          href: "/docs/useLLM-py/classes-methods"
         },
         {
           title: "Exceptions",
-          href: "/docs/useLLM-py/exception",
+          href: "/docs/useLLM-py/exception"
         },
+        {
+          title: "Chat",
+          href: "/docs/useLLM-py/py-chat"
+        },
+        {
+          title: "Image Generation",
+          href: "/docs/useLLM-py/py-generate_image"
+        },
+        {
+          title: "Speak",
+          href: "/docs/useLLM-py/speak-py"
+        },
+        {
+          title: "Embed",
+          href: "/docs/useLLM-py/embed-py"
+        }        
       ],
+      
     },
 
     {

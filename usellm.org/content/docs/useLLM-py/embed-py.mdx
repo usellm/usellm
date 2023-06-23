@@ -1,0 +1,30 @@
+---
+title: UseLLM.embed
+description: Generates numerical embeddings for given text inputs for allowing context-sensitive AI interactions.
+---
+
+The `UseLLM.embed` function is used to generate embeddings for a given text or a list of texts. Embeddings are numerical representations of text data and are often used for measuring semantic similarities and helping in context based AI interaction.
+
+### Syntax
+
+```Python
+response = UseLLM.chat(
+  input #input string or paragraph
+)
+```
+
+### Parameters
+
+The `embed` function accepts an `options` object with the following properties:
+
+- `input`(required):  The text or texts to be embedded.
+- `user`(optional): An optional parameter representing the users question.
+
+
+### Return Value
+
+The `embed` function is an independent function that returns a list of vectors containing embeddings, one for ech input text.
+
+### Example
+
+Follow this Jupyter notebook to view an example usage of the function above: https://jovian.com/himani007/usellm-embed.
