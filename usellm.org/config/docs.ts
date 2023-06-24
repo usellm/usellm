@@ -165,8 +165,8 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/handle",
         },
         {
-          title: "`.registerTemplate`",
-          href: "/docs/api-reference/register-template",
+          title: "`.registerAgent`",
+          href: "/docs/api-reference/register-agent",
         },
         {
           title: "`.registerAction`",
