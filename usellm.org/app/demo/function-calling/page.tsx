@@ -1,78 +1,52 @@
 "use client";
 
-import useLLM, { OpenAIMessage } from "usellm";
-import { useEffect, useRef, useState } from "react";
+import { OpenAIMessage, useChat } from "usellm";
+import { useEffect, useRef } from "react";
 
 export default function FunctionCalling() {
-  const [status, setStatus] = useState<string>("idle");
-  const [inputText, setInputText] = useState("");
-  const [history, setHistory] = useState<OpenAIMessage[]>([
-    {
-      role: "assistant",
-      content:
-        "I'm an AI chatbot than can connect to the GitHub API. Ask me question about a GitHub user!",
-    },
-  ]);
+  const {
+    isLoading,
+    messages,
+    sendMessage,
+    callFunction,
+    sendFunctionOutput,
+    input,
+    setInput,
+  } = useChat({
+    agent: "github-qna",
+    initialMessages: [
+      {
+        role: "assistant",
+        content:
+          "I'm an AI chatbot than can connect to the GitHub API. Ask me question about a GitHub username!",
+      },
+    ],
+  });
 
-  const llm = useLLM();
-
-  async function handleSend() {
-    if (!inputText) {
-      return;
-    }
-    try {
-      setStatus("streaming");
-      const newHistory = [...history, { role: "user", content: inputText }];
-      setHistory(newHistory);
-      setInputText("");
-      const { message } = await llm.chat({
-        agent: "github-qna",
-        messages: newHistory,
-      });
-      setHistory([...newHistory, message]);
-      setStatus("idle");
-    } catch (error: any) {
-      console.error(error);
-      window.alert("Something went wrong! " + error.message);
-    }
-  }
-
-  async function callFunction(name: string, args: any) {
-    const output = await llm.callAgentFunction({
-      agent: "github-qna",
+  async function handleCallClick(name: string, args: any) {
+    const output = await callFunction({
       function: name,
       arguments: args,
     });
-    setStatus("streaming");
-    const newHistory = [
-      ...history,
-      { role: "function", name, content: JSON.stringify(output, null, 2) },
-    ];
-    setHistory(newHistory);
-    const { message } = await llm.chat({
-      agent: "github-qna",
-      messages: newHistory,
-    });
-    setHistory([...newHistory, message]);
-    setStatus("idle");
+    await sendFunctionOutput({ function: name, output });
   }
 
   return (
     <div className="flex flex-col h-full max-h-[600px] overflow-y-hidden">
-      <ChatMessages messages={history} callFunction={callFunction} />
+      <ChatMessages messages={messages} callFunction={handleCallClick} />
       <div className="w-full pb-4 flex px-4">
         <ChatInput
           placeholder={
-            status == "idle" ? "Type a message..." : "Wait for my response..."
+            !isLoading ? "Type a message..." : "Wait for my response..."
           }
-          text={inputText}
-          setText={setInputText}
-          sendMessage={handleSend}
-          disabled={status === "streaming"}
+          text={input}
+          setText={setInput}
+          sendMessage={sendMessage}
+          disabled={isLoading}
         />
         <button
           className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2"
-          onClick={handleSend}
+          onClick={sendMessage}
         >
           Send
         </button>
