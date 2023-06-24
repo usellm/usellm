@@ -27,29 +27,18 @@ To write better prompts, consider the following tips:
 
 3. **Use delimiters properly**: Delimiters like "-" or ">" can help structure the prompt and guide the model's output.
 
-````python
-prompt = f"""
-Summarize the text delimited by triple backticks \
+```javascript
+var prompt = `Summarize the text delimited by triple backticks 
 into a single sentence.
-```{text}```
-"""
-````
+${text}`;
+```
 
 4. **Ask for a structured output**: Asking the model to return the answer in a
    specific format (for example, a bulleted list or a numbered sequence) can
    help you get the results you want.
 
-```python
-prompt = f"""
-Generate a list of three made-up book titles along \
-with their authors and genres.
-Provide them in JSON format with the following keys:
-book_id, title, author, genre.
-"""
-```
-
-```python
-prompt_2 = f"""
+```javascript
+var prompt = `
 Your task is to perform the following actions:
 1 - Summarize the following text delimited by
   <> with 1 sentence.
@@ -65,18 +54,18 @@ Translation: <summary translation>
 Names: <list of names in Italian summary>
 Output JSON: <json with summary and num_names>
 
-Text: <{text}>
-"""
+Text: <${text}>
+`;
 ```
 
 5. **Give examples**: Examples can be highly effective, especially for more
    complex tasks. By showing the model examples of the input and output
    format you want, you can guide its behavior.
 
-```python
-prompt = f"""
+```javascript
+var prompt = `
 You will be provided with text delimited by triple quotes.
-If it contains a sequence of instructions, \
+If it contains a sequence of instructions, 
 re-write those instructions in the following format:
 
 Step 1 - ...
@@ -84,62 +73,62 @@ Step 2 - …
 …
 Step N - …
 
-If the text does not contain a sequence of instructions, \
-then simply write \"No steps provided.\"
+If the text does not contain a sequence of instructions, 
+then simply write "No steps provided."
 
-\"\"\"{text_2}\"\"\"
-"""
+"""${text_2}""";
+`;
 ```
 
 6. **Few-shot prompting**: This involves providing a series of examples
    before your actual prompt, which can improve the model's understanding of the task.
 
-```python
-prompt = f"""
+```javascript
+var prompt = `
 Your task is to answer in a consistent style.
 
 <child>: Teach me about patience.
 
-<grandparent>: The river that carves the deepest \
-valley flows from a modest spring; the \
-grandest symphony originates from a single note; \
+<grandparent>: The river that carves the deepest 
+valley flows from a modest spring; the 
+grandest symphony originates from a single note;
 the most intricate tapestry begins with a solitary thread.
 
 <child>: Teach me about resilience.
-"""
+`;
 ```
 
 7. **Specify the steps to complete a task**: Providing a step-by-step breakdown
    of a task can guide the model and improve its responses.
 
-```python
-prompt_1 = f"""
+```javascript
+var prompt_1 = `
 Perform the following actions:
-1 - Summarize the following text delimited by triple \
+1 - Summarize the following text delimited by triple
 backticks with 1 sentence.
 2 - Translate the summary into French.
 3 - List each name in the French summary.
-4 - Output a json object that contains the following \
+4 - Output a json object that contains the following
 keys: french_summary, num_names.
 
 Separate your answers with line breaks.
 
 Text:
-'''{text}'''
-"""
+s${text}
+`;
 ```
 
 8. **Instruct the model to work out its own solution**: Instead of asking
    for a direct answer, consider instructing the model to 'think through' the
    problem or task and describe its reasoning.
 
-```python
-prompt = f"""
-Your task is to determine if the student's solution \
+```javascript
+var prompt = `
+Your task is to determine if the student's solution 
 is correct or not.
 To solve the problem do the following:
 - First, work out your own solution to the problem.
-- Then compare your solution to the student's solution \
+- Then compare your solution to the student's solution 
 and evaluate if the student's solution is correct or not.
 Don't decide if the student's solution is correct until
 you have done the problem yourself.
@@ -160,7 +149,7 @@ Actual solution:
 steps to work out the solution and your solution here
 '''
 
-Is the student's solution the same as actual solution \
+Is the student's solution the same as actual solution 
 just calculated:
 '''
 yes or no
@@ -170,6 +159,7 @@ Student grade:
 '''
 correct or incorrect
 '''
+`;
 ```
 
 9. **Temperature and Top P Setting**: These parameters control the randomness of the
@@ -186,25 +176,26 @@ Default value is 1.
 
 It's recommended altering temperature or top_p but not both.
 
-````python
-prompt = f"""
+```javascript
+var prompt = `
 You are a customer service AI assistant.
 Your task is to send an email reply to a valued customer.
-Given the customer email delimited by ```, \
+Given the customer email delimited by |, 
 Generate a reply to thank the customer for their review.
-If the sentiment is positive or neutral, thank them for \
+If the sentiment is positive or neutral, thank them for 
 their review.
-If the sentiment is negative, apologize and suggest that \
+If the sentiment is negative, apologize and suggest that 
 they can reach out to customer service.
 Make sure to use specific details from the review.
 Write in a concise and professional tone.
-Sign the email as `AI customer agent`.
-Customer review: ```{review}```
-Review sentiment: {sentiment}
-"""
-response = get_completion(prompt, temperature=0.7)
-print(response)
-````
+Sign the email as 'AI customer agent'.
+Customer email: |${review}|
+Review sentiment: ${sentiment}
+`;
+
+var response = get_completion(prompt, { temperature: 0.7 });
+console.log(response);
+```
 
 10. **Revision**: Iteratively refining and testing your prompts is a critical part of
     prompt engineering.
@@ -213,115 +204,114 @@ print(response)
 
 #### 1. Expanding:
 
-````python
-prompt = f"""
+```Javascript
+var prompt = `
 You are a customer service AI assistant.
 Your task is to send an email reply to a valued customer.
-Given the customer email delimited by ```, \
+Given the customer email delimited by |,
 Generate a reply to thank the customer for their review.
-If the sentiment is positive or neutral, thank them for \
-their review.
-If the sentiment is negative, apologize and suggest that \
-they can reach out to customer service.
+If the sentiment is positive or neutral, thank them for their review.
+If the sentiment is negative, apologize and suggest that they can reach out to customer service.
 Make sure to use specific details from the review.
 Write in a concise and professional tone.
-Sign the email as `AI customer agent`.
-Customer review: ```{review}```
-Review sentiment: {sentiment}
-"""
-````
+Sign the email as 'AI customer agent'.
+Customer review: |${review}|
+Review sentiment: ${sentiment}
+`;
+```
 
 #### 2. Translation:
 
-````python
-prompt = f"""
-Translate the following  text to French and Spanish
-and English pirate: \
-```I want to order a basketball```
-"""
-````
+```javascript
+var prompt = `Translate the following  text to French and Spanish
+and English pirate: 
+"""I want to order a basketball"""`;
+```
 
 #### 3. Tone Transformation:
 
-```python
-prompt = f"""
+```javascript
+var prompt = `
 Translate the following from slang to a business letter:
 'Dude, This is Joe, check out this spec on this standing lamp.'
-"""
+`;
 ```
 
 #### 4. Format Conversion:
 
-```python
-data_json = { "resturant employees" :[
-    {"name":"Shyam", "email":"shyamjaiswal@gmail.com"},
-    {"name":"Bob", "email":"bob32@gmail.com"},
-    {"name":"Jai", "email":"jai87@gmail.com"}
-]}
+```javascript
+var data_json = {
+  "restaurant employees": [
+    { name: "Shyam", email: "shyamjaiswal@gmail.com" },
+    { name: "Bob", email: "bob32@gmail.com" },
+    { name: "Jai", email: "jai87@gmail.com" },
+  ],
+};
 
-prompt = f"""
+var prompt = `
 Translate the following python dictionary from JSON to an HTML \
-table with column headers and title: {data_json}
-"""
+table with column headers and title: ${JSON.stringify(data_json)}
+`;
 ```
 
 #### 5. Spelling and Grammar Check:
 
-````python
-text = f"""
-Got this for my daughter for her birthday cuz she keeps taking \
-mine from my room.  Yes, adults also like pandas too.  She takes \
-it everywhere with her, and it's super soft and cute.  One of the \
-ears is a bit lower than the other, and I don't think that was \
-designed to be asymmetrical. It's a bit small for what I paid for it \
-though. I think there might be other options that are bigger for \
-the same price.  It arrived a day earlier than expected, so I got \
-to play with it myself before I gave it to my daughter.
-"""
-prompt = f"proofread and correct this review: ```{text}```"
-````
+```javascript
+var text = `
+Got this for my daughter for her birthday cuz she keeps taking
+mine from my room.  Yes, adults also like pandas too.  She takes
+it everywhere with her, and it's super soft and cute.  One of
+the ears is a bit lower than the other, and I don't think that
+was designed to be asymmetrical. It's a bit small for what I
+paid for it though. I think there might be other options that
+are bigger for the same price.  It arrived a day earlier than
+expected, so I got to play with it myself before I gave it to my daughter.
+`;
+
+var prompt = `proofread and correct this review enclosed in \: 
+\${text}\
+`;
+```
 
 #### 6. Finding Sentiment:
 
-```python
-lamp_review = lamp_review = """
-Needed a nice lamp for my bedroom, and this one had \
-additional storage and not too high of a price point. \
-Got it fast.  The string to our lamp broke during the \
-transit and the company happily sent over a new one. \
-Came within a few days as well. It was easy to put \
-together.  I had a missing part, so I contacted their \
-support and they very quickly got me the missing piece! \
-Lumina seems to me to be a great company that cares \
+```javascript
+var lamp_review = `
+Needed a nice lamp for my bedroom, and this one had additional storage
+and not too high of a price point. Got it fast. The string to our lamp 
+broke during the transit and the company happily sent over a new one. 
+Came within a few days as well. It was easy to put together. I had a 
+missing part, so I contacted their support and they very quickly got me 
+the missing piece! Lumina seems to me to be a great company that cares 
 about their customers and products!!
-"""
+`;
 
-prompt = f"""
+var prompt = `
 What is the sentiment of the following product review,
 which is delimited with triple backticks?
 
-Review text: '''{lamp_review}'''
-"""
-response = get_completion(prompt)
-print(response)
+Review text: '''${lamp_review}'''
+`;
 
+var response = get_completion(prompt);
+console.log(response);
 ```
 
 **Output:** The sentiment of the product review is positive.
 
 #### 7. Identify Emotions:
 
-```python
-prompt = f"""
-Identify a list of emotions that the writer of the \
-following review is expressing. Include no more than \
-five items in the list. Format your answer as a list of \
-lower-case words separated by commas.
+```javascript
+var prompt = `
+Identify a list of emotions that the writer of the following 
+review is expressing. Include no more than five items in the list. 
+Format your answer as a list of lower-case words separated by commas.
 
-Review text: '''{lamp_review}'''
-"""
-response = get_completion(prompt)
-print(response)
+Review text: '''${lamp_review}'''
+`;
+
+var response = get_completion(prompt);
+console.log(response);
 ```
 
 **Output:** happy, satisfied, grateful, impressed, content
@@ -330,4 +320,4 @@ Remember, prompt engineering is more art than science, and often requires a fair
 
 ### References
 
-- [ChatGPT Prompt Engineering for Developers [DeepLearning.ai]](https://learn.deeplearning.ai/chatgpt-prompt-eng/)
+- [ChatGPT Prompt Engineering for Developers [DeepLearning.ai](https://learn.deeplearning.ai/chatgpt-prompt-eng/)
