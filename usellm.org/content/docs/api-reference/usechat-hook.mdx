@@ -1,0 +1,112 @@
+---
+title: useChat
+description: React hook for managing chat state and interactions with language models
+---
+
+`useChat` is a React hook designed to manage chat state and interact with an LLM service for operations such as sending messages and calling functions.
+
+### Import
+
+```jsx
+import { useChat } from "usellm";
+```
+
+### Usage
+
+```jsx
+const {
+  isLoading,
+  messages,
+  sendMessage,
+  callFunction,
+  sendFunctionOutput,
+  input,
+  setInput,
+} = useChat(options);
+```
+
+Make sure to invoke the `useChat` hook inside a React component (as per the [rules of hooks](https://react.dev/warnings/invalid-hook-call-warning)).
+
+### Parameters
+
+`useChat` accepts a single object with the following parameters as its arguments:
+
+- `initialMessages` (optional): The initial list of messages. Default is an empty array.
+- `initialInput` (optional): The initial input string. Default is an empty string.
+- `stream` (optional): A boolean that indicates whether to stream the chat. Default is false.
+- `agent` (optional): The agent that you are communicating with.
+- `serviceUrl` (optional): The base URL of the service to make requests to. Default is undefined.
+- `fetcher` (optional): A function to make HTTP requests. The default is the browser's native `fetch` function.
+- `onStream` (optional): A callback function that is invoked when streaming data.
+
+### Return Value
+
+An object with the following properties:
+
+- `messages`: An array of messages in the chat.
+- `setMessages`: A function to set the messages.
+- `sendMessage`: A function to send a message.
+- `input`: The current input string.
+- `setInput`: A function to set the input string.
+- `isLoading`: A boolean that indicates whether the chat is loading.
+- `callFunction`: A function to call a function of the agent.
+- `sendFunctionOutput`: A function to send the output of a function.
+
+### Example
+
+Here's a complete working example that you can use as a starting point ([live demo](/demo/usechat-example)):
+
+```javascript
+"use client";
+import { useChat } from "usellm";
+
+export default function Demo() {
+  const { input, setInput, messages, sendMessage } = useChat({
+    stream: true,
+    initialMessages: [
+      {
+        role: "assistant",
+        content:
+          "I'm a chatbot powered by the ChatGPT API and developed using useLLM. Ask me anything!",
+      },
+    ],
+  });
+
+  return (
+    <div className="flex flex-col h-full max-h-[600px] overflow-y-hidden">
+      <div className="w-full flex-1 overflow-y-auto px-4">
+        {messages.map((message, idx) => (
+          <div className="my-4" key={idx}>
+            <div className="font-semibold text-gray-800 dark:text-white">
+              {message.role}
+            </div>
+            <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+              {message.content}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-full pb-4 flex px-4">
+        <input
+          className="p-2 border rounded w-full block dark:bg-gray-900 dark:text-white"
+          placeholder="Type a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              sendMessage();
+            }
+          }}
+        />
+        <button
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2"
+          onClick={sendMessage}
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+```

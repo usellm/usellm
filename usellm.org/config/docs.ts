@@ -84,6 +84,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/usellm-hook",
         },
         {
+          title: "`useChat`",
+          href: "/docs/api-reference/usechat-hook",
+        },
+        {
           title: "`.chat`",
           href: "/docs/api-reference/chat",
         },
