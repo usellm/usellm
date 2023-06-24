@@ -3,7 +3,11 @@ title: Quickstart
 description: Add large language models to your React app with just a few lines of code.
 ---
 
-`useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code. [Try Demo](https://usellm.org/demo/chat-thread)
+`useLLM` is a React library that lets you integrate large language models like [OpenAI's ChatGPT](https://openai.com/blog/introducing-chatgpt-and-whisper-apis) and
+add AI-powered features into your React app with just a few lines of code.
+
+It supports message streaming, prompt engineering, audio transcription, text-to-speech,
+and much more right out of the box, offers powerful abstractions for building complex AI apps.
 
 ## Installation
 
@@ -13,74 +17,126 @@ Install the package from NPM:
 npm install usellm@latest
 ```
 
+You can also use `yarn` or `pnpm` for installation.
+
 ## Usage
 
-The libary offers the following functionality:
+`useLLM` facilitates a clear segregation of client and server side code, and helps you
+adhere to best practices for avoiding security vulnerabilities in your apps. Let's build
+a simple ChatGPT-powered travel planner app using `useLLM` to see how it works.
 
-1. Use the `useLLM` hook in your react component (client-side)
-2. Use `createLLMService` to create an API endpoint for the hook (server-side)
-3. User `llmService.registerTemplate` to set up preconfigured prompts & options (server-side)
+### 1. Create an Application
 
-**NOTE**: This library is currently a wrapper over [OpenAI's chat completions API](https://platform.openai.com/docs/api-reference/chat/create). More language models and APIs will be added soon.
+While `useLLM` can be used with any React framework, we'll use [Next.js](https://nextjs.org) in
+this example. Run the following command to create a new Next.js app:
 
-### Step 1 - `useLLM` hook
-
-1. Import the `useLLM` hook from the `usellm` package:
-
-```javascript
-import useLLM from "usellm";
+```bash
+npx create-next-app@latest travel-planner
 ```
 
-2. Initialize the hook with a Service URL inside a react component:
+**NOTE**: You can use `npx create-next-app@latest .` if you'd like to create the app in the current directory.
 
-```javascript
-const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+Select the default options when prompted:
+
+```bash
+Would you like to use TypeScript with this project? > [Yes]
+✔ Would you like to use ESLint with this project? > [Yes]
+✔ Would you like to use Tailwind CSS with this project? > [Yes]
+✔ Would you like to use src/ directory with this project? > [No]
+✔ Use App Router (recommended)? > [Yes]
+✔ Would you like to customize the default import alias? > [No]
 ```
 
-**NOTE**: The above service URL is for testing only, please don't use it in production. Check the next section to learn how you can create your own service URL.
+Once the app is created, navigate to
+the project directory and install the `useLLM` package:
 
-3. Use the `llm.chat` method (possibly in an button click handler) to send a chat message :
+```bash
+cd travel-planner
+npm install usellm@latest
+```
 
-```javascript
-try {
-  const { message } = await llm.chat({
-    messages: [{ role: "user", content: "Who are you?" }],
-  });
-  console.log("Received message: ", message.content);
-} catch (error) {
-  console.error("Something went wrong!", error);
+You can now run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the default Next.js app.
+
+![](https://i.imgur.com/yfTTbYJ.png)
+
+You can also open the project for development in VS Code:
+
+```bash
+code .
+```
+
+### 2. Create an API Route
+
+To communicate with the [OpenAI API](https://platform.openai.com/docs/api-reference), we'll need to create an API route. Add the following code inside a file named `app/api/llm.ts`:
+
+```typescript
+import { createLLMService } from "usellm";
+
+export const runtime = "edge";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat"],
+});
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  // add authentication and rate limiting here
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
 }
 ```
 
-The `llm.chat` method also supports streaming the response token-by-token using the `onStream` callback:
+The above file creates a [route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers)
+within the [app router](https://nextjs.org/docs/app) and uses the
+[edge runtime](https://nextjs.org/docs/app/building-your-application/routing/router-handlers#edge-and-nodejs-runtimes)
+to allow streaming of responses. Don't worry if these terms don't make sense to you, you can read more about them later in the Next.js docs.
 
-```javascript
-await llm.chat({
-  messages: [{ role: "user", content: "Who are you?" }],
-  stream: true,
-  onStream: ({ message }) => console.log(message),
-});
+You'll need to provide your [OpenAI secret API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key)
+to let the library communicate with the OpenAI API. Create a file `.env.local` and place your API key inside it:
+
+```ini
+OPENAI_API_KEY=sk-...
 ```
 
-The `messages` option passed to `llm.chat` must be an array of OpenAI messages, [as documented here](https://platform.openai.com/docs/api-reference/chat/create#chat/create-messages).
+The `.env.local` is already added to your `.gitignore` file to prevent your API key from being committed to your repository.
 
-#### Example - `llm.chat`
+### 3. Use the React Hook
 
-Here's a complete working example that you can use as a starting point ([live demo](/demo/llm-chat)):
+We're now ready to use the `useLLM` react hook within our application to connect to the API route we just created. Replace the contents of `app/page.tsx` with the following code:
 
-```javascript
+```tsx
 "use client";
 import useLLM from "usellm";
 import { useState } from "react";
 
-export default function Demo() {
-  const llm = useLLM({ serviceUrl: "https://usellm.org/api/llm" });
+export default function Home() {
+  const llm = useLLM();
+  const [location, setLocation] = useState("");
   const [result, setResult] = useState("");
 
   async function handleClick() {
     try {
       await llm.chat({
-        messages: [{ role: "user", content: "What is a language model?" }],
+        messages: [
+          {
+            role: "system",
+            content: `You're a travel planner bot. Given a destination, generate an itinerary for a one week trip. Keep it short and sweet.`,
+          },
+          { role: "user", content: `Destination: ${location}` },
+        ],
         stream: true,
         onStream: ({ message }) => setResult(message.content),
       });
@@ -89,348 +145,102 @@ export default function Demo() {
     }
   }
   return (
-    <div>
-      <button onClick={handleClick}>Send</button>
-      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
+    <div className="min-h-screen mx-auto my-8 max-w-4xl">
+      <h1 className="text-center mb-4 text-2xl">Travel Planner</h1>
+      <div className="flex">
+        <input
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Enter a destination"
+          className="rounded border p-2 mr-2 text-black"
+        />
+        <button
+          className="rounded border border-black dark:border-white p-2"
+          onClick={handleClick}
+        >
+          Submit
+        </button>
+      </div>
+      <div className="mt-4 whitespace-pre-wrap">{result}</div>
     </div>
   );
 }
 ```
 
-It produces the following result:
+Here's what the above code does:
 
-<img
-  src="https://github.com/usellm/usellm/assets/1560745/d4709dfa-9403-4845-9f76-2fa21667604a"
-  alt="usellmdemo"
-  width="320"
-/>
+- A page is created with an input box where the user can enter a location and a submit button.
+- The `useLLM` React is used to create an `llm` object to communicate with the API route.
+- When the user clicks "Submit", the `handleClick` function is called, which invokes `llm.chat`.
+- `llm.chat` sends a message to the API route, which in turn sends it to the OpenAI API.
+- The response is streamed back word by word & passed to the `onStream` callback.
+- The `onStream` callback updates the `result` state variable, which in turn updates the UI.
 
-#### Options - `useLLM`
+Visit https://localhost:3000 on your browser to try it yourself. Here's what it looks like:
 
-Here is the type signature showing the full set of options supported by `llm.chat`:
+![](https://i.imgur.com/dBrYWcV.gif)
 
-```javascript
-interface UseLLMChatOptions {
-  messages?: OpenAIMessage[]; // message history for generating the next message
-  stream?: boolean; // do you want to stream the response token by token?
-  template?: string; // use a preconfigured template (see the `registerTemplate` section)
-  inputs?: object; // inputs to be provided to the preconfigured template (see the `registerTemplate` section)
-  onStream?: (result: {
-    message: OpenAIMessage, // partial message containing tokens received so far
-    isFirst: boolean, // is this the first token?
-    isLast: boolean, // is this the last token?
-  }) => void; // called every time a new token is received (only if stream is true)
-}
-```
+### 4. Deploy to the Cloud
 
-The return value of `llm.chat` is a promise that resolves to an object containing the following fields:
+Let's push this project to [GitHub](https://github.com) and deploy it to [Vercel](https://vercel.com). Before deploying to production, you might want to add authentication
+(check out [Clerk](https://clerk.com/docs/nextjs/get-started-with-nextjs)) or rate limiting (check out [Upstash](https://upstash.com/blog/upstash-ratelimit)) to your API route to prevent abuse.
 
-```javascript
-interface LLMChatResult {
-  message: OpenAIMessage; // the final message received from OpenAI
-}
-```
+Follow these steps to push your project to GitHub:
 
-`OpenAIMessage` has the following signature, [as documented here](https://platform.openai.com/docs/api-reference/chat/create#chat/create-messages):
+1. Stage and commit your changes to the git repository (already initialized by `create-next-app`):
 
-```javascript
-interface OpenAIMessage {
-  content: string; // contains the actual text of the message
-  role: string; // can be "system", "user", or "assistant"
-  user?: string; // an optional user name/ID used by OpenAI for spam prevention
-}
-```
+   ```bash
+   git commit -m "Initial commit"
+   ```
 
-Apart from a service URL, you can also provide a custom `fetcher` function to `useLLM` for adding headers, cookies, etc. before invoking the service URL :
+2. Go to https://github.com and [create a new repository](https://docs.github.com/en/get-started/quickstart/create-a-repo). You don't need to initialize the repository with a README, .gitignore or License. The repository should be completely empty.
 
-```javascript
-const llm = useLLM({ serviceUrl: 'https://usellm.org/api/llm', fetcher: (url, options) => {...}});
-```
+3. Copy the URL of your new GitHub repository. It should look something like `https://github.com/username/reponame.git`.
 
-The custom `fetcher` it should have the same signature at [default `fetch` function](https://developer.mozilla.org/en-US/docs/Web/API/fetch).
+4. Link the local repository to your GitHub repository:
 
-### Step 2 - Service URL with `createLLMService`
+   ```bash
+   git remote add origin YOUR_GITHUB_REPO_URL
+   ```
 
-While you can use the example service URL https://usellm.org/api/llm for testing, you'll need to create your own service URL using the `createLLMService` function for most _real-world_ applications.
+   Replace `YOUR_GITHUB_REPO_URL` with the URL you copied in step 5.
 
-**Why?**: You'll need to provide an [API Key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to use OpenAI APIs. This API key should NOT be sent to the browser i.e. it should only be used on the server-side. Additionally, you might also want to add authentication, rate limiting, model configuration options etc. on the server side.
+5. Finally, push your local repository to GitHub:
 
-Follow these steps to create your own service URL:
+   ```bash
+   git push -u origin main
+   ```
 
-1. Create an LLM service:
+Sure, here's how you can include an environment variable during the deployment process:
 
-```javascript
-const llmService = createLLMService({
-  openaiApiKey: process.env.OPENAI_API_KEY, // provide OpenAI API key
-  actions: ["chat", "transcribe", "embed"], // enable specific actions
-});
-```
+1. Visit [Vercel](https://vercel.com) and sign in or sign up using your GitHub account.
 
-2. Store your OpenAI API key in an enviroment variable file (e.g. `.env.local` for [NextJS applications](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)):
+2. After you are signed in, click on the "Import Project" button. Click "Continue with GitHub" and authorize Vercel to access the repository.
 
-```ini
-OPENAI_API_KEY=xxxxxxxx
-```
+3. Once the repository is selected, you will be taken to the "Import Git Repository" page. On this page, before clicking "Deploy", click on the "Environment Variables" section to expand it.
 
-**Note**: Never hard code API keys in your code or check it into source control. Use an environment variable instead. You'll also need to supply this environment variable to your production environment.
+4. In the "Name" field, enter `OPENAI_API_KEY`, and in the "Value" field, enter the actual API key. Set the "Environment" to "Production". Then click on "Add".
 
-3. Use the `llmService.handle` method in a server-side API route:
+5. After adding the environment variable, you can leave the rest of the settings as they are for a basic Next.js application, and click "Deploy".
 
-```javascript
-/* pages/api/llm.js */
+6. Vercel will create the project and start the deployment. You can watch the progress and see the URL of the deployed application once it's ready.
 
-export default async function handler(req, res) {
-  const { result } = await llmService.handle({ body: req.body, request: req });
-  res.send(result);
-}
-```
+After the deployment is complete, any subsequent pushes to branches will trigger a deployment preview, and any pushes to the main branch (or the one you configured) will result in a production deployment.
 
-**Note**: The above example creates a [NextJS API route](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) using the [pages router](https://nextjs.org/docs/pages/building-your-application/routing).
+And that's it! You've successfully built and deployed your first AI-powered application to the cloud.
 
-4. Provide the API URL/path in the `useLLM` hook in your React component:
+## Next Steps
 
-```javascript
-const llm = useLLM({ serviceUrl: "/api/llm" });
-```
+You can now use `useLLM` to build a wide variety of AI-powered applications. Here's where you can go from here:
 
-**NOTE**: To stream messages in a NextJS application, you'll need to use the [`edge` runtime](https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes).
+- Check out the [live demos](/) on the project homepage and browse their [source code](https://github.com/usellm/usellm/tree/main/usellm.org/app/demo)
 
-#### Example - `createLLMService` with Next.js App Router
+- Read the [API reference](/docs/api-reference/usellm-hook) to learn more about the available methods and options
 
-If you're using Next.js with the [`app` router](https://nextjs.org/docs/app), here's an example [edge route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers#edge-and-nodejs-runtimes) you can use as a starting point:
+- Follow our [step-by-step tutorials](http://localhost:3000/docs/examples/nextjs-app-router) to build your own AI-powered apps with `useLLM`
 
-```javascript
-/* app/api/llm.ts */
+- Join our [Slack workspace](http://localhost:3000/docs/examples/nextjs-app-router) to get help from the community, and share your projects
 
-import { createLLMService } from "usellm";
+- Star our [GitHub repository](https://github.com/usellm/usellm), subscribe to [our blog](https://usellm.substack.com) and follow us on [Twitter](https://twitter.com/usellmteam) for updates
 
-export const runtime = "edge";
-
-const llmService = createLLMService({
-  openaiApiKey: process.env.OPENAI_API_KEY,
-  actions: ["chat", "transcribe", "embed"],
-});
-
-export async function POST(request: Request) {
-  const body = await request.json();
-
-  try {
-    const { result } = await llmService.handle({ body, request });
-    return new Response(result, { status: 200 });
-  } catch (error: any) {
-    return new Response(error.message, { status: error?.status || 400 });
-  }
-}
-
-```
-
-#### Example - `createLLMService` with Next.js Pages Router
-
-If you're using Next.js with the [`pages` router](https://nextjs.org/docs/pages/building-your-application) for routing, here's an example [edge API route](https://nextjs.org/docs/pages/building-your-application/routing/api-routes#edge-api-routes) you can use as a starting point:
-
-```javascript
-/* pages/api/llm.ts */
-
-import { createLLMService } from "usellm";
-
-export const config = {
-  runtime: 'edge',
-};
-
-const llmService = createLLMService({
-  openaiApiKey: process.env.OPENAI_API_KEY,
-  actions: ["chat", "transcribe", "embed"],
-});
-
-export default async function handler(request: Request) {
-  const body = await request.json();
-
-  try {
-    const { result } = await llmService.handle({ body, request });
-    return new Response(result, { status: 200 });
-  } catch (error: any) {
-    return new Response(error.message, { status: error?.status || 400 });
-  }
-}
-```
-
-**Tip**: You can use Upstash for rate limiting: https://upstash.com/blog/upstash-ratelimit
-
-#### Options - `createLLMService`
-
-Here are the full set of options you can provide to `createLLMService`:
-
-```javascript
-export interface CreateLLMServiceOptions {
-  openaiApiKey?: string; // your OpenAI API Key (prefer passing this via an environment variable)
-  fetcher?: typeof fetch; // provide a custom fetcher
-  templates?: { [id: string]: LLMServiceTemplate }; // provide custom templates (see next section)
-  debug?: boolean; // logs the JSON body sent to OpenAI
-  isAllowed?: (body: LLMServiceBody) => boolean | Promise<boolean>; // For checking authentication, rate limiting etc.
-}
-```
-
-`llmService.handle` accepts the following options:
-
-```javascript
-export interface LLMServiceHandleOptions {
-  body: object; // the body of the request
-  request?: Request; // the request itself (for authentication, rate limiting etc.)
-}
-```
-
-Here are the default options passed to the OpenAI API along with the messages received in the request body (see the next section for customization):
-
-```javascript
-const defaultTemplate = {
-  model: "gpt-3.5-turbo",
-  max_tokens: 200,
-  temperature: 0.8,
-};
-```
-
-### Step 3 - Prompt & Options with `registerTemplate`
-
-To generate useful responses from large language models like GPT-3.5/4, you might need to customize the [options passed to the API](https://platform.openai.com/docs/api-reference/chat/create) (e.g. `model`, `max_tokens`, `temperature`) and create default prompts that provide instructions to the model to generate the desired results.
-
-To achieve this, you can create & register templates on the server using the `llmService.registerTemplate` method, and invoke registered templates in your React components using `llm.chat`.
-
-1. Register a template on the server using the `registerTemplate` method :
-
-```javascript
-llmService.registerTemplate({
-  id: "tutorial-generator",
-  systemPrompt:
-    "You job is to create a short tutorial on a given topic. Use simple words, avoid jargon. Start with an introduction, then provide a few points of explanation, and end with a conclusion",
-  userPrompt: "Tell me about {{topic}}",
-  model: "gpt-4",
-  temperature: 0.8,
-});
-```
-
-Note that you can provide two prompts within a template:
-
-- `systemPrompt`: This is a system-level message that guides the behavior of the model throught the conversation. It is sent as `{"role": "system", "content": "..."}`.
-
-- `userPrompt`: This is simply as the first message in the conversation, and is used to generate the first response. It is sent as `{"role": "user", "content": "..."}`.
-
-Each prompt can contain variables e.g. `{{topic}}` whose values can be sent from the client (browser) using `llm.chat`.
-
-2. Provide the template id and inputs in your React component while calling `llm.chat`:
-
-```javascript
-const { message } = await llm.chat({
-  template: "tutorial-generator",
-  inputs: { topic: "Machine Learning" },
-});
-```
-
-If a `messages` argument is also provided to `llm.chat`, the provided messages are appended after the initial system and user prompts. Provide a list of `messages` to continue the conversation.
-
-Check out this course on prompt engineering to craft effective prompts: https://learnprompting.org/docs/intro
-
-#### Example - Template
-
-Here's a complete example of using templates in a NextJS [app router](https://nextjs.org/docs/app) project ([live demo](https://usellm.org/demo/prompt-template)):
-
-```javascript
-/* app/api/llm.tsx */
-import { createLLMService } from "usellm";
-
-export const runtime = "edge";
-
-const llmService = createLLMService({
-  openaiApiKey: process.env.OPENAI_API_KEY,
-  actions: ["chat", "transcribe", "embed"],
-});
-
-llmService.registerTemplate({
-  id: "tutorial-generator",
-  systemPrompt:
-    "You job is to create a short tutorial on a given topic. Use simple words, avoid jargon. Start with an introduction, then provide a few points of explanation, and end with a conclusion",
-  userPrompt: "Topic: {{topic}}",
-  max_tokens: 1000,
-  model: "gpt-4",
-  temperature: 0.7,
-});
-
-export async function POST(request: Request) {
-  const body = await request.json();
-  try {
-    const { result } = await llmService.handle({ body, request });
-    return new Response(result, { status: 200 });
-  } catch (error: any) {
-    return new Response(error.message, { status: error?.status || 400 });
-  }
-}
-
-```
-
-```javascript
-/* app/page.tsx */
-"use client";
-import { useState } from "react";
-import useLLM from "usellm";
-
-export default function HomePage() {
-  const llm = useLLM({ serviceUrl: "/api/llm" });
-  const [topic, setTopic] = useState("");
-  const [result, setResult] = useState("");
-
-  async function handleClick() {
-    await llm.chat({
-      template: "tutorial-generator",
-      inputs: { topic },
-      stream: true,
-      onStream: ({ message }) => setResult(message.content),
-    });
-  }
-
-  return (
-    <div>
-      <input
-        type="text"
-        placeholder="Enter topic"
-        value={topic}
-        onChange={(e) => setTopic(e.target.value)}
-      />
-      <button onClick={handleClick}>Send</button>
-      <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>
-    </div>
-  );
-}
-```
-
-This produces the following result:
-
-<img
-  src="https://github.com/usellm/usellm/assets/1560745/3c75c050-692a-4d7f-8620-545b32b626da"
-  width="420"
-  alt="template demo"
-/>
-
-#### Options - `registerTemplate`
-
-Here are all the options supported for templates:
-
-```javascript
-interface LLMServiceTemplate {
-  id: string; // globally unique identifier
-  systemPrompt?: string; // system prompt to guide the model (can contain variables)
-  userPrompt?: string; // user prompt to generate the first response (can contain variables)
-  model?: string; // model to use (e.g. gpt-3.5-turbo)
-  temperature?: number;
-  top_p?: number;
-  n?: number;
-  max_tokens?: number;
-  presence_penalty?: number;
-  frequency_penalty?: number;
-  logit_bias?: number;
-}
-```
-
-Check the [OpenAI API docs](https://platform.openai.com/docs/api-reference/introduction) for information about each option and view the [source code](https://github.com/usellm/usellm/blob/main/packages/usellm/src/createLLMService.ts) for more details.
-
-## Contributing
-
-The library is under active development. Please open an issue to report bugs and open a pull request to contribute new features.
+Happy building!
