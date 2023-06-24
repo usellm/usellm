@@ -65,7 +65,7 @@ export const runtime = "edge";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
-  actions: ["chat"],
+  actions: ["chat", "callAgentFunction"],
 });
 
 llmService.registerAgent("github-qna", {
@@ -128,6 +128,8 @@ export async function POST(request: Request) {
   }
 }
 ```
+
+**NOTE**: Make sure to pass the option `callAgentAction` to the list of allowed action while creating the `llmService` using `createLLMService`.
 
 This example registers an agent named `"github-qna"`, that uses the `"gpt-3.5-turbo-0613"` model, and has a single callable function `getGitHubUser` which fetches information about a given GitHub user.
 
