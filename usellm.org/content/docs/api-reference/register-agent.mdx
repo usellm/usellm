@@ -53,10 +53,19 @@ This function does not have a return value.
 
 ### Example
 
-Agents must be registered on the server-side. The following example shows how to register an agent using the `llmService.registerAgent` method:
+Agents must be registered on the server-side. The following example shows how to register an agent using the `llmService.registerAgent` method in a Next.js app:
 
 ```javascript
-import { llmService } from "usellm";
+// app/api/llm/route.ts
+
+import { createLLMService } from "usellm";
+
+export const runtime = "edge";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat"],
+});
 
 llmService.registerAgent("github-qna", {
   model: "gpt-3.5-turbo-0613",
@@ -103,13 +112,35 @@ llmService.registerAgent("github-qna", {
     },
   ],
 });
+
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  // add authentication and rate limiting here
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
 ```
 
 This example registers an agent named `"github-qna"`, that uses the `"gpt-3.5-turbo-0613"` model, and has a single callable function `getGitHubUser` which fetches information about a given GitHub user.
 
+Make sure to place your OpenAI API key in a `.env.local` file:
+
+```ini
+OPENAI_API_KEY=YOUR_API_KEY
+```
+
 The agent can be invoked from the client using `useChat` hook ([live demo](/demo/function-calling)):
 
 ```tsx
+// app/page.tsx
+
 "use client";
 
 import { OpenAIMessage, useChat } from "usellm";
