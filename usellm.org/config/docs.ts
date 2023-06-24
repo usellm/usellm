@@ -34,6 +34,10 @@ export const docsConfig: DocsConfig = {
           title: "Installation",
           href: "/docs/installation",
         },
+        {
+          title: "Prompt Engineering",
+          href: "/docs/guides/prompt-engineering",
+        },
       ],
     },
     {
@@ -288,57 +292,6 @@ export const docsConfig: DocsConfig = {
           title: "Voice Cloning",
           href: "/demo/clone-voice",
         },
-      ],
-    },
-    {
-      title: "Guides",
-      items: [
-        //     {
-        //       title: "Message Streaming",
-        //       href: "/docs/guides/message-streaming",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Audio Transcription",
-        //       href: "/docs/guides/audio-transcription",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        {
-          title: "Prompt Engineering",
-          href: "/docs/guides/prompt-engineering",
-        },
-        //     {
-        //       title: "Conversation History",
-        //       href: "/docs/guides/conversation-history",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Prompt Suggestion",
-        //       href: "/docs/guides/next-prompt-suggestion",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Document Embedding",
-        //       href: "/docs/guides/embedding-documents",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "User Authentication",
-        //       href: "/docs/guides/user-authentication",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Rate Limiting",
-        //       href: "/docs/guides/rate-limiting",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
       ],
     },
     {
