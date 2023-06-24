@@ -8,12 +8,6 @@ model (LLM) service. This method allows you to specify a model, initial messages
 callable functions for a named agent. It allows you to leverage
 [function calling](https://openai.com/blog/function-calling-and-other-api-updates) with OpenAI's APIs.
 
-### Import
-
-```javascript
-import { llmService } from "usellm";
-```
-
 ### Usage
 
 ```javascript
@@ -38,6 +32,8 @@ llmService.registerAgent("github-qna", {
   ],
 });
 ```
+
+You'll typically place this code within the API route where you create the `llmService` instance using [createLLMService](/docs/api-reference/create-llm-service) and use it handle a `POST` request.
 
 ### Parameters
 
