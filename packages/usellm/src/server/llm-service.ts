@@ -57,6 +57,9 @@ export class LLMService {
   playHtUserId: string;
   replicateApiKey: string;
   huggingFaceApiKey: string;
+  googleRefreshToken: string;
+  googleClientID: string;
+  googleClientSecret: string;
   fetcher: typeof fetch;
   debug: boolean;
   actions: string[];
@@ -74,6 +77,9 @@ export class LLMService {
     playHtUserId = "",
     replicateApiKey = "",
     huggingFaceApiKey = "",
+    googleRefreshToken = "",
+    googleClientID = "",
+    googleClientSecret = "",
     fetcher = fetch,
     templates = {}, // deprecated
     debug = false,
@@ -85,6 +91,9 @@ export class LLMService {
     this.elvenLabsApiKey = elvenLabsApiKey;
     this.replicateApiKey = replicateApiKey;
     this.huggingFaceApiKey = huggingFaceApiKey;
+    this.googleRefreshToken = googleRefreshToken;
+    this.googleClientID = googleClientID;
+    this.googleClientSecret = googleClientSecret;
     this.fetcher = fetcher;
     this.templates = templates;
     this.debug = debug;

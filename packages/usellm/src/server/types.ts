@@ -145,6 +145,9 @@ export interface CreateLLMServiceOptions {
   playHtUserId?: string;
   replicateApiKey?: string;
   huggingFaceApiKey?: string;
+  googleRefreshToken?: string;
+  googleClientID?: string;
+  googleClientSecret?: string;
   actions?: string[];
   fetcher?: typeof fetch;
   templates?: { [id: string]: LLMServiceTemplate }; // deprecated
@@ -180,4 +183,28 @@ export interface LLMServiceCallReplicateOptions {
 export interface LLMServiceCallHuggingFace {
   data: { inputs: string | object; [key: string]: any } | string;
   model: string;
+}
+
+export interface LLMServiceSpeakMultilingualOptions {
+  $action?: string;
+  input: {
+    text: string;
+  };
+  voice: {
+    languageCode: string;
+    name?: string;
+    ssmlGender?: "SSML_VOICE_GENDER_UNSPECIFIED" | "MALE" | "FEMALE" | "NEUTRAL" | null | undefined;
+    customVoice?: {
+      model: string;
+      reportedUsage?: "REPORTED_USAGE_UNSPECIFIED" | "REALTIME" | "OFFLINE" | null | undefined;
+    }
+  }
+  audioConfig: {
+    audioEncoding: "LINEAR16" | "MP3" | "OGG_OPUS" | "MULAW" | "ALAW";
+    speakingRate?: number;
+    pitch?: number;
+    volumeGainDb?: number;
+    sampleRateHertz?: number;
+    effectsProfileId?: [string];
+  }
 }
