@@ -1,0 +1,37 @@
+---
+title: UseLLM.generate_image
+description: Use LLM's to generate an image from a given prompt in Python.
+---
+
+`UseLLM.generate_image` function is a method of the `UseLLM` class, used to generate images from a text prompt. 
+A text prompt is a descriptive and specific set of details to generate an image with AI. Follow [this guide](https://www.fiverr.com/resources/guides/graphic-design/5-ai-art-ideas#:~:text=To%20make%20your%20AI%20prompts%20better%2C%20be%20as%20specific%20and,lighting%2C%20colors%2C%20and%20resolution) to understand prompting. 
+
+### Syntax
+
+```Python
+response = UseLLM.generate_image(
+  prompt,
+  n,
+  size
+)
+```
+
+### Parameters
+
+The `generate_image` function accepts an `options` object with the following properties:
+
+- `prompt` (required): A string that describes the image to be generated.
+- `n` (optional): A number that specifies the number of variations to generate. `default = 1`.
+- `size` (optional): A string that specifies the size of the generated images. It can be either "256x256", "512x512", or "1024x1024". If not provided, the default is "256x256".
+
+### Return Value 
+
+The `generate_image` function returns a `GenerateImageResponse` object containing a list of URLs representing the generated images.
+
+### Example
+
+Follow this Jupyter notebook to view an example usage of the function above: https://jovian.com/himani007/usellm-image-generation
+
+
+
+

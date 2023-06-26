@@ -1,0 +1,330 @@
+---
+title: llmService.registerAgent
+description: Method to register a new agent within the LLM Service
+---
+
+`llmService.registerAgent` is a method designed to register a new agent with a language learning
+model (LLM) service. This method allows you to specify a model, initial messages, and set of
+callable functions for a named agent. It allows you to leverage
+[function calling](https://openai.com/blog/function-calling-and-other-api-updates) with OpenAI's APIs.
+
+### Usage
+
+```javascript
+llmService.registerAgent("github-qna", {
+  model: "gpt-3.5-turbo-0613",
+  messages: [
+    {
+      role: "system",
+      content:
+        "Welcome to the GitHub Q&A bot! Ask me a question about any GitHub user (provide their username).",
+    },
+  ],
+  functions: [
+    {
+      call: (options: { username: string }) => {
+        // function body
+      },
+      schema: {
+        // function schema
+      },
+    },
+  ],
+});
+```
+
+You'll typically place this code within the API route where you create the `llmService` instance using [createLLMService](/docs/api-reference/create-llm-service) and use it handle a `POST` request.
+
+### Parameters
+
+`llmService.registerAgent` accepts the following arguments:
+
+- `name`: A string to identify the agent.
+- `options`: An object containing the following parameters:
+  - `model`: The identifier of the language model to use.
+  - `messages`: An array of initial messages to be sent when a new chat is started.
+  - `functions`: An array of objects, where each object represents a function that can be called. Each function object must have:
+    - `call`: The function that gets called. It can return a value or a promise.
+    - `schema`: An object that describes the function, it's parameters and return values. This should follow the JSON Schema format.
+  - Other options: https://platform.openai.com/docs/api-reference/chat/create
+
+### Return Value
+
+This function does not have a return value.
+
+### Example
+
+Agents must be registered on the server-side. The following example shows how to register an agent using the `llmService.registerAgent` method in a Next.js app:
+
+```javascript
+// app/api/llm/route.ts
+
+import { createLLMService } from "usellm";
+
+export const runtime = "edge";
+
+const llmService = createLLMService({
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  actions: ["chat", "callAgentFunction"],
+});
+
+llmService.registerAgent("github-qna", {
+  model: "gpt-3.5-turbo-0613",
+  messages: [
+    {
+      role: "system",
+      content:
+        "Welcome to the GitHub Q&A bot! Ask me a question about any GitHub user (provide their username).",
+    },
+  ],
+  functions: [
+    {
+      call: (options: { username: string }) => {
+        return fetch(`https://api.github.com/users/${options.username}`)
+          .then((res) => res.json())
+          .then((json) => {
+            return {
+              name: json.name,
+              bio: json.bio,
+              avatar: json.avatar_url,
+              url: json.html_url,
+              followers: json.followers,
+              following: json.following,
+              repos: json.public_repos,
+              location: json.location,
+              company: json.company,
+            };
+          });
+      },
+      schema: {
+        name: "getGitHubUser",
+        description: "Get the details of a GitHub user",
+        parameters: {
+          type: "object",
+          properties: {
+            username: {
+              type: "string",
+              description: "The GitHub username",
+            },
+          },
+          required: ["username"],
+        },
+      },
+    },
+  ],
+});
+
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  // add authentication and rate limiting here
+
+  try {
+    const { result } = await llmService.handle({ body, request });
+    return new Response(result, { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+**NOTE**: Make sure to pass the option `callAgentAction` to the list of allowed action while creating the `llmService` using `createLLMService`.
+
+This example registers an agent named `"github-qna"`, that uses the `"gpt-3.5-turbo-0613"` model, and has a single callable function `getGitHubUser` which fetches information about a given GitHub user.
+
+Make sure to place your OpenAI API key in a `.env.local` file:
+
+```ini
+OPENAI_API_KEY=YOUR_API_KEY
+```
+
+The agent can be invoked from the client using `useChat` hook ([live demo](/demo/function-calling)):
+
+```tsx
+// app/page.tsx
+
+"use client";
+
+import { OpenAIMessage, useChat } from "usellm";
+import { useEffect, useRef } from "react";
+
+export default function FunctionCalling() {
+  const {
+    isLoading,
+    messages,
+    sendMessage,
+    callFunction,
+    sendFunctionOutput,
+    input,
+    setInput,
+  } = useChat({
+    agent: "github-qna",
+    initialMessages: [
+      {
+        role: "assistant",
+        content:
+          "I'm an AI chatbot than can connect to the GitHub API. Ask me question about a GitHub username!",
+      },
+    ],
+  });
+
+  async function handleCallClick(name: string, args: any) {
+    const output = await callFunction({
+      function: name,
+      arguments: args,
+    });
+    await sendFunctionOutput({ function: name, output });
+  }
+
+  return (
+    <div className="flex flex-col h-full max-h-[600px] overflow-y-hidden">
+      <ChatMessages messages={messages} callFunction={handleCallClick} />
+      <div className="w-full pb-4 flex px-4">
+        <ChatInput
+          placeholder={
+            !isLoading ? "Type a message..." : "Wait for my response..."
+          }
+          text={input}
+          setText={setInput}
+          sendMessage={sendMessage}
+          disabled={isLoading}
+        />
+        <button
+          className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2"
+          onClick={sendMessage}
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+
+interface ChatMessagesProps {
+  messages: OpenAIMessage[];
+  callFunction: (name: string, args: any) => void;
+}
+
+function ChatMessages({ messages, callFunction }: ChatMessagesProps) {
+  let messagesWindow = useRef<Element | null>(null);
+
+  useEffect(() => {
+    if (messagesWindow?.current) {
+      messagesWindow.current.scrollTop = messagesWindow.current.scrollHeight;
+    }
+  }, [messages]);
+
+  return (
+    <div
+      className="w-full flex-1 overflow-y-auto px-4"
+      ref={(el) => (messagesWindow.current = el)}
+    >
+      {messages.map((message, idx) => (
+        <ChatMessage key={idx} message={message} callFunction={callFunction} />
+      ))}
+    </div>
+  );
+}
+
+interface ChatMessageProps {
+  message: OpenAIMessage;
+  callFunction: (name: string, args: any) => void;
+}
+
+function ChatMessage({ message, callFunction }: ChatMessageProps) {
+  const { role, content, function_call } = message;
+  return (
+    <div className="my-4">
+      <div className="font-semibold text-gray-800 dark:text-white">
+        {capitalize(role)}
+      </div>
+      {role === "function" ? (
+        <>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            {"Here's the result of the function call:"}
+          </div>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap my-1 bg-gray-50 dark:bg-gray-950 p-2 rounded">
+            <pre>
+              <b>Result:</b> {content}
+            </pre>
+          </div>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            {"I'll process it now and reply to your message..."}
+          </div>
+        </>
+      ) : (
+        <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+          {content}
+        </div>
+      )}
+      {function_call && (
+        <>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap mt-1">
+            I need to call a function! Please review & approve the function call
+            to proceed:
+          </div>
+          <div className="text-gray-600 dark:text-gray-200 whitespace-pre-wrap my-1 bg-gray-50 dark:bg-gray-950 p-2 rounded">
+            <pre>
+              <b>Function:</b> {function_call.name}
+            </pre>
+            <pre>
+              <b>Arguments:</b> {function_call.arguments}
+            </pre>
+          </div>
+          <div>
+            <button
+              className="p-1 text-sm border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium"
+              onClick={() =>
+                callFunction(
+                  function_call.name,
+                  JSON.parse(function_call.arguments)
+                )
+              }
+            >
+              Call Function
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+interface ChatInputProps {
+  placeholder: string;
+  text: string;
+  setText: (text: string) => void;
+  sendMessage: () => void;
+  disabled: boolean;
+}
+
+function ChatInput({
+  placeholder,
+  text,
+  setText,
+  sendMessage,
+  disabled,
+}: ChatInputProps) {
+  return (
+    <input
+      className="p-2 border rounded w-full block dark:bg-gray-900 dark:text-white"
+      type="text"
+      placeholder={placeholder}
+      value={text}
+      disabled={disabled}
+      onChange={(e) => setText(e.target.value)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      }}
+    />
+  );
+}
+
+function capitalize(word: string) {
+  return word.charAt(0).toUpperCase() + word.substring(1);
+}
+```

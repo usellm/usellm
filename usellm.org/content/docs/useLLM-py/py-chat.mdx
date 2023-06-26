@@ -1,0 +1,35 @@
+---
+title: UseLLM.chat
+description: Send messages to an external LLM service and receive responses with Python.
+---
+
+`UseLLM.chat` function is a method of the `UseLLM` class. This method is used to initiate a chat conversation with the external Large Language Model.
+
+### Syntax
+
+```Python
+response = UseLLM.chat(
+  messages,
+  template,
+  inputs
+)
+```
+
+### Parameters
+
+The `chat` function accepts an `options` object with the following properties:
+
+- `messages` (required): An array of message objects to start the conversation.
+      **Note:** Each message object should have a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string.
+      [Read more about this]( https://help.openai.com/en/articles/7042661-chatgpt-api-transition-guide).
+
+- `template` (optional): A string defining a model's template to structure the conversation.
+- `inputs` (optional): An object containing additional inputs to the model.
+
+### Return Value
+
+The `chat` function returns a `Message` object containing the resulting message of the chat.
+
+### Example
+
+Follow this Jupyter notebook to view an example usage of the function above: https://jovian.com/himani007/usellm-chat.

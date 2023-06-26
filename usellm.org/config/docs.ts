@@ -34,6 +34,10 @@ export const docsConfig: DocsConfig = {
           title: "Installation",
           href: "/docs/installation",
         },
+        {
+          title: "Prompt Engineering",
+          href: "/docs/guides/prompt-engineering",
+        },
       ],
     },
     {
@@ -58,6 +62,10 @@ export const docsConfig: DocsConfig = {
           href: "/docs/examples/chrome-extension",
         },
         {
+          title: "AI Travel Guide (Streamlit)",
+          href: "/docs/examples/streamlit-app",
+        },
+        {
           title: "Slack Bot",
           href: "/docs/examples/slack-bot",
           label: "Soon",
@@ -78,6 +86,10 @@ export const docsConfig: DocsConfig = {
         {
           title: "`useLLM`",
           href: "/docs/api-reference/usellm-hook",
+        },
+        {
+          title: "`useChat`",
+          href: "/docs/api-reference/usechat-hook",
         },
         {
           title: "`.chat`",
@@ -157,8 +169,8 @@ export const docsConfig: DocsConfig = {
           href: "/docs/api-reference/handle",
         },
         {
-          title: "`.registerTemplate`",
-          href: "/docs/api-reference/register-template",
+          title: "`.registerAgent`",
+          href: "/docs/api-reference/register-agent",
         },
         {
           title: "`.registerAction`",
@@ -222,6 +234,22 @@ export const docsConfig: DocsConfig = {
           title: "Exceptions",
           href: "/docs/useLLM-py/exception",
         },
+        {
+          title: "Chat",
+          href: "/docs/useLLM-py/py-chat",
+        },
+        {
+          title: "Image Generation",
+          href: "/docs/useLLM-py/py-generate_image",
+        },
+        {
+          title: "Speak",
+          href: "/docs/useLLM-py/speak-py",
+        },
+        {
+          title: "Embed",
+          href: "/docs/useLLM-py/embed-py",
+        },
       ],
     },
 
@@ -231,6 +259,10 @@ export const docsConfig: DocsConfig = {
         {
           title: "AI Chatbot",
           href: "/demo/ai-chatbot",
+        },
+        {
+          title: "Function Calling",
+          href: "/demo/function-calling",
         },
         {
           title: "Document Q&A",
@@ -260,57 +292,6 @@ export const docsConfig: DocsConfig = {
           title: "Voice Cloning",
           href: "/demo/clone-voice",
         },
-      ],
-    },
-    {
-      title: "Guides",
-      items: [
-        //     {
-        //       title: "Message Streaming",
-        //       href: "/docs/guides/message-streaming",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Audio Transcription",
-        //       href: "/docs/guides/audio-transcription",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        {
-          title: "Prompt Engineering",
-          href: "/docs/guides/prompt-engineering",
-        },
-        //     {
-        //       title: "Conversation History",
-        //       href: "/docs/guides/conversation-history",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Prompt Suggestion",
-        //       href: "/docs/guides/next-prompt-suggestion",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Document Embedding",
-        //       href: "/docs/guides/embedding-documents",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "User Authentication",
-        //       href: "/docs/guides/user-authentication",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: "Rate Limiting",
-        //       href: "/docs/guides/rate-limiting",
-        //       label: "Soon",
-        //       disabled: true,
-        //     },
       ],
     },
     {

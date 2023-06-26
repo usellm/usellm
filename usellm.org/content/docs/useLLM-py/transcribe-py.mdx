@@ -1,0 +1,28 @@
+---
+title: UseLLM.transcribe
+description: Convert speech to text using an external API
+---
+
+The `transcribe` function is a method returned by the UseLLM hook. This method is used to transcribe audio i.e. convert speech to text.
+
+### Syntax
+
+```Python
+response = UseLLM.chat(
+  input #input string or paragraph
+)
+```
+
+### Parameters
+
+The `transcribe` function accepts an `options` object with the following properties:
+
+- `audioUrl`(required):  A string specifying the base64 encoded audio data to transcribe.
+
+### Return Value
+
+The transcribe function returns a `TranscribeResponse` object with a text property that contains the transcription of the audio.
+
+### Example
+
+Follow this Jupyter notebook to view an example usage of the function above: https://jovian.com/himani007/usellm-transcribe. 

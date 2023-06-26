@@ -5,7 +5,8 @@ import PromptTemplate from "@/app/demo/prompt-template/page";
 import SpeechToText from "@/app/demo/speech-to-text/page";
 import TextToSpeech from "@/app/demo/text-to-speech/page";
 import VoiceChat from "@/app/demo/voice-chat/page";
-import CloneVoice from "@/app/demo/clone-voice/page"
+import CloneVoice from "@/app/demo/clone-voice/page";
+import FunctionCalling from "@/app/demo/function-calling/page";
 
 export const HOME_PAGE_DEMOS = [
   {
@@ -14,6 +15,13 @@ export const HOME_PAGE_DEMOS = [
     component: AIChatBot,
     sourceUrl:
       "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/ai-chatbot/page.tsx",
+  },
+  {
+    name: "Function Calling",
+    id: "function-calling",
+    component: FunctionCalling,
+    sourceUrl:
+      "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/function-calling/page.tsx",
   },
   {
     name: "Document Q&A",
@@ -62,6 +70,6 @@ export const HOME_PAGE_DEMOS = [
     id: "voice-cloning",
     component: CloneVoice,
     sourceUrl:
-      "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/clone-voice/page.tsx"
+      "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/clone-voice/page.tsx",
   },
 ];

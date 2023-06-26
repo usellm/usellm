@@ -2,6 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createLLMService } from "usellm";
 import { makeErrorResponse } from "@/usellm/shared/utils";
+import { makeGetGitHubUser } from "@/usellm/shared/functions";
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
@@ -24,6 +25,7 @@ const llmService = createLLMService({
     "generateHighResImage",
     "callReplicate",
     "callHuggingFace",
+    "callAgentFunction",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
@@ -104,6 +106,18 @@ llmService.registerTemplate({
   userPrompt: "Topic: {{topic}}",
   max_tokens: 200,
   temperature: 0.7,
+});
+
+llmService.registerAgent("github-qna", {
+  model: "gpt-3.5-turbo-0613",
+  messages: [
+    {
+      role: "system",
+      content:
+        "Welcome to the GitHub Q&A bot! Ask me a question about any GitHub user (provide their username).",
+    },
+  ],
+  functions: [makeGetGitHubUser()],
 });
 
 export const runtime = "edge";
