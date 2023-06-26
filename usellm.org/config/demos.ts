@@ -7,6 +7,7 @@ import TextToSpeech from "@/app/demo/text-to-speech/page";
 import VoiceChat from "@/app/demo/voice-chat/page";
 import CloneVoice from "@/app/demo/clone-voice/page";
 import FunctionCalling from "@/app/demo/function-calling/page";
+import SpeakMultilingual from "@/app/demo/speak-multilingual/page";
 
 export const HOME_PAGE_DEMOS = [
   {
@@ -71,5 +72,12 @@ export const HOME_PAGE_DEMOS = [
     component: CloneVoice,
     sourceUrl:
       "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/clone-voice/page.tsx",
+  },
+  {
+    name: "Speak Multilingual",
+    id: "speak-multilingual",
+    component: SpeakMultilingual,
+    sourceUrl:
+      "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/speak-multilingual/page.tsx"
   },
 ];

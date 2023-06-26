@@ -20,6 +20,8 @@ import {
   GENERATE_CLONE_VOICE_URL,
   MESSAGE_TO_VOICE_URL,
   removeUndefined,
+  GOOGLE_OBTAIN_ACCESS_TOKEN_URL,
+  GOOGLE_TEXT_TO_SPEECH_API_URL,
 } from "../shared/utils";
 import {
   CreateLLMServiceOptions,
@@ -40,6 +42,7 @@ import {
   LLMServiceCallHuggingFace,
   LLMGenerateClonedAudioOptions,
   LLMAgent,
+  LLMServiceSpeakMultilingualOptions,
 } from "./types";
 import { OpenAIMessage } from "../shared/types";
 
@@ -159,12 +162,16 @@ export class LLMService {
     if (action === "callAgentFunction") {
       return this.callAgentFunction(body as CallAgentFunctionOptions);
     }
+    if (action === "speakMultilingual") {
+      return this.speakMultilingual(body as LLMServiceSpeakMultilingualOptions);
+    }
     const actionFunc = this.customActions[action];
     if (!actionFunc) {
       throw makeErrorResponse(`Action "${action}" is not supported`, 400);
     }
     return actionFunc(body);
   }
+
 
   prepareChatBody(body: LLMServiceChatOptions) {
     const template = {
@@ -735,6 +742,71 @@ export class LLMService {
     }
     return agentFunc.call(args);
   }
+
+  async speakMultilingual(options: LLMServiceSpeakMultilingualOptions) {
+    const { input, voice, audioConfig } = options;
+
+    if (!input) {
+      throw makeErrorResponse("'input' is required", 400);
+    }
+
+    if (!voice) {
+      throw makeErrorResponse("'voice' is required", 400);
+    }
+
+    if (!audioConfig) {
+      throw makeErrorResponse("'audioConfig' is required", 400);
+    }
+
+    const tokenResponse = await fetch(GOOGLE_OBTAIN_ACCESS_TOKEN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        refresh_token: this.googleRefreshToken,
+        client_id: this.googleClientID,
+        client_secret: this.googleClientSecret,
+        grant_type: 'refresh_token',
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      throw makeErrorResponse(await tokenResponse.text());
+    }
+
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    const response = await fetch(GOOGLE_TEXT_TO_SPEECH_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        input,
+        voice,
+        audioConfig
+      }),
+    });
+
+    if (!response.ok) {
+      throw makeErrorResponse(await response.text());
+    }
+
+    const responseData = await response.json();
+    const audioContent = responseData.audioContent;
+
+    const audioUrlReturn =
+      "data:" +
+      "audio/mpeg" +
+      ";base64," +
+      audioContent;
+
+    return {audioUrlReturn};
+    
+  }
 }
 
 interface CallAgentFunctionOptions {
@@ -742,6 +814,7 @@ interface CallAgentFunctionOptions {
   function: string;
   arguments: object;
 }
+
 
 export function createLLMService(options: CreateLLMServiceOptions = {}) {
   return new LLMService(options);

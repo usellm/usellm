@@ -107,3 +107,27 @@ export interface LLMCallAgentFunctionOptions {
   function: string;
   arguments: any;
 }
+
+export interface LLMSpeakMultilingualOptions {
+  $action?: string;
+  input: {
+    text: string;
+  };
+  voice: {
+    languageCode: string;
+    name?: string;
+    ssmlGender?: "SSML_VOICE_GENDER_UNSPECIFIED" | "MALE" | "FEMALE" | "NEUTRAL" | null | undefined;
+    customVoice?: {
+      model: string;
+      reportedUsage?: "REPORTED_USAGE_UNSPECIFIED" | "REALTIME" | "OFFLINE" | null | undefined;
+    }
+  }
+  audioConfig: {
+    audioEncoding: "LINEAR16" | "MP3" | "OGG_OPUS" | "MULAW" | "ALAW";
+    speakingRate?: number;
+    pitch?: number;
+    volumeGainDb?: number;
+    sampleRateHertz?: number;
+    effectsProfileId?: [string];
+  }
+}
