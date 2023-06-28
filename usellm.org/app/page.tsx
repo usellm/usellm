@@ -19,13 +19,14 @@ export default function IndexPage() {
       <div className="container relative pb-10">
         <PageHeader>
           <Link
-            href="https://usellm.substack.com/p/release-notes-usellm-v0120"
+            href="https://usellm.substack.com/p/release-notes-usellm-v0130"
             target="_blank"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium truncate max-w-full"
           >
-            🚀 v0.12.0 <Separator className="mx-2 h-4" orientation="vertical" />
+            🚀 v0.13.0 <Separator className="mx-2 h-4" orientation="vertical" />
             <span className="truncate">
-              Voice Cloning and Audio Generation from Cloned Voice
+              Register New Agents, Call Custom Functions and Simplify Chatbot
+              Creation with useChat Hook
             </span>
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
