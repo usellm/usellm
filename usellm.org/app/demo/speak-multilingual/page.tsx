@@ -22,7 +22,7 @@ export default function SpeakMultilingual() {
   const [languageCode, setLanguageCode] = useState<string>(""); // https://cloud.google.com/text-to-speech/docs/voices
   const [audioUrl, setAudioUrl] = useState<string>("");
   const llm = useLLM({
-    serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
+    serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
 
   async function handleSpeakClick() {
