@@ -76,7 +76,7 @@ export default function ImageCaptioning() {
           className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium ml-2 "
           onClick={handleClickCall}
         >
-          Generate
+          Generate Caption
         </button>
       </div>        
 
