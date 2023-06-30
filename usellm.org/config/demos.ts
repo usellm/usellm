@@ -7,6 +7,7 @@ import TextToSpeech from "@/app/demo/text-to-speech/page";
 import VoiceChat from "@/app/demo/voice-chat/page";
 import CloneVoice from "@/app/demo/clone-voice/page";
 import FunctionCalling from "@/app/demo/function-calling/page";
+import ImageCaptioning from "@/app/demo/image-captioning/page";
 import SpeakMultilingual from "@/app/demo/speak-multilingual/page";
 
 export const HOME_PAGE_DEMOS = [
@@ -65,6 +66,13 @@ export const HOME_PAGE_DEMOS = [
     component: ImageGeneration,
     sourceUrl:
       "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/image-generation/page.tsx",
+  },
+  {
+    name: "Image Captioning",
+    id: "image-captioning",
+    component: ImageCaptioning,
+    sourceUrl:
+      "https://github.com/usellm/usellm/blob/main/usellm.org/app/demo/image-captioning/page.tsx",
   },
   {
     name: "Voice Cloning",
