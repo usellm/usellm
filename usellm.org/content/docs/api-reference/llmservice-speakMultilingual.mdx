@@ -1,0 +1,115 @@
+---
+title: llm.speakMultilingual
+description: Converts text into spoken audio via Google Text-To-Speech API
+---
+
+The `llm.speakMultilingual()` is a server-side function in the useLLM framework generates a spoken version of text using Google Text-to-Speech (TTS) functionality. This function is useful for applications that require vocalizing text in multiple languages.
+
+### Syntax:
+
+```typescript
+const { audioUrlReturn } = await llm.speakMultilingual({
+  input: {
+    text: string,
+  },
+  voice: {
+    languageCode: string,
+    name?: string,
+    ssmlGender?: "SSML_VOICE_GENDER_UNSPECIFIED" | "MALE" | "FEMALE" | "NEUTRAL" | null | undefined,
+    customVoice?: {
+      model: string,
+      reportedUsage?: "REPORTED_USAGE_UNSPECIFIED" | "REALTIME" | "OFFLINE" | null | undefined,
+    },
+  },
+  audioConfig: {
+    audioEncoding: "LINEAR16" | "MP3" | "OGG_OPUS" | "MULAW" | "ALAW",
+    speakingRate?: number,
+    pitch?: number,
+    volumeGainDb?: number,
+    sampleRateHertz?: number,
+    effectsProfileId?: [string],
+  },
+});
+```
+
+### Parameters:
+
+`LLMServiceSpeakMultilingualOptions`: An object that takes the following properties:
+
+- **input** (required): An object containing the text to be converted to speech.
+- **voice** (required): An object specifying the voice settings for the TTS operation. It includes the following properties:
+  - languageCode (required): The language code of the voice e.g. en-US.
+  - name (optional): The name of the voice.
+  - ssmlGender (optional): The SSML gender of the voice.
+  - customVoice (optional): An object specifying a custom voice model and its reported usage.
+- **audioConfig** (required): An object specifying the audio configuration for the TTS operation. It includes the following properties:
+  - audioEncoding (required): The audio encoding format (e.g., "LINEAR16", "MP3", "OGG_OPUS", "MULAW", "ALAW").
+  - speakingRate (optional): The speaking rate.
+  - pitch (optional): The pitch of the voice.
+  - volumeGainDb (optional): The volume gain in decibels.
+  - sampleRateHertz (optional): The sample rate in hertz.
+  - effectsProfileId (optional): An array of effects profile IDs.
+
+For More information about options visit [here](https://cloud.google.com/text-to-speech/docs/reference/rest/v1/text/synthesize).
+
+### Returns:
+
+This method returns a Promise that resolves to an object with the following property:
+
+- **audioUrlReturn**: A string representing the base64 encoded data of the generated audio.
+
+### Error Handling:
+
+`llmService.speakMultilingual()` may throw an error if:
+
+- The `input` parameter is missing or undefined.
+- The `voice` parameter is missing or undefined.
+- The `audioConfig` parameter is missing or undefined.
+- An error occurs during the API request to the Google Cloud service.
+
+### Example
+
+Below is an example of how to use `llmService.speakMultilingual()` within a server-side function:
+
+```typescript
+/* pages/api/llm.ts */
+
+import { createLLMService } from "usellm";
+
+export const config = {
+  runtime: "edge",
+};
+
+const llmService = createLLMService({
+  googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+  googleClientID: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  actions: ["speakMultilingual"],
+});
+
+export default async function handler(request: Request) {
+  const body = await request.json();
+
+  try {
+    const options = {
+      input: {
+        text: 'Hello, world!',
+      },
+      voice: {
+        languageCode: 'en-US',
+        ssmlGender: 'FEMALE',
+      },
+      audioConfig: {
+        audioEncoding: 'MP3',
+      },
+    };
+
+    const { audioUrlReturn } = await llmService.speakMultilingual(options);
+    return new Response(JSON.stringify({ audioUrlReturn }), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error?.status || 400 });
+  }
+}
+```
+
+In this example, the `llmService.speakMultilingual()` method is used to convert text to speech using the Google Text to Speech service. The `options` object is constructed with the desired text, voice and audio configuration. The `llmService.speakMultilingual()` method is then called with the options object, and the resulting `audioUrlReturn` is returned as the response. If an error occurs, an appropriate error response is returned.

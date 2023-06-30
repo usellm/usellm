@@ -1,0 +1,119 @@
+---
+title: llm.speakMultilingual
+description: Converts text into spoken audio via Google Text-To-Speech API
+---
+
+The `llm.speakMultilingual()` method generates a spoken version of text using Google Text-to-Speech (TTS) functionality. This function is useful for applications that require vocalizing text in multiple languages.
+
+### Syntax
+
+```typescript
+const { audioUrlReturn } = await llm.speakMultilingual({
+  input: {
+    text: string,
+  },
+  voice: {
+    languageCode: string,
+    name?: string,
+    ssmlGender?: "SSML_VOICE_GENDER_UNSPECIFIED" | "MALE" | "FEMALE" | "NEUTRAL" | null | undefined,
+    customVoice?: {
+      model: string,
+      reportedUsage?: "REPORTED_USAGE_UNSPECIFIED" | "REALTIME" | "OFFLINE" | null | undefined,
+    },
+  },
+  audioConfig: {
+    audioEncoding: "LINEAR16" | "MP3" | "OGG_OPUS" | "MULAW" | "ALAW",
+    speakingRate?: number,
+    pitch?: number,
+    volumeGainDb?: number,
+    sampleRateHertz?: number,
+    effectsProfileId?: [string],
+  },
+});
+```
+
+### Parameters
+
+`LLMServiceSpeakMultilingualOptions`: An object that takes the following properties:
+
+- **input** (required): An object containing the text to be converted to speech.
+- **voice** (required): An object specifying the voice settings for the TTS operation. It includes the following properties:
+  - languageCode (required): The language code of the voice e.g. en-US.
+  - name (optional): The name of the voice.
+  - ssmlGender (optional): The SSML gender of the voice.
+  - customVoice (optional): An object specifying a custom voice model and its reported usage.
+- **audioConfig** (required): An object specifying the audio configuration for the TTS operation. It includes the following properties:
+  - audioEncoding (required): The audio encoding format (e.g., "LINEAR16", "MP3", "OGG_OPUS", "MULAW", "ALAW").
+  - speakingRate (optional): The speaking rate.
+  - pitch (optional): The pitch of the voice.
+  - volumeGainDb (optional): The volume gain in decibels.
+  - sampleRateHertz (optional): The sample rate in hertz.
+  - effectsProfileId (optional): An array of effects profile IDs.
+
+For More information about options visit [here](https://cloud.google.com/text-to-speech/docs/reference/rest/v1/text/synthesize).
+
+### Returns
+
+A Promise that resolves to an object:
+
+- **audioUrlReturn**: A string representing the base64 encoded data of the generated audio.
+
+### Example
+
+Here's an example of how to use `llm.speakMultilingual()` in a React component ([live demo](http://localhost:3000/demo/speak-multilingual)):
+
+```jsx
+"use client";
+import useLLM from "usellm";
+import { useState } from "react";
+
+export default function SpeakMultilingual() {
+  const [text, setText] = useState<string>("");
+  const [languageCode, setLanguageCode] = useState<string>(""); // https://cloud.google.com/text-to-speech/docs/voices
+  const [audioUrl, setAudioUrl] = useState<string>("");
+  const llm = useLLM({
+    serviceUrl: "/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
+  });
+
+  async function handleSpeakClick() {
+    if (!text) return;
+    const { audioUrlReturn } = await llm.speakMultilingual({
+      input: {text},
+      voice: {languageCode, ssmlGender: "NEUTRAL"},
+      audioConfig: {audioEncoding: "MP3"},
+    });
+    setAudioUrl(audioUrlReturn);
+  }
+
+  return (
+    <div className="p-4 overflow-y-auto">
+      <h2 className="font-semibold text-2xl">Text to Speech Multilingual</h2>
+      <textarea
+        className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
+        placeholder="Enter some text here"
+        rows={5}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <input
+        className="p-2 border rounded w-full block mt-4 dark:bg-gray-900 dark:text-white"
+        placeholder="Enter language code here e.g. en-US"
+        value={languageCode}
+        onChange={(e) => setLanguageCode(e.target.value)}
+      >
+      </input>
+      <button
+        className="p-2 border rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:bg-white dark:text-black font-medium my-4"
+        onClick={handleSpeakClick}
+      >
+        Speak It!
+      </button>
+      {audioUrl && <audio src={audioUrl} controls />}
+    </div>
+  );
+}
+```
+
+In the example above, the text entered by the user is converted to speech using the language code entered in the input box when the
+"Speak It" button is clicked. The spoken text can be then listened to by the user as the
+audio URL returned by `llm.speakMultilingual()` method is used as the source for the `<audio>` HTML element.

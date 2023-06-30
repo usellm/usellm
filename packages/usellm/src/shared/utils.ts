@@ -31,6 +31,10 @@ export const REPLICATE_API_URL = "https://api.replicate.com/v1/predictions";
 export const HUGGING_FACE_API_URL =
   "https://api-inference.huggingface.co/models/";
 
+export const GOOGLE_TEXT_TO_SPEECH_API_URL = "https://texttospeech.googleapis.com/v1/text:synthesize";
+
+export const GOOGLE_OBTAIN_ACCESS_TOKEN_URL = "https://oauth2.googleapis.com/token";
+
 export const EDIT_IMAGE_API_URL = "https://api.openai.com/v1/images/edits";
 
 export const IMAGE_VARIATIONS_API_URL =
