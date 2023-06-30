@@ -152,6 +152,10 @@ export const docsConfig: DocsConfig = {
           href: "docs/api-reference/generate-cloned-audio",
         },
         {
+          title: "`.speakMultilingual`",
+          href: "docs/api-reference/speak-multilingual",
+        },
+        {
           title: "`<LLMProvider/>`",
           href: "docs/api-reference/llm-provider",
         },
@@ -215,6 +219,10 @@ export const docsConfig: DocsConfig = {
         {
           title: "`.generateClonedAudio`",
           href: "docs/api-reference/llmservice-generateClonedAudio",
+        },
+        {
+          title: "`.speakMultilingual`",
+          href: "docs/api-reference/llmservice-speakMultilingual",
         },
       ],
     },

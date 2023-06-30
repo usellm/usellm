@@ -20,6 +20,7 @@ import {
   LLMVoiceChatOptions,
   LLMCloneVoiceOptions,
   LLMGenerateClonedAudioOptions,
+  LLMSpeakMultilingualOptions,
   SpeakOptions,
   UseLLMOptions,
   LLMCallAgentFunctionOptions,
@@ -300,6 +301,10 @@ export default function useLLM({
   async function callAgentFunction(options: LLMCallAgentFunctionOptions) {
     return callAction("callAgentFunction", options);
   }
+  
+  async function speakMultilingual(options: LLMSpeakMultilingualOptions) {
+    return callAction("speakMultilingual", options);
+  }
 
   return {
     callAction,
@@ -322,5 +327,6 @@ export default function useLLM({
     callReplicate,
     callHuggingFace,
     callAgentFunction,
+    speakMultilingual,
   };
 }

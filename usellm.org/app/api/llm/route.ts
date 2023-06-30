@@ -11,6 +11,9 @@ const llmService = createLLMService({
   playHtUserId: process.env.USER_ID,
   replicateApiKey: process.env.REPLICATE_API_TOKEN,
   huggingFaceApiKey: process.env.HUGGING_FACE_API_TOKEN,
+  googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+  googleClientID: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
   actions: [
     "chat",
     "voiceChat",
@@ -26,6 +29,7 @@ const llmService = createLLMService({
     "callReplicate",
     "callHuggingFace",
     "callAgentFunction",
+    "speakMultilingual",
   ],
   isAllowed: async () => {
     // check if rate limiting has been set up using Upstash Redis REST API
