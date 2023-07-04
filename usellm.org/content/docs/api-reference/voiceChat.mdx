@@ -21,9 +21,18 @@ const { audioUrl } = await llm.voiceChat(options: LLMVoiceChatOptions);
   - `chatMessages?: OpenAIMessage[]` (optional) - An array of message objects to start the conversation. Each message object should have a `role` (either `"system"`, `"user"`, or `"assistant"`) and a `content` string.
   - `chatTemplate?: string` (optional) - A string defining a model's template to structure the conversation.
   - `chatInputs?: object` (optional) - An object containing additional inputs to the model.
-  - `speakModelId?: string` (optional) - The ID of the model to be used for the TTS operation. Default is set to the latest model.
-  - `speechVoideId?: string` (optional) - The ID of the voice to be used for the TTS operation. Default is set to the latest voice.
-  - `speechVoiceSettings?: { stability: number; similarity_boost: number }` (optional) - Fine-tuning parameters for the voice. 
+  - `voice: object` (required) - An object specifying the voice settings for the TTS operation. It includes the following properties:
+    - `languageCode: string` (required): The language code of the voice e.g. en-US.
+    - `name?: string` (optional): The name of the voice.
+    - `ssmlGender?: string` (optional): The SSML gender of the voice.
+    - `customVoice?: object` (optional): An object specifying a custom voice model and its reported usage.
+  - `audioConfig: object` (required): An object specifying the audio configuration for the TTS operation. It includes the following properties:
+    - `audioEncoding: string` (required): The audio encoding format (e.g., "LINEAR16", "MP3", "OGG_OPUS", "MULAW", "ALAW").
+    - `speakingRate?: number` (optional): The speaking rate.
+    - `pitch?: number` (optional): The pitch of the voice.
+    - `volumeGainDb?: number` (optional): The volume gain in decibels.
+    - `sampleRateHertz?: number` (optional): The sample rate in hertz.
+    - `effectsProfileId?: [string]` (optional): An array of effects profile IDs.
 
 ### Returns
 
@@ -80,6 +89,8 @@ export default function VoiceChat() {
         transcribeLanguage: "en",
         transcribePrompt: "",
         chatMessages: history,
+        voice: { languageCode: "en-US" },
+        audioConfig: { audioEncoding: "OGG_OPUS" },
       });
       setHistory([...history, ...messages]);
       setAudioUrl(responseAudioUrl);

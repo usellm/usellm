@@ -45,6 +45,8 @@ export default function VoiceChat() {
         transcribeLanguage: "en",
         transcribePrompt: "",
         chatMessages: history,
+        voice: { languageCode: "en-US" },
+        audioConfig: { audioEncoding: "OGG_OPUS" },
       });
       setHistory([...history, ...messages]);
       setAudioUrl(responseAudioUrl);

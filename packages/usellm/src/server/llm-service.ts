@@ -525,16 +525,16 @@ export class LLMService {
       inputs: chatInputs,
     });
     const { choices } = chatResult as any;
-    const { speakModelId, speechVoideId, speechVoiceSettings } = options;
-    const { audioUrl } = await this.speak({
-      text: choices[0].message.content,
-      model_id: speakModelId,
-      voice_id: speechVoideId,
-      voice_settings: speechVoiceSettings,
+    const { voice, audioConfig } = options;
+    const textResponse = choices[0].message.content;
+    const { audioUrlReturn } = await this.speakMultilingual({
+      input: {text: textResponse},
+      voice,
+      audioConfig,
     });
 
     return {
-      audioUrl,
+      audioUrl: audioUrlReturn,
       messages: [
         { role: "user", content: text },
         { role: "assistant", content: choices[0].message.content },

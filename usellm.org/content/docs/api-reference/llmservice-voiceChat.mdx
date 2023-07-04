@@ -15,9 +15,8 @@ const result = await llmService.voiceChat({
   chatMessages?: OpenAIMessage[],
   chatTemplate?: string,
   chatInputs?: object,
-  speakModelId?: string,
-  speechVoideId?: string,
-  speechVoiceSettings?: { stability: number; similarity_boost: number }
+  voice: object,
+  audioConfig: object,
 });
 ```
 
@@ -25,21 +24,30 @@ const result = await llmService.voiceChat({
 
 `llmService.voiceChat()` accepts an object of type LLMServiceVoiceChatOptions with the following properties:
 
-- **transcribeAudioUrl**: A string representing the URL of the audio file to be transcribed.
+- **transcribeAudioUrl** (required): A string representing the URL of the audio file to be transcribed.
 - **transcribeLanguage** (optional): A string indicating the language of the audio for transcription.
 - **transcribePrompt** (optional): A string representing the prompt to be used during transcription.
 - **chatMessages** (optional): An array of `OpenAIMessage` objects representing the chat messages. Additional chat messages can be included along with the transcribed text.
 - **chatTemplate** (optional): The name of the template to be used for the chat.
 - **chatInputs** (optional): Additional inputs to be passed along with the chat request.
-- **speakModelId** (optional): A string indicating the model ID to be used for generating speech audio.
-- **speechVoiceId** (optional): A string representing the voice ID to be used for speech synthesis.
-- **speechVoiceSettings** (optional): An object containing the stability and similarity boost settings for speech synthesis.
+- **voice** (required): An object specifying the voice settings for the TTS operation. It includes the following properties:
+  - languageCode (required): The language code of the voice e.g. en-US.
+  - name (optional): The name of the voice.
+  - ssmlGender (optional): The SSML gender of the voice.
+  - customVoice (optional): An object specifying a custom voice model and its reported usage.
+- **audioConfig** (required): An object specifying the audio configuration for the TTS operation. It includes the following properties:
+  - audioEncoding (required): The audio encoding format (e.g., "LINEAR16", "MP3", "OGG_OPUS", "MULAW", "ALAW").
+  - speakingRate (optional): The speaking rate.
+  - pitch (optional): The pitch of the voice.
+  - volumeGainDb (optional): The volume gain in decibels.
+  - sampleRateHertz (optional): The sample rate in hertz.
+  - effectsProfileId (optional): An array of effects profile IDs.
 
 ### Returns:
 
 This method returns a Promise that resolves to an object with the following properties:
 
-- **audioUrl**: A string representing the URL of the generated speech audio.
+- **audioUrl**: A string representing the base64 encoded data of the generated speech audio.
 - **messages**: An array of `OpenAIMessage` objects representing the chat messages, including the user input and the assistant's response.
 
 ### Error Handling:
@@ -47,6 +55,8 @@ This method returns a Promise that resolves to an object with the following prop
 `llmService.voiceChat()` may throw an error if:
 
 - The `transcribeAudioUrl` parameter is missing or invalid.
+- The `voice` parameter is missing or invalid.
+- The `audioConfig` parameter is missing or invalid.
 - An error occurs during the transcription, chat, or speech synthesis processes.
 
 ### Example
@@ -64,6 +74,9 @@ export const config = {
 
 const llmService = createLLMService({
   openaiApiKey: process.env.OPENAI_API_KEY,
+  googleClientID: preocess.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN,
   actions: ["chat", "transcribe", "embed", "speak"],
 });
 
