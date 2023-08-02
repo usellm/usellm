@@ -1,3 +1,5 @@
+**NOTICE**: This package is no longer under active development. Please use the [Vercel AI SDK](https://sdk.vercel.ai/docs) instead.
+
 # useLLM - Use Large Language Models in Your React App
 
 `useLLM` is a React hook for integrating large language models like OpenAI's ChatGPT with just a few lines of code.
