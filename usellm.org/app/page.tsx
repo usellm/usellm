@@ -30,6 +30,18 @@ export default function IndexPage() {
             </span>
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
+          <br/>
+          <Link
+            href="https://sdk.vercel.ai/docs"
+            target="_blank"
+            className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium truncate max-w-full"
+          >
+            ⚠️ Notice <Separator className="mx-2 h-4" orientation="vertical" />
+            <span className="truncate">
+              This package is no longer under active development. Please use the Vercel AI SDK instead.
+            </span>
+            <ChevronRight className="ml-1 h-4 w-4" />
+          </Link>
           <PageHeaderHeading>
             React Hooks for Large Language Models
           </PageHeaderHeading>
